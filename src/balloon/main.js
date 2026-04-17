@@ -166,7 +166,9 @@ nextBtn.addEventListener("click", () => {
 resetBtn.addEventListener("click", () => {
   game.reset();
   refresh();
-  speak("我们重新点气球吧。", true);
+  const snapshot = game.getSnapshot();
+  const targetName = snapshot.target?.colorName ? `${snapshot.target.colorName}气球` : "气球";
+  speak(`重新来，点${targetName}。`, true);
 });
 
 statsToggleBtn?.addEventListener("click", () => {

@@ -165,7 +165,9 @@ nextBtn.addEventListener("click", () => {
 resetBtn.addEventListener("click", () => {
   game.reset();
   refresh();
-  speak("我们重新点形状吧。", true);
+  const snapshot = game.getSnapshot();
+  const targetName = snapshot.target?.name || "形状";
+  speak(`重新来，点${targetName}。`, true);
 });
 
 statsToggleBtn?.addEventListener("click", () => {

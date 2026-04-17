@@ -165,7 +165,9 @@ nextBtn.addEventListener("click", () => {
 resetBtn.addEventListener("click", () => {
   game.reset();
   refresh();
-  speak("我们重新点小动物吧。", true);
+  const snapshot = game.getSnapshot();
+  const targetName = snapshot.target?.name || "小动物";
+  speak(`重新来，点${targetName}。`, true);
 });
 
 statsToggleBtn?.addEventListener("click", () => {
