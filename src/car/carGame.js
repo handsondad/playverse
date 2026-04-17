@@ -1,18 +1,25 @@
 const VEHICLES = [
   { id: "firetruck", icon: "🚒", name: "消防车", accent: "#ff845c" },
-  { id: "excavator", icon: "🚜", name: "挖挖车", accent: "#f3b13f" },
   { id: "car", icon: "🚗", name: "小汽车", accent: "#56a6ff" },
   { id: "police", icon: "🚓", name: "警车", accent: "#6f87ff" },
   { id: "bus", icon: "🚌", name: "大巴车", accent: "#59bf78" },
   { id: "ambulance", icon: "🚑", name: "救护车", accent: "#ff7f8e" },
   { id: "taxi", icon: "🚕", name: "出租车", accent: "#f1bf49" },
   { id: "truck", icon: "🚚", name: "货车", accent: "#67b5f0" },
-  { id: "tractor", icon: "🚜", name: "农场车", accent: "#72c36e" },
   { id: "motorbike", icon: "🏍️", name: "摩托车", accent: "#8d88f6" },
   { id: "train", icon: "🚂", name: "小火车", accent: "#e28b62" },
   { id: "airplane", icon: "✈️", name: "小飞机", accent: "#6ea9ff" },
   { id: "ship", icon: "🚢", name: "大轮船", accent: "#4fb4b0" },
+  { id: "helicopter", icon: "🚁", name: "直升机", accent: "#7bb9ff" },
+  { id: "bicycle", icon: "🚲", name: "自行车", accent: "#ff9d6c" },
+  { id: "subway", icon: "🚇", name: "地铁", accent: "#8e77ff" },
+  { id: "rocket", icon: "🚀", name: "火箭", accent: "#ff7f8e" },
+  { id: "scooter", icon: "🛵", name: "电动车", accent: "#ffc3a0" },
 ];
+
+
+
+
 
 function pickRandomDifferent(items, currentId) {
   const pool = items.filter((item) => item.id !== currentId);
