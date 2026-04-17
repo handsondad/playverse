@@ -82,8 +82,13 @@ button { font: inherit; }
   grid-template-columns: 1fr;
 }
 
+.theme-title {
+  display: block;
+  margin-top: 12px;
+}
+
 .theme-buttons {
-  margin-top: 10px;
+  margin-top: 8px;
   grid-template-columns: 1fr;
 }
 
