@@ -1,0 +1,313 @@
+:root {
+  --bg: #eef7e8;
+  --panel: rgba(255, 255, 255, 0.95);
+  --text: #33472d;
+  --brand: #6b9d56;
+  --shadow: rgba(91, 122, 84, 0.18);
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+  margin: 0;
+  touch-action: manipulation;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 8% 13%, rgba(178, 225, 153, 0.3), transparent 34%),
+    radial-gradient(circle at 86% 12%, rgba(187, 219, 168, 0.28), transparent 30%),
+    radial-gradient(circle at 48% 92%, rgba(166, 210, 191, 0.24), transparent 34%),
+    var(--bg);
+}
+
+button { font: inherit; }
+
+.forest-shell {
+  width: min(1120px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 18px 14px 34px;
+  display: grid;
+  gap: 14px;
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.support-strip,
+.result {
+  background: var(--panel);
+  border-radius: 24px;
+  box-shadow: 0 10px 20px var(--shadow);
+  border: 2px solid rgba(190, 219, 175, 0.42);
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.result { padding: 16px; }
+
+.hero h1 {
+  margin: 0;
+  color: var(--brand);
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.hero p { margin: 8px 0 0; }
+.hero-links { margin-top: 10px; }
+.hero-links a { color: #5f8950; font-weight: 700; }
+
+.play-stage {
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.level-buttons,
+.theme-buttons,
+.selector-actions,
+.stats,
+.station-buttons,
+.queue-list,
+.support-strip {
+  display: grid;
+  gap: 10px;
+}
+
+.level-buttons {
+  margin-top: 10px;
+  grid-template-columns: 1fr;
+}
+
+.theme-buttons {
+  margin-top: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.level-btn,
+.theme-btn,
+.selector-actions button,
+.support-strip button,
+.station-btn {
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(103, 128, 92, 0.16);
+}
+
+.level-btn,
+.theme-btn,
+.selector-actions button,
+.station-btn {
+  background: linear-gradient(180deg, #ffffff 0%, #f1faea 100%);
+  color: #496543;
+}
+
+.level-btn.is-active {
+  background: linear-gradient(180deg, #8ebc73 0%, #6b9d56 100%);
+  color: #fff;
+}
+
+.theme-btn.is-active {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.92), 0 8px 16px rgba(75, 113, 61, 0.22);
+}
+
+.selector-actions { margin-top: 12px; }
+#selectorHint { margin: 10px 0 0; color: #6c855f; }
+
+.stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.stats div {
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #f1faea 100%);
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.stats span {
+  display: block;
+  font-size: 13px;
+  color: #718b64;
+}
+
+.stats strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 20px;
+}
+
+.patrol-panel {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(181, 208, 165, 0.44);
+  background: linear-gradient(180deg, #fcfefb 0%, #eef8e8 100%);
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#weatherText {
+  color: #4f6e43;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+#feedbackText {
+  color: #5f7953;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.active-clue {
+  margin-top: 12px;
+  border-radius: 14px;
+  padding: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #f2faed 100%);
+  border: 1px dashed rgba(171, 201, 153, 0.42);
+}
+
+.clue-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+#clueEmoji { font-size: 28px; }
+
+.badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 64px;
+  margin-top: 8px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.badge.normal {
+  background: rgba(122, 155, 107, 0.16);
+  color: #4a6640;
+}
+
+.badge.urgent {
+  background: rgba(214, 125, 84, 0.2);
+  color: #8e3d22;
+}
+
+.badge.rare {
+  background: rgba(235, 180, 91, 0.22);
+  color: #82540c;
+}
+
+#clueHint { margin: 8px 0 0; color: #68815c; }
+
+.station-panel,
+.queue-panel {
+  margin-top: 12px;
+}
+
+.station-buttons {
+  margin-top: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.station-btn {
+  min-height: 84px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.station-btn .emoji { font-size: 26px; }
+.station-btn .name { font-size: 13px; }
+
+.station-btn.is-active {
+  transform: scale(1.03);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.95), 0 8px 16px rgba(86, 115, 168, 0.22);
+}
+
+.queue-list {
+  margin-top: 8px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.queue-item {
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid rgba(187, 213, 173, 0.42);
+  background: linear-gradient(180deg, #ffffff 0%, #eff9e9 100%);
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+}
+
+.queue-item.empty {
+  opacity: 0.45;
+  font-size: 18px;
+}
+
+.queue-item.urgent {
+  border-color: rgba(214, 125, 84, 0.44);
+  background: linear-gradient(180deg, #fff7f2 0%, #ffe8dc 100%);
+}
+
+.queue-item.rare {
+  border-color: rgba(223, 172, 88, 0.5);
+  background: linear-gradient(180deg, #fffced 0%, #fff2cf 100%);
+}
+
+.support-strip {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 12px;
+}
+
+#voiceBtn { background: #6ba8c6; color: #fff; }
+#narrationBtn { background: #7e8ad8; color: #fff; }
+#parentModeBtn { background: #7aad74; color: #fff; }
+
+.forest-shell.weather-sunny {
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(245, 253, 238, 0.2));
+}
+
+.forest-shell.weather-cloudy {
+  background-image: linear-gradient(180deg, rgba(232, 239, 230, 0.3), rgba(245, 253, 238, 0.2));
+}
+
+.forest-shell.weather-rainy {
+  background-image: linear-gradient(180deg, rgba(216, 236, 229, 0.35), rgba(234, 248, 239, 0.22));
+}
+
+.forest-shell.weather-windy {
+  background-image: linear-gradient(180deg, rgba(231, 246, 235, 0.28), rgba(245, 253, 238, 0.2));
+}
+
+.forest-shell.weather-mist {
+  background-image: linear-gradient(180deg, rgba(233, 239, 234, 0.33), rgba(245, 253, 238, 0.22));
+}
+
+@media (max-width: 920px) {
+  .play-stage { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .queue-list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .support-strip { grid-template-columns: 1fr; }
+  .theme-buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 560px) {
+  .station-buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .queue-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

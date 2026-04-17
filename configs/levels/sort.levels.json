@@ -1,0 +1,39 @@
+{
+  "levels": [
+    {
+      "id": "easy",
+      "name": "慢慢分",
+      "itemCount": 8,
+      "timeLimitSec": 80,
+      "targetScore": 80
+    },
+    {
+      "id": "normal",
+      "name": "刚刚好",
+      "itemCount": 12,
+      "timeLimitSec": 75,
+      "targetScore": 130
+    },
+    {
+      "id": "hard",
+      "name": "小专家",
+      "itemCount": 16,
+      "timeLimitSec": 70,
+      "targetScore": 190
+    }
+  ],
+  "modes": [
+    {
+      "id": "color",
+      "name": "颜色分类"
+    },
+    {
+      "id": "shape",
+      "name": "形状分类"
+    },
+    {
+      "id": "mixed",
+      "name": "混合分类"
+    }
+  ]
+}

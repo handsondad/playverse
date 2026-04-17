@@ -1,0 +1,74 @@
+{
+  "themes": [
+    {
+      "id": "forest",
+      "name": "森林合唱",
+      "wave": "triangle",
+      "toneShift": 0,
+      "tempoMs": 360,
+      "gapMs": 140,
+      "gain": 1,
+      "palette": {
+        "accent": "#5f9f6c",
+        "accentSoft": "#e6f4ea"
+      }
+    },
+    {
+      "id": "ocean",
+      "name": "海洋合唱",
+      "wave": "sine",
+      "toneShift": -3,
+      "tempoMs": 380,
+      "gapMs": 150,
+      "gain": 0.9,
+      "palette": {
+        "accent": "#4c96d8",
+        "accentSoft": "#e4f1fb"
+      }
+    },
+    {
+      "id": "farm",
+      "name": "农场合唱",
+      "wave": "square",
+      "toneShift": 4,
+      "tempoMs": 340,
+      "gapMs": 120,
+      "gain": 0.85,
+      "palette": {
+        "accent": "#cc8d45",
+        "accentSoft": "#fff3e2"
+      }
+    }
+  ],
+  "levels": [
+    {
+      "id": "easy",
+      "name": "慢慢唱",
+      "targetRounds": 5,
+      "timeLimitSec": 85,
+      "animalIds": ["cat", "dog", "duck", "frog"]
+    },
+    {
+      "id": "normal",
+      "name": "刚刚好",
+      "targetRounds": 7,
+      "timeLimitSec": 80,
+      "animalIds": ["cat", "dog", "duck", "frog", "cow"]
+    },
+    {
+      "id": "hard",
+      "name": "合唱大师",
+      "targetRounds": 9,
+      "timeLimitSec": 75,
+      "animalIds": ["cat", "dog", "duck", "frog", "cow", "sheep"]
+    }
+  ],
+  "animals": [
+    { "id": "cat", "name": "小猫", "emoji": "🐱", "freq": 523, "color": "#f19c79" },
+    { "id": "dog", "name": "小狗", "emoji": "🐶", "freq": 587, "color": "#7cb4f8" },
+    { "id": "duck", "name": "小鸭", "emoji": "🦆", "freq": 659, "color": "#f2cc67" },
+    { "id": "frog", "name": "小青蛙", "emoji": "🐸", "freq": 698, "color": "#7fd48e" },
+    { "id": "cow", "name": "小牛", "emoji": "🐮", "freq": 784, "color": "#b7a3f0" },
+    { "id": "sheep", "name": "小羊", "emoji": "🐑", "freq": 880, "color": "#f7b0c1" }
+  ]
+}

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>翻牌配对 - 儿童小游戏</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="top-bar">
+      <h1>翻牌配对</h1>
+      <p class="subtitle" id="guideText">找出所有相同卡片，挑战你的记忆力。先选难度和主题，再点开始游戏。</p>
+      <p id="playDurationHint" class="subtitle subtitle-soft">建议每次游玩 8-10 分钟，注意休息眼睛。</p>
+      <p class="subtitle"><a href="../../index.html">返回首页</a> | <a href="../bubble/index.html">泡泡连线救援</a></p>
+    </header>
+
+    <section class="play-stage">
+      <section class="choice-row">
+        <section class="chapter-panel hero-choice" aria-label="章节地图">
+          <strong>难度</strong>
+          <div class="chapter-buttons">
+            <button id="chapterEasyBtn" data-level-id="easy">慢慢来</button>
+            <button id="chapterNormalBtn" data-level-id="normal">刚刚好</button>
+            <button id="chapterHardBtn" data-level-id="hard">挑战王</button>
+          </div>
+          <p id="chapterHint">先点一个难度，再开始游戏。</p>
+        </section>
+
+        <section class="theme-panel" aria-label="主题选择">
+          <strong class="theme-title">主题</strong>
+          <div class="theme-buttons">
+            <button id="themeAnimalsBtn" type="button" data-theme-key="animals">小动物乐园</button>
+            <button id="themeFruitsBtn" type="button" data-theme-key="fruits">水果派对</button>
+            <button id="themeTransportBtn" type="button" data-theme-key="transport">交通探险</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="game-panel">
+        <div class="game-panel-top">
+          <section class="primary-actions" aria-label="核心操作">
+            <button id="startBtn">开始游戏</button>
+            <button id="previewBtn">开局预览</button>
+            <button id="hintBtn">提示（1）</button>
+            <button id="shieldBtn">保险（1）</button>
+          </section>
+        </div>
+
+        <section class="status-panel" aria-live="polite">
+          <div><span class="label">时间</span><strong id="timeValue">0</strong></div>
+          <div><span class="label">步数</span><strong id="movesValue">0</strong></div>
+          <div><span class="label">已配对</span><strong id="matchedValue">0</strong></div>
+          <div><span class="label">错误</span><strong id="mistakesValue">0</strong></div>
+          <div><span class="label">连击</span><strong id="comboValue">0</strong></div>
+          <div><span class="label">分数</span><strong id="scoreValue">0</strong></div>
+          <div><span class="label">最好成绩</span><strong id="bestValue">--</strong></div>
+        </section>
+
+        <section id="board" class="board" aria-label="翻牌网格"></section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <section class="secondary-actions" aria-label="附加功能">
+        <strong>更多功能</strong>
+        <div class="secondary-actions-grid">
+          <button id="dailyBtn">今日挑战</button>
+          <button id="voiceBtn">语音引导：开</button>
+          <button id="narrationBtn">播报模式：关键</button>
+          <button id="parentModeBtn">护眼模式：标准</button>
+        </div>
+      </section>
+
+      <section class="stats-panel muted-panel" aria-live="polite">
+        <strong>数据统计</strong>
+        <div class="stats-grid">
+          <div><span class="label">总局数</span><strong id="statsPlays">0</strong></div>
+          <div><span class="label">胜率</span><strong id="statsWinRate">0%</strong></div>
+          <div><span class="label">平均用时</span><strong id="statsAvgTime">0秒</strong></div>
+          <div><span class="label">平均错误</span><strong id="statsAvgMistakes">0</strong></div>
+          <div><span class="label">最佳连胜</span><strong id="statsBestStreak">0</strong></div>
+        </div>
+      </section>
+
+      <section class="leaderboard-panel muted-panel" aria-live="polite">
+        <strong>今日挑战记录</strong>
+        <p id="dailyBoardTitle">今日暂无记录</p>
+        <ol id="dailyBoardList" class="daily-board-list"></ol>
+      </section>
+    </section>
+
+    <section id="restReminder" class="rest-reminder" hidden aria-live="polite">
+      <h2>休息提醒</h2>
+      <p id="restReminderText">你已经玩了一会儿啦，休息一下眼睛更舒服。</p>
+      <div class="rest-actions">
+        <button id="restNowBtn">休息一下</button>
+        <button id="restContinueBtn">继续 5 分钟</button>
+      </div>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+      <button id="retryBtn">再来一局</button>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

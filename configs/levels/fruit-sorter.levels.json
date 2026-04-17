@@ -1,0 +1,97 @@
+{
+  "id": "fruit-sorter",
+  "title": "果园分拣员",
+  "description": "识别水果颜色，快速放入同色果篮。",
+  "levels": [
+    {
+      "id": "easy",
+      "name": "晨间采摘",
+      "timeLimitSec": 85,
+      "targetDeliveries": 16,
+      "spawnMs": 1500,
+      "lives": 4,
+      "weatherCycleMs": 9200,
+      "perishableChance": 0.12,
+      "goldenChance": 0.08,
+      "spoilLimitMs": 2700,
+      "basketIds": ["red", "yellow", "green"]
+    },
+    {
+      "id": "normal",
+      "name": "午后分拣",
+      "timeLimitSec": 80,
+      "targetDeliveries": 22,
+      "spawnMs": 1250,
+      "lives": 4,
+      "weatherCycleMs": 8600,
+      "perishableChance": 0.15,
+      "goldenChance": 0.1,
+      "spoilLimitMs": 2400,
+      "basketIds": ["red", "yellow", "green", "purple"]
+    },
+    {
+      "id": "hard",
+      "name": "傍晚冲刺",
+      "timeLimitSec": 75,
+      "targetDeliveries": 28,
+      "spawnMs": 1050,
+      "lives": 3,
+      "weatherCycleMs": 7800,
+      "perishableChance": 0.18,
+      "goldenChance": 0.12,
+      "spoilLimitMs": 2100,
+      "basketIds": ["red", "yellow", "green", "purple", "blue"]
+    }
+  ],
+  "themes": [
+    {
+      "id": "sunrise",
+      "name": "晨曦果园",
+      "palette": {
+        "brand": "#d47b48",
+        "bg": "#fff4e6",
+        "panel": "rgba(255, 255, 255, 0.95)"
+      },
+      "weatherPool": [
+        { "id": "sunny", "name": "晴天" },
+        { "id": "cloudy", "name": "晨云" },
+        { "id": "windy", "name": "微风" }
+      ]
+    },
+    {
+      "id": "valley",
+      "name": "山谷果园",
+      "palette": {
+        "brand": "#4f8b62",
+        "bg": "#eef8ec",
+        "panel": "rgba(255, 255, 255, 0.95)"
+      },
+      "weatherPool": [
+        { "id": "sunny", "name": "晴天" },
+        { "id": "rainy", "name": "细雨" },
+        { "id": "cloudy", "name": "薄云" }
+      ]
+    },
+    {
+      "id": "harvest",
+      "name": "丰收果园",
+      "palette": {
+        "brand": "#b45d3c",
+        "bg": "#fff0e5",
+        "panel": "rgba(255, 255, 255, 0.95)"
+      },
+      "weatherPool": [
+        { "id": "sunny", "name": "晴天" },
+        { "id": "aurora", "name": "晚霞" },
+        { "id": "windy", "name": "秋风" }
+      ]
+    }
+  ],
+  "baskets": [
+    { "id": "red", "name": "红果篮", "emoji": "🍎", "color": "#e56f67", "freq": 520 },
+    { "id": "yellow", "name": "黄果篮", "emoji": "🍋", "color": "#e2bc55", "freq": 590 },
+    { "id": "green", "name": "青果篮", "emoji": "🥝", "color": "#68bd7a", "freq": 650 },
+    { "id": "purple", "name": "紫果篮", "emoji": "🍇", "color": "#8d77dc", "freq": 720 },
+    { "id": "blue", "name": "蓝果篮", "emoji": "🫐", "color": "#6297e8", "freq": 790 }
+  ]
+}

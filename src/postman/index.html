@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>小小邮差送信 - 儿童小游戏</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="postman-shell">
+    <header class="hero">
+      <h1>小小邮差送信</h1>
+      <p id="guideText">看清信封颜色，把信件投进同色信箱。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../fruit/index.html">果园分拣员</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="selector-panel">
+        <strong>送信难度</strong>
+        <div id="levelButtons" class="level-buttons"></div>
+        <strong class="theme-title">邮局主题</strong>
+        <div id="themeButtons" class="theme-buttons"></div>
+        <strong class="action-title">开始操作</strong>
+        <div class="selector-actions">
+          <button id="startBtn" type="button">开始送信</button>
+          <button id="retryBtn" type="button">重新送信</button>
+          <button id="dailyBtn" type="button">今日路线</button>
+        </div>
+        <p id="selectorHint">先选难度，再开始送信。</p>
+      </section>
+
+      <section class="game-panel">
+        <section class="stats" aria-live="polite">
+          <div><span>已投递</span><strong id="progressValue">0 / 0</strong></div>
+          <div><span>时间</span><strong id="timeValue">0 秒</strong></div>
+          <div><span>生命</span><strong id="livesValue">0</strong></div>
+          <div><span>分数</span><strong id="scoreValue">0</strong></div>
+          <div><span>连对</span><strong id="streakValue">0</strong></div>
+          <div><span>最佳</span><strong id="bestValue">0</strong></div>
+        </section>
+
+        <section class="delivery-panel">
+          <div class="panel-head">
+            <strong>当前信件</strong>
+            <span id="weatherText">天气：晴天</span>
+          </div>
+          <p id="feedbackText">准备好后开始送信。</p>
+
+          <section class="active-mail" id="activeMail">
+            <div class="mail-top">
+              <strong id="mailLabel">等待信件...</strong>
+              <span class="mail-meta"><span id="mailTypeBadge" class="badge normal">待分拣</span><span id="mailEmoji">✉️</span></span>
+            </div>
+            <p id="mailHint">请选择对应颜色的信箱。</p>
+          </section>
+
+          <section class="mailbox-panel">
+            <strong>信箱区域</strong>
+            <div id="mailboxButtons" class="mailbox-buttons"></div>
+          </section>
+
+          <section class="queue-panel">
+            <strong>后续信件</strong>
+            <div id="queueList" class="queue-list"></div>
+          </section>
+        </section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <button id="voiceBtn" type="button">语音引导：开</button>
+      <button id="narrationBtn" type="button">播报模式：关键</button>
+      <button id="parentModeBtn" type="button">护眼模式：标准</button>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

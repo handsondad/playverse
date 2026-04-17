@@ -1,0 +1,50 @@
+{
+  "levels": [
+    {
+      "id": "easy",
+      "name": "海湾巡逻",
+      "timeLimitSec": 80,
+      "targetBoats": 14,
+      "boatTravelMs": 2600,
+      "spawnMs": 900,
+      "lives": 4,
+      "weatherCycleMs": 10000,
+      "jammerChance": 0.06,
+      "dualChance": 0.1,
+      "signalIds": ["sun", "moon", "star"]
+    },
+    {
+      "id": "normal",
+      "name": "夜港守望",
+      "timeLimitSec": 78,
+      "targetBoats": 18,
+      "boatTravelMs": 2200,
+      "spawnMs": 820,
+      "lives": 4,
+      "weatherCycleMs": 9000,
+      "jammerChance": 0.1,
+      "dualChance": 0.13,
+      "signalIds": ["sun", "moon", "star", "comet"]
+    },
+    {
+      "id": "hard",
+      "name": "暴风灯塔",
+      "timeLimitSec": 75,
+      "targetBoats": 22,
+      "boatTravelMs": 1900,
+      "spawnMs": 760,
+      "lives": 3,
+      "weatherCycleMs": 8400,
+      "jammerChance": 0.14,
+      "dualChance": 0.16,
+      "signalIds": ["sun", "moon", "star", "comet", "wave"]
+    }
+  ],
+  "signals": [
+    { "id": "sun", "name": "太阳灯", "emoji": "☀️", "color": "#f2b84b", "freq": 520 },
+    { "id": "moon", "name": "月光灯", "emoji": "🌙", "color": "#7fa8ff", "freq": 600 },
+    { "id": "star", "name": "星辉灯", "emoji": "⭐", "color": "#f58ec5", "freq": 680 },
+    { "id": "comet", "name": "彗星灯", "emoji": "☄️", "color": "#60c5bd", "freq": 740 },
+    { "id": "wave", "name": "海浪灯", "emoji": "🌊", "color": "#4f9bdc", "freq": 810 }
+  ]
+}

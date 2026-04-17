@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>字母拼读启蒙 - 儿童小游戏</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="spell-shell">
+    <header class="hero">
+      <h1>字母拼读启蒙</h1>
+      <p id="guideText">先选主题，再开始拼读。点字母卡片填入格子，拼对即可过关。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../sort/index.html">颜色形状分类</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="selector-panel">
+        <strong>主题包</strong>
+        <div id="themeButtons" class="theme-buttons"></div>
+        <div class="selector-actions">
+          <button id="startBtn">开始练习</button>
+          <button id="retryBtn">再来一次</button>
+          <button id="dailyBtn">今日练习</button>
+        </div>
+        <p id="selectorHint">建议先从动物主题开始。</p>
+      </section>
+
+      <section class="game-panel">
+        <div class="stats">
+          <div><span>分数</span><strong id="scoreValue">0</strong></div>
+          <div><span>已完成</span><strong id="solvedValue">0</strong></div>
+          <div><span>错误</span><strong id="wrongValue">0</strong></div>
+          <div><span>提示</span><strong id="hintValue">2</strong></div>
+        </div>
+
+        <section class="question-card">
+          <div class="question-head">
+            <strong id="questionIcon">📘</strong>
+            <span id="questionPrompt">点击开始练习</span>
+          </div>
+          <div class="question-tools">
+            <span id="phonicsText">发音提示会显示在这里</span>
+            <button id="listenBtn">听整词</button>
+          </div>
+          <div id="answerSlots" class="answer-slots"></div>
+          <button id="hintBtn">使用提示</button>
+        </section>
+
+        <section id="letterPool" class="letter-pool"></section>
+
+        <section class="progress-wrap">
+          <span id="progressText">进度 0%</span>
+          <div class="progress-bar"><div id="progressFill"></div></div>
+        </section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <button id="voiceBtn">语音引导：开</button>
+      <button id="narrationBtn">播报模式：关键</button>
+      <button id="parentModeBtn">护眼模式：标准</button>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>亲子跑酷 - 儿童小游戏</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="runner-shell">
+    <header class="hero">
+      <h1>亲子跑酷</h1>
+      <p id="guideText">先选难度，再开始，点击屏幕或按钮跳跃躲开障碍。</p>
+      <p id="playDurationHint" class="hero-note">建议每次游玩 8-10 分钟，结束后休息眼睛。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../whac/index.html">打地鼠升级版</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="chapter-panel" aria-label="难度选择">
+        <strong>难度</strong>
+        <div class="chapter-buttons">
+          <button id="chapterEasyBtn" data-level-id="easy">慢慢来</button>
+          <button id="chapterNormalBtn" data-level-id="normal">刚刚好</button>
+          <button id="chapterHardBtn" data-level-id="hard">挑战王</button>
+        </div>
+        <p id="chapterHint">先点一个难度，再开始游戏。</p>
+      </section>
+
+      <section class="game-panel">
+        <div class="primary-actions" aria-label="核心操作">
+          <button id="startBtn">开始游戏</button>
+          <button id="retryBtn">再来一局</button>
+          <button id="jumpBtn">跳跃</button>
+          <button id="shieldBtn">护盾（1）</button>
+        </div>
+
+        <section class="stats" aria-live="polite">
+          <div><span>时间</span><strong id="timeValue">0</strong></div>
+          <div><span>分数</span><strong id="scoreValue">0</strong></div>
+          <div><span>距离</span><strong id="distanceValue">0</strong></div>
+          <div><span>金币</span><strong id="coinsValue">0</strong></div>
+          <div><span>跳跃</span><strong id="jumpsValue">0</strong></div>
+          <div><span>碰撞</span><strong id="collisionValue">0</strong></div>
+          <div><span>最好</span><strong id="bestValue">--</strong></div>
+        </section>
+
+        <section id="track" class="track" aria-label="跑酷赛道"></section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <section class="secondary-actions" aria-label="附加功能">
+        <strong>更多功能</strong>
+        <div class="secondary-actions-grid">
+          <button id="dailyBtn">今日挑战</button>
+          <button id="voiceBtn">语音引导：开</button>
+          <button id="narrationBtn">播报模式：关键</button>
+          <button id="parentModeBtn">护眼模式：标准</button>
+        </div>
+      </section>
+
+      <section class="meta-stats muted-panel" aria-live="polite">
+        <strong>数据统计</strong>
+        <div class="meta-grid">
+          <div><span>总局数</span><strong id="metaPlays">0</strong></div>
+          <div><span>胜率</span><strong id="metaWinRate">0%</strong></div>
+          <div><span>平均距离</span><strong id="metaAvgDistance">0</strong></div>
+          <div><span>平均金币</span><strong id="metaAvgCoins">0.0</strong></div>
+          <div><span>平均碰撞</span><strong id="metaAvgCollision">0</strong></div>
+          <div><span>最佳连胜</span><strong id="metaBestStreak">0</strong></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

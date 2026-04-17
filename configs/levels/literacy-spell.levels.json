@@ -1,0 +1,106 @@
+{
+  "themes": [
+    {
+      "id": "animal",
+      "name": "动物",
+      "questions": [
+        {
+          "id": "a-001",
+          "mode": "alphabet",
+          "prompt": "猫 cat",
+          "icon": "🐱",
+          "answer": ["c", "a", "t"],
+          "phonics": ["/k/", "/ae/", "/t/"],
+          "speakText": "cat"
+        },
+        {
+          "id": "a-002",
+          "mode": "alphabet",
+          "prompt": "狗 dog",
+          "icon": "🐶",
+          "answer": ["d", "o", "g"],
+          "phonics": ["/d/", "/o/", "/g/"],
+          "speakText": "dog"
+        },
+        {
+          "id": "a-003",
+          "mode": "alphabet",
+          "prompt": "猪 pig",
+          "icon": "🐷",
+          "answer": ["p", "i", "g"],
+          "phonics": ["/p/", "/i/", "/g/"],
+          "speakText": "pig"
+        }
+      ]
+    },
+    {
+      "id": "food",
+      "name": "食物",
+      "questions": [
+        {
+          "id": "f-001",
+          "mode": "alphabet",
+          "prompt": "苹果 apple",
+          "icon": "🍎",
+          "answer": ["a", "p", "p", "l", "e"],
+          "phonics": ["/ae/", "/p/", "/l/", "/e/"],
+          "speakText": "apple"
+        },
+        {
+          "id": "f-002",
+          "mode": "alphabet",
+          "prompt": "牛奶 milk",
+          "icon": "🥛",
+          "answer": ["m", "i", "l", "k"],
+          "phonics": ["/m/", "/i/", "/l/", "/k/"],
+          "speakText": "milk"
+        },
+        {
+          "id": "f-003",
+          "mode": "alphabet",
+          "prompt": "面包 bread",
+          "icon": "🍞",
+          "answer": ["b", "r", "e", "a", "d"],
+          "phonics": ["/b/", "/r/", "/e/", "/d/"],
+          "speakText": "bread"
+        }
+      ]
+    },
+    {
+      "id": "pinyin",
+      "name": "拼音",
+      "questions": [
+        {
+          "id": "p-001",
+          "mode": "pinyin",
+          "prompt": "猫 māo",
+          "icon": "🐱",
+          "answer": ["m", "ao"],
+          "phonics": ["m", "ao"],
+          "speakText": "mao",
+          "decoys": ["an", "ou", "n"]
+        },
+        {
+          "id": "p-002",
+          "mode": "pinyin",
+          "prompt": "狗 gǒu",
+          "icon": "🐶",
+          "answer": ["g", "ou"],
+          "phonics": ["g", "ou"],
+          "speakText": "gou",
+          "decoys": ["ao", "ei", "b"]
+        },
+        {
+          "id": "p-003",
+          "mode": "pinyin",
+          "prompt": "牛 niú",
+          "icon": "🐮",
+          "answer": ["n", "iu"],
+          "phonics": ["n", "iu"],
+          "speakText": "niu",
+          "decoys": ["ie", "m", "ui"]
+        }
+      ]
+    }
+  ]
+}

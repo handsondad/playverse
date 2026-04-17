@@ -1,0 +1,40 @@
+{
+  "stages": [
+    {
+      "id": "ma-1",
+      "name": "加法新手",
+      "operators": ["+"],
+      "range": [1, 10],
+      "enemyHp": 60,
+      "playerHp": 3,
+      "questionCount": 6,
+      "skillCombo": 3,
+      "damage": 12,
+      "wrongDamage": 1
+    },
+    {
+      "id": "ma-2",
+      "name": "加减闯关",
+      "operators": ["+", "-"],
+      "range": [1, 20],
+      "enemyHp": 88,
+      "playerHp": 3,
+      "questionCount": 8,
+      "skillCombo": 3,
+      "damage": 14,
+      "wrongDamage": 1
+    },
+    {
+      "id": "ma-3",
+      "name": "乘法挑战",
+      "operators": ["+", "-", "*"],
+      "range": [1, 12],
+      "enemyHp": 110,
+      "playerHp": 4,
+      "questionCount": 10,
+      "skillCombo": 4,
+      "damage": 16,
+      "wrongDamage": 1
+    }
+  ]
+}

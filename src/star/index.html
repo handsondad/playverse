@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>星空观测员 - 儿童小游戏</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="star-shell">
+    <header class="hero">
+      <h1>星空观测员</h1>
+      <p id="guideText">看清星图线索，把它送到对应观测台。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../spell/index.html">字母拼读启蒙</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="selector-panel">
+        <strong>观测难度</strong>
+        <div id="levelButtons" class="level-buttons"></div>
+        <strong>主题星域</strong>
+        <div id="themeButtons" class="theme-buttons"></div>
+        <div class="selector-actions">
+          <button id="startBtn" type="button">开始观测</button>
+          <button id="retryBtn" type="button">重新观测</button>
+          <button id="dailyBtn" type="button">今日星图</button>
+        </div>
+        <p id="selectorHint">先选难度，再开始观测。</p>
+      </section>
+
+      <section class="game-panel">
+        <section class="stats" aria-live="polite">
+          <div><span>已记录</span><strong id="progressValue">0 / 0</strong></div>
+          <div><span>时间</span><strong id="timeValue">0 秒</strong></div>
+          <div><span>精力</span><strong id="livesValue">0</strong></div>
+          <div><span>分数</span><strong id="scoreValue">0</strong></div>
+          <div><span>连对</span><strong id="streakValue">0</strong></div>
+          <div><span>最佳</span><strong id="bestValue">0</strong></div>
+        </section>
+
+        <section class="observation-panel">
+          <div class="panel-head">
+            <strong>当前星图</strong>
+            <span id="weatherText">天空：晴夜</span>
+            <span id="feedbackText">准备好后开始观测。</span>
+          </div>
+
+          <section class="active-signal">
+            <div class="signal-top">
+              <strong id="signalLabel">等待信号...</strong>
+              <span id="signalEmoji">✨</span>
+            </div>
+            <span id="signalTypeBadge" class="badge normal">待记录</span>
+            <p id="signalHint">请选择对应线索的观测台。</p>
+          </section>
+
+          <section class="station-panel">
+            <strong>观测台区域</strong>
+            <div id="stationButtons" class="station-buttons"></div>
+          </section>
+
+          <section class="queue-panel">
+            <strong>后续星图</strong>
+            <div id="queueList" class="queue-list"></div>
+          </section>
+        </section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <button id="voiceBtn" type="button">语音引导：开</button>
+      <button id="narrationBtn" type="button">播报模式：关键</button>
+      <button id="parentModeBtn" type="button">护眼模式：标准</button>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

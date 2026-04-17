@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>小小厨师配餐 - 儿童小游戏</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="chef-shell">
+    <header class="hero">
+      <h1>小小厨师配餐</h1>
+      <p id="guideText">看清订单后，把需要的食材点到餐盘里，再点击提交。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../postman/index.html">小小邮差送信</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="selector-panel">
+        <strong>厨房难度</strong>
+        <div id="levelButtons" class="level-buttons"></div>
+        <strong>菜单主题</strong>
+        <div id="themeButtons" class="theme-buttons"></div>
+        <div class="selector-actions">
+          <button id="startBtn" type="button">开始营业</button>
+          <button id="retryBtn" type="button">重新营业</button>
+          <button id="dailyBtn" type="button">今日菜单</button>
+        </div>
+        <p id="selectorHint">先选难度再开始，完成足够多的订单就能过关。</p>
+      </section>
+
+      <section class="game-panel">
+        <section class="stats" aria-live="polite">
+          <div><span>分数</span><strong id="scoreValue">0</strong></div>
+          <div><span>时间</span><strong id="timeValue">0 秒</strong></div>
+          <div><span>订单</span><strong id="ordersValue">0 / 0</strong></div>
+          <div><span>连击</span><strong id="comboValue">0</strong></div>
+          <div><span>最好</span><strong id="bestValue">0</strong></div>
+          <div><span>准确率</span><strong id="accuracyValue">0%</strong></div>
+        </section>
+
+        <section class="order-panel">
+          <div class="panel-head">
+            <strong>当前订单</strong>
+            <span id="orderReward">奖励 0 分</span>
+          </div>
+          <div class="customer-row">
+            <span id="customerMoodBadge" class="customer-badge waiting">🙂 顾客等待中</span>
+          </div>
+          <h2 id="orderName">请先开始营业</h2>
+          <p id="orderNeed">所需食材会显示在这里。</p>
+        </section>
+
+        <section class="tray-panel">
+          <div class="panel-head">
+            <strong>我的餐盘</strong>
+            <div class="tray-actions">
+              <button id="clearTrayBtn" type="button">清空餐盘</button>
+              <button id="submitBtn" type="button">提交订单</button>
+            </div>
+          </div>
+          <div id="traySlots" class="tray-slots"></div>
+          <p id="trayHint">先从下方食材区点选食材放进餐盘，也可以拖拽调整摆盘。</p>
+        </section>
+
+        <section class="ingredients-panel">
+          <div class="panel-head">
+            <strong>食材区</strong>
+            <span id="feedbackText">厨房准备好了，等你开工。</span>
+          </div>
+          <div id="ingredientsGrid" class="ingredients-grid"></div>
+        </section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <button id="voiceBtn" type="button">语音引导：开</button>
+      <button id="narrationBtn" type="button">播报模式：关键</button>
+      <button id="parentModeBtn" type="button">护眼模式：标准</button>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

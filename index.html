@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>儿童小游戏中心</title>
+  <link rel="stylesheet" href="./src/home/styles.css" />
+</head>
+<body>
+  <main class="home-shell">
+    <section class="hero">
+      <h1>亲子小游戏</h1>
+      <p>适合日常陪孩子一起玩，点开就能开始。</p>
+      <div class="group-nav" aria-label="玩法分组导航">
+        <a href="#group-toddler">低龄陪玩</a>
+        <a href="#group-cognition">启蒙益智</a>
+        <a href="#group-life">生活探索</a>
+        <a href="#group-action">反应闯关</a>
+      </div>
+    </section>
+
+    <section class="group-sections" aria-label="按玩法推荐游戏分组">
+      <section class="age-group" id="group-toddler">
+        <div class="group-head">
+          <h2>低龄陪玩</h2>
+          <p>更适合 2 岁左右一起点一点、认一认，不用读字也能玩。</p>
+        </div>
+        <div class="menu-grid" id="groupGridToddler"></div>
+      </section>
+
+      <section class="age-group" id="group-cognition">
+        <div class="group-head">
+          <h2>启蒙益智</h2>
+          <p>适合练习识别、记忆、拼读、观察和轻量创作。</p>
+        </div>
+        <div class="menu-grid" id="groupGridCognition"></div>
+      </section>
+
+      <section class="age-group" id="group-life">
+        <div class="group-head">
+          <h2>生活探索</h2>
+          <p>围绕自然、职业和日常场景，边玩边建立观察力和生活感知。</p>
+        </div>
+        <div class="menu-grid" id="groupGridLife"></div>
+      </section>
+
+      <section class="age-group" id="group-action">
+        <div class="group-head">
+          <h2>反应闯关</h2>
+          <p>更强调节奏、反应、推理和连续闯关的刺激感。</p>
+        </div>
+        <div class="menu-grid" id="groupGridAction"></div>
+      </section>
+    </section>
+  </main>
+
+  <script type="module" src="./src/home/main.js"></script>
+</body>
+</html>

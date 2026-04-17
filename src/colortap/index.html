@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>颜色点点看 - 亲子小游戏</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="toddler-shell">
+    <header class="hero">
+      <h1>颜色点点看</h1>
+      <p>看到什么颜色，就点什么颜色。</p>
+      <p class="hero-note">慢慢点就行，点对会有小星星。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../shape/index.html">形状拍拍乐</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="prompt-card">
+        <strong>点这个颜色</strong>
+        <div id="targetBadge" class="target-badge" aria-live="polite"></div>
+        <p id="guideText" class="guide-text">点圆圆的大色块。</p>
+        <div class="control-row">
+          <button id="nextBtn" type="button">换一个</button>
+          <button id="resetBtn" type="button">重新来</button>
+        </div>
+      </section>
+
+      <section class="board-panel">
+        <div id="celebration" class="celebration" aria-live="polite"></div>
+        <div class="stats" aria-live="polite">
+          <div><span>星星</span><strong id="starsValue">0</strong></div>
+          <div><span>点按</span><strong id="tapsValue">0</strong></div>
+          <div><span>最好</span><strong id="bestValue">0</strong></div>
+        </div>
+        <div id="board" class="board" aria-label="颜色卡片区"></div>
+        <p id="feedback" class="feedback" aria-live="polite"></p>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <button id="statsToggleBtn" type="button">家长查看</button>
+      <button id="voiceBtn" type="button">语音引导：开</button>
+      <button id="parentModeBtn" type="button">护眼模式：标准</button>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

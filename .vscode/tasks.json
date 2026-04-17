@@ -1,0 +1,21 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "启动本地小游戏服务器",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				".\\scripts\\serve.ps1",
+				"-Port",
+				"8123"
+			],
+			"isBackground": true,
+			"group": "build"
+		}
+	]
+}

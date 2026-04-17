@@ -1,0 +1,31 @@
+{
+  "levels": [
+    {
+      "id": "easy",
+      "name": "慢慢连",
+      "width": 7,
+      "height": 7,
+      "colorCount": 4,
+      "timeLimitSec": 90,
+      "targetScore": 240
+    },
+    {
+      "id": "normal",
+      "name": "刚刚好",
+      "width": 8,
+      "height": 8,
+      "colorCount": 5,
+      "timeLimitSec": 80,
+      "targetScore": 360
+    },
+    {
+      "id": "hard",
+      "name": "挑战王",
+      "width": 8,
+      "height": 9,
+      "colorCount": 6,
+      "timeLimitSec": 72,
+      "targetScore": 480
+    }
+  ]
+}

@@ -1,0 +1,230 @@
+:root {
+  --bg: #eff0f7;
+  --panel: #fffef8;
+  --text: #312a24;
+  --line: #d9c8ad;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 10% 10%, #ffe1b4 0%, transparent 30%),
+    radial-gradient(circle at 88% 12%, #d7e7ff 0%, transparent 30%),
+    radial-gradient(circle at 46% 90%, #e0f3d3 0%, transparent 34%),
+    var(--bg);
+}
+
+.math-shell {
+  width: min(980px, 94vw);
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 16px 0 24px;
+  display: grid;
+  gap: 12px;
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.result {
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel);
+  box-shadow: 0 10px 24px rgba(69, 53, 31, 0.14);
+  padding: 14px;
+}
+
+.hero h1 { margin: 0; color: #d07832; }
+.hero p { margin: 8px 0 0; }
+.hero-links { margin-top: 8px; }
+.hero-links a { color: #497f49; font-weight: 700; }
+
+.play-stage {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 12px;
+}
+
+.selector-panel {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.stage-buttons {
+  display: grid;
+  gap: 8px;
+}
+
+.stage-btn {
+  border: 2px solid #cdb18a;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fffef8 0%, #f4ead6 100%);
+  min-height: 52px;
+  font-weight: 700;
+}
+
+.stage-btn.is-active {
+  border-color: #5b91d0;
+  background: linear-gradient(180deg, #eaf2ff 0%, #d3e3fa 100%);
+}
+
+.selector-actions,
+.support-strip,
+.answer-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+#reviewBtn {
+  border-color: #7b90ab;
+  background: linear-gradient(180deg, #c5d4e6 0%, #a8bed8 100%);
+}
+
+.review-panel {
+  border: 1px solid #d8c8ac;
+  border-radius: 12px;
+  background: #fff7e6;
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.review-panel p {
+  margin: 0;
+  color: #685845;
+  line-height: 1.45;
+}
+
+button {
+  border: 2px solid #c4ab83;
+  border-radius: 12px;
+  min-height: 48px;
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--text);
+  background: linear-gradient(180deg, #fffef6 0%, #f0e5ca 100%);
+}
+
+button.tap-flash { transform: scale(0.985); }
+
+#startBtn,
+#dailyBtn,
+.answer-btn {
+  border-color: #5587c4;
+  background: linear-gradient(180deg, #9fc3eb 0%, #79a7d8 100%);
+}
+
+.game-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.stats div {
+  border: 1px solid #e2d4b7;
+  border-radius: 10px;
+  background: #fff8ea;
+  padding: 8px;
+}
+
+.battle-card {
+  border: 1px solid #ddcfb4;
+  border-radius: 14px;
+  background: #fff8e7;
+  padding: 10px;
+  display: grid;
+  gap: 10px;
+}
+
+.battle-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.fighter {
+  border-radius: 12px;
+  padding: 10px;
+  background: #fffdf7;
+  display: grid;
+  gap: 4px;
+}
+
+.fighter.enemy {
+  background: #fff1e8;
+}
+
+.bar {
+  height: 14px;
+  border-radius: 999px;
+  background: #e4ebd7;
+  overflow: hidden;
+}
+
+.enemy-bar { background: #f3ddd5; }
+
+#playerHpFill,
+#enemyHpFill {
+  height: 100%;
+  width: 100%;
+}
+
+#playerHpFill { background: linear-gradient(90deg, #77c26d, #4d9b46); }
+#enemyHpFill { background: linear-gradient(90deg, #f3997d, #df6450); }
+
+.question-box {
+  border-radius: 12px;
+  background: #fffdf7;
+  padding: 12px;
+  display: grid;
+  gap: 6px;
+  text-align: center;
+}
+
+#questionText { font-size: 1.5rem; }
+#comboHint { color: #6c5e4e; }
+
+.answer-btn {
+  color: #19314a;
+}
+
+.progress-wrap { display: grid; gap: 6px; }
+.progress-bar { height: 12px; border-radius: 999px; background: #f1e6cd; overflow: hidden; }
+#progressFill { height: 100%; width: 0; background: linear-gradient(90deg, #f08b3e, #62a8e8); }
+
+.result h2 { margin: 0; }
+.result p { margin: 8px 0 0; }
+
+@media (max-width: 900px) {
+  .play-stage {
+    grid-template-columns: 1fr;
+  }
+
+  .selector-actions,
+  .support-strip,
+  .answer-options,
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .selector-actions,
+  .support-strip,
+  .answer-options,
+  .stats,
+  .battle-row {
+    grid-template-columns: 1fr;
+  }
+}

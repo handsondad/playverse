@@ -1,0 +1,339 @@
+:root {
+  --bg: #fff6ea;
+  --panel: rgba(255, 255, 255, 0.95);
+  --text: #4a3524;
+  --brand: #e38a48;
+  --shadow: rgba(108, 83, 57, 0.14);
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+  margin: 0;
+  touch-action: manipulation;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 10% 12%, rgba(255, 214, 156, 0.32), transparent 30%),
+    radial-gradient(circle at 88% 16%, rgba(255, 173, 148, 0.26), transparent 28%),
+    radial-gradient(circle at 50% 92%, rgba(191, 232, 191, 0.28), transparent 34%),
+    var(--bg);
+}
+
+button { font: inherit; }
+
+.chef-shell {
+  width: min(1120px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 18px 14px 34px;
+  display: grid;
+  gap: 14px;
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.support-strip,
+.result {
+  background: var(--panel);
+  border-radius: 24px;
+  box-shadow: 0 10px 20px var(--shadow);
+  border: 2px solid rgba(241, 202, 161, 0.4);
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.result {
+  padding: 16px;
+}
+
+.hero h1 {
+  margin: 0;
+  color: var(--brand);
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.hero p { margin: 8px 0 0; }
+.hero-links { margin-top: 10px; }
+.hero-links a { color: #ba6e34; font-weight: 700; }
+
+.play-stage {
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.level-buttons,
+.theme-buttons,
+.selector-actions,
+.stats,
+.ingredients-grid,
+.tray-slots,
+.support-strip {
+  display: grid;
+  gap: 10px;
+}
+
+.level-buttons {
+  margin-top: 10px;
+  grid-template-columns: 1fr;
+}
+
+.theme-buttons {
+  margin-top: 10px;
+  grid-template-columns: 1fr;
+}
+
+.level-btn,
+.theme-btn,
+.selector-actions button,
+.tray-actions button,
+.support-strip button {
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(108, 83, 57, 0.16);
+}
+
+.level-btn,
+.theme-btn,
+.selector-actions button,
+.tray-actions button {
+  background: linear-gradient(180deg, #ffffff 0%, #fff0de 100%);
+  color: #694930;
+}
+
+.level-btn.is-active {
+  background: linear-gradient(180deg, #f3a86a 0%, #df8747 100%);
+  color: #fff;
+}
+
+.theme-btn {
+  text-align: left;
+  padding: 10px 12px;
+}
+
+.theme-btn strong {
+  display: block;
+}
+
+.theme-btn small {
+  display: block;
+  margin-top: 2px;
+  color: #87674d;
+  font-size: 12px;
+}
+
+.theme-btn.is-active {
+  background: linear-gradient(180deg, #e58a49 0%, #d77735 100%);
+  color: #fff;
+}
+
+.theme-btn.is-active small {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.selector-actions { margin-top: 12px; }
+#selectorHint { margin: 10px 0 0; color: #7d624c; }
+
+.stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.stats div,
+.order-panel,
+.tray-panel,
+.ingredients-panel {
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fffefc 0%, #fff6ea 100%);
+}
+
+.stats div {
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.stats span {
+  display: block;
+  font-size: 13px;
+  color: #8a7158;
+}
+
+.stats strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 20px;
+}
+
+.order-panel,
+.tray-panel,
+.ingredients-panel {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid rgba(237, 200, 160, 0.4);
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.customer-row {
+  margin-top: 10px;
+}
+
+.customer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.customer-badge.waiting {
+  background: #eef3ff;
+  color: #5d6f98;
+  border-color: #d7def2;
+}
+
+.customer-badge.happy {
+  background: #e9f9ed;
+  color: #3f8a54;
+  border-color: #c5e8cf;
+}
+
+.customer-badge.excited {
+  background: #fff3dc;
+  color: #b9732f;
+  border-color: #f2d8ab;
+}
+
+.customer-badge.sad {
+  background: #fff0ee;
+  color: #b76856;
+  border-color: #f0ccc5;
+}
+
+#orderName {
+  margin: 12px 0 6px;
+  font-size: clamp(22px, 3vw, 30px);
+  color: #cc7334;
+}
+
+#orderNeed,
+#trayHint,
+#feedbackText {
+  margin: 8px 0 0;
+  color: #85654d;
+}
+
+.tray-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.tray-slots {
+  margin-top: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.tray-slot {
+  min-height: 86px;
+  border-radius: 18px;
+  border: 2px dashed rgba(233, 184, 133, 0.65);
+  background: #fffaf2;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 8px;
+}
+
+.tray-slot.drag-over {
+  border-style: solid;
+  border-color: rgba(223, 135, 71, 0.72);
+  background: #ffedd8;
+}
+
+.tray-slot.filled {
+  border-style: solid;
+  background: #fff3e2;
+}
+
+.tray-slot.filled {
+  cursor: grab;
+}
+
+.tray-slot.filled:active {
+  cursor: grabbing;
+}
+
+.slot-icon {
+  font-size: 28px;
+}
+
+.ingredients-grid {
+  margin-top: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.ingredient-btn {
+  min-height: 104px;
+  border: 0;
+  border-radius: 18px;
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(108, 83, 57, 0.12);
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.ingredient-btn.is-dragging {
+  opacity: 0.72;
+  transform: scale(0.96);
+}
+
+.ingredient-btn .icon {
+  font-size: 32px;
+}
+
+.ingredient-btn .name {
+  font-weight: 700;
+  color: #5c402c;
+}
+
+.ingredient-btn .count {
+  font-size: 12px;
+  color: #7c624b;
+}
+
+.support-strip {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 12px;
+}
+
+#voiceBtn { background: #5f9fd7; color: #fff; }
+#narrationBtn { background: #7d70d8; color: #fff; }
+#parentModeBtn { background: #6fa871; color: #fff; }
+
+@media (max-width: 900px) {
+  .play-stage { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ingredients-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .support-strip { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .tray-slots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

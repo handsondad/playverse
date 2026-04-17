@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>泡泡连线救援 - 儿童小游戏</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="bubble-shell">
+    <header class="hero">
+      <h1>泡泡连线救援</h1>
+      <p id="guideText">按住并划过相邻同色泡泡，松手即可消除并得分。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../doodle/index.html">涂鸦互动动画</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="selector-panel">
+        <strong>难度选择</strong>
+        <div id="levelButtons" class="level-buttons"></div>
+        <strong class="action-title">开始操作</strong>
+        <div class="selector-actions">
+          <button id="startBtn" type="button">开始救援</button>
+          <button id="retryBtn" type="button">再来一局</button>
+          <button id="dailyBtn" type="button">今日挑战</button>
+        </div>
+        <p id="selectorHint">先选难度再开始，至少连 2 个同色泡泡才能消除。</p>
+        <p id="specialHint" class="special-hint">特殊泡泡：💣炸弹炸开周围，🌈彩虹可连任意颜色，❄冻结会加时间。</p>
+
+        <section class="hint-panel">
+          <button id="hintBtn" type="button">给我提示</button>
+          <p id="hintText">不知道怎么连时点一下，会高亮可连的一组。</p>
+        </section>
+      </section>
+
+      <section class="game-panel">
+        <section class="stats" aria-live="polite">
+          <div><span>分数</span><strong id="scoreValue">0</strong></div>
+          <div><span>目标</span><strong id="targetValue">0</strong></div>
+          <div><span>时间</span><strong id="timeValue">0 秒</strong></div>
+          <div><span>连击</span><strong id="comboValue">0</strong></div>
+          <div><span>最高连击</span><strong id="bestComboValue">0</strong></div>
+          <div><span>历史最好</span><strong id="bestScoreValue">0</strong></div>
+        </section>
+
+        <section class="board-wrap">
+          <div class="board-stage">
+            <div id="board" class="board" aria-label="泡泡棋盘"></div>
+            <div id="effectsLayer" class="effects-layer" aria-hidden="true"></div>
+          </div>
+        </section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <button id="voiceBtn" type="button">语音引导：开</button>
+      <button id="narrationBtn" type="button">播报模式：关键</button>
+      <button id="parentModeBtn" type="button">护眼模式：标准</button>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

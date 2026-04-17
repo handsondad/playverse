@@ -1,0 +1,97 @@
+{
+  "id": "ocean-cleanup",
+  "title": "海底清洁队",
+  "description": "识别漂浮物类型，快速拖入对应回收网。",
+  "levels": [
+    {
+      "id": "easy",
+      "name": "海湾巡查",
+      "timeLimitSec": 85,
+      "targetCleanups": 16,
+      "spawnMs": 1500,
+      "lives": 4,
+      "weatherCycleMs": 9200,
+      "hazardChance": 0.12,
+      "treasureChance": 0.08,
+      "hazardLimitMs": 2700,
+      "netIds": ["plastic", "metal", "organic"]
+    },
+    {
+      "id": "normal",
+      "name": "礁区守护",
+      "timeLimitSec": 80,
+      "targetCleanups": 22,
+      "spawnMs": 1250,
+      "lives": 4,
+      "weatherCycleMs": 8600,
+      "hazardChance": 0.15,
+      "treasureChance": 0.1,
+      "hazardLimitMs": 2400,
+      "netIds": ["plastic", "metal", "organic", "glass"]
+    },
+    {
+      "id": "hard",
+      "name": "深海突击",
+      "timeLimitSec": 75,
+      "targetCleanups": 28,
+      "spawnMs": 1050,
+      "lives": 3,
+      "weatherCycleMs": 7800,
+      "hazardChance": 0.18,
+      "treasureChance": 0.12,
+      "hazardLimitMs": 2100,
+      "netIds": ["plastic", "metal", "organic", "glass", "paper"]
+    }
+  ],
+  "themes": [
+    {
+      "id": "bay",
+      "name": "晴蓝海湾",
+      "palette": {
+        "brand": "#3f8fce",
+        "bg": "#e7f4ff",
+        "panel": "rgba(255, 255, 255, 0.95)"
+      },
+      "weatherPool": [
+        { "id": "sunny", "name": "晴海" },
+        { "id": "cloudy", "name": "薄云" },
+        { "id": "windy", "name": "海风" }
+      ]
+    },
+    {
+      "id": "reef",
+      "name": "珊瑚礁区",
+      "palette": {
+        "brand": "#2f9b99",
+        "bg": "#e8fbf8",
+        "panel": "rgba(255, 255, 255, 0.95)"
+      },
+      "weatherPool": [
+        { "id": "sunny", "name": "晴海" },
+        { "id": "rainy", "name": "细雨" },
+        { "id": "cloudy", "name": "阴云" }
+      ]
+    },
+    {
+      "id": "night-tide",
+      "name": "夜潮海域",
+      "palette": {
+        "brand": "#5a7cc6",
+        "bg": "#eef1ff",
+        "panel": "rgba(255, 255, 255, 0.95)"
+      },
+      "weatherPool": [
+        { "id": "sunny", "name": "晴海" },
+        { "id": "aurora", "name": "极光" },
+        { "id": "windy", "name": "急潮风" }
+      ]
+    }
+  ],
+  "nets": [
+    { "id": "plastic", "name": "塑料网", "emoji": "🧴", "color": "#58a8e8", "freq": 520 },
+    { "id": "metal", "name": "金属网", "emoji": "🥫", "color": "#8b98a9", "freq": 590 },
+    { "id": "organic", "name": "有机网", "emoji": "🍃", "color": "#61b87a", "freq": 650 },
+    { "id": "glass", "name": "玻璃网", "emoji": "🍾", "color": "#7d91d6", "freq": 720 },
+    { "id": "paper", "name": "纸类网", "emoji": "📦", "color": "#d8aa62", "freq": 790 }
+  ]
+}

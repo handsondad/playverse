@@ -1,0 +1,73 @@
+{
+  "id": "star-observer",
+  "title": "星空观测员",
+  "description": "识别星图线索类型，快速送到对应观测台。",
+  "levels": [
+    {
+      "id": "easy",
+      "name": "黄昏观星",
+      "timeLimitSec": 85,
+      "targetSignals": 16,
+      "spawnMs": 1500,
+      "weatherCycleMs": 9300,
+      "urgentChance": 0.11,
+      "rareChance": 0.07,
+      "urgentLimitMs": 2700,
+      "lives": 4,
+      "stationIds": ["planet", "moon", "comet"]
+    },
+    {
+      "id": "normal",
+      "name": "夜空记录",
+      "timeLimitSec": 80,
+      "targetSignals": 22,
+      "spawnMs": 1250,
+      "weatherCycleMs": 8600,
+      "urgentChance": 0.14,
+      "rareChance": 0.09,
+      "urgentLimitMs": 2400,
+      "lives": 4,
+      "stationIds": ["planet", "moon", "comet", "cloud"]
+    },
+    {
+      "id": "hard",
+      "name": "银河巡测",
+      "timeLimitSec": 75,
+      "targetSignals": 28,
+      "spawnMs": 1050,
+      "weatherCycleMs": 7800,
+      "urgentChance": 0.17,
+      "rareChance": 0.11,
+      "urgentLimitMs": 2100,
+      "lives": 3,
+      "stationIds": ["planet", "moon", "comet", "cloud", "meteor"]
+    }
+  ],
+  "themes": [
+    {
+      "id": "deep-sky",
+      "name": "深空观测",
+      "palette": { "brand": "#6f7de3", "bg": "#eef0ff", "panel": "rgba(255, 255, 255, 0.95)" },
+      "weatherPool": [{ "id": "clear", "name": "晴夜" }, { "id": "cloudy", "name": "薄云" }, { "id": "aurora", "name": "极光" }]
+    },
+    {
+      "id": "moon-bay",
+      "name": "月湾夜航",
+      "palette": { "brand": "#5f93d8", "bg": "#ebf4ff", "panel": "rgba(255, 255, 255, 0.95)" },
+      "weatherPool": [{ "id": "clear", "name": "晴夜" }, { "id": "mist", "name": "薄雾" }, { "id": "meteor-shower", "name": "流星雨" }]
+    },
+    {
+      "id": "nebula",
+      "name": "星云秘境",
+      "palette": { "brand": "#8d70db", "bg": "#f2ecff", "panel": "rgba(255, 255, 255, 0.95)" },
+      "weatherPool": [{ "id": "clear", "name": "晴夜" }, { "id": "cloudy", "name": "高云" }, { "id": "aurora", "name": "极光" }]
+    }
+  ],
+  "stations": [
+    { "id": "planet", "name": "行星台", "emoji": "🪐", "color": "#7f89d9", "freq": 520 },
+    { "id": "moon", "name": "月相台", "emoji": "🌙", "color": "#7aa7d8", "freq": 590 },
+    { "id": "comet", "name": "彗尾台", "emoji": "☄️", "color": "#d48f72", "freq": 650 },
+    { "id": "cloud", "name": "星云台", "emoji": "☁️", "color": "#77b3bf", "freq": 720 },
+    { "id": "meteor", "name": "流星台", "emoji": "🌠", "color": "#d7b35c", "freq": 790 }
+  ]
+}

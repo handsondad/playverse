@@ -1,0 +1,280 @@
+:root {
+  --bg: #f5f1de;
+  --panel: #fffef7;
+  --text: #3a2f24;
+  --line: #dcc8a8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 10% 12%, #ffe7bc 0%, transparent 30%),
+    radial-gradient(circle at 88% 12%, #d8ecff 0%, transparent 30%),
+    radial-gradient(circle at 45% 92%, #e7f4d9 0%, transparent 35%),
+    var(--bg);
+}
+
+.spell-shell {
+  width: min(980px, 94vw);
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 16px 0 24px;
+  display: grid;
+  gap: 12px;
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.result {
+  border: 2px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel);
+  box-shadow: 0 10px 24px rgba(69, 53, 31, 0.14);
+  padding: 14px;
+}
+
+.hero h1 {
+  margin: 0;
+  color: #d07d31;
+}
+
+.hero p {
+  margin: 8px 0 0;
+}
+
+.hero-links {
+  margin-top: 8px;
+}
+
+.hero-links a {
+  color: #497f49;
+  font-weight: 700;
+}
+
+.play-stage {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 12px;
+}
+
+.selector-panel {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.theme-buttons {
+  display: grid;
+  gap: 8px;
+}
+
+.theme-btn {
+  border: 2px solid #ceb796;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fffef8 0%, #f5edd8 100%);
+  min-height: 50px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.theme-btn.is-active {
+  border-color: #679f58;
+  background: linear-gradient(180deg, #ebf9df 0%, #d9ecc9 100%);
+}
+
+.selector-actions,
+.support-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+button {
+  border: 2px solid #c4ab83;
+  border-radius: 12px;
+  min-height: 48px;
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--text);
+  background: linear-gradient(180deg, #fffef6 0%, #f0e5ca 100%);
+}
+
+button.tap-flash {
+  transform: scale(0.985);
+}
+
+#startBtn,
+#dailyBtn,
+#hintBtn {
+  border-color: #4d8942;
+  background: linear-gradient(180deg, #9ed67c 0%, #75b059 100%);
+  color: #17330d;
+}
+
+.game-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.stats div {
+  border: 1px solid #e2d4b7;
+  border-radius: 10px;
+  background: #fff8ea;
+  padding: 8px;
+  display: grid;
+  gap: 2px;
+}
+
+.stats span {
+  font-size: 0.84rem;
+  color: #6d5f48;
+}
+
+.question-card {
+  border: 1px solid #e0d0b0;
+  border-radius: 14px;
+  background: #fff8e6;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.question-head {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.question-tools {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+#phonicsText {
+  color: #6b5c48;
+  font-size: 0.92rem;
+}
+
+#listenBtn {
+  border-color: #5a91c7;
+  background: linear-gradient(180deg, #89bae9 0%, #679dd8 100%);
+  color: #17304a;
+}
+
+#questionIcon {
+  font-size: 1.8rem;
+}
+
+.answer-slots {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.answer-slot {
+  border: 2px dashed #ccb286;
+  border-radius: 10px;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  background: #fffdf7;
+}
+
+.answer-slot.mode-pinyin,
+.letter-btn.mode-pinyin {
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.answer-slot.filled {
+  border-style: solid;
+  background: #f5ebd4;
+}
+
+.answer-slot.fixed {
+  border-color: #5b9750;
+  background: #e7f5dc;
+}
+
+.letter-pool {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.letter-btn {
+  border: 2px solid #8caeda;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #dbeafc 0%, #bfd6f2 100%);
+  min-height: 52px;
+  font-size: 1.12rem;
+  font-weight: 800;
+}
+
+.progress-wrap {
+  display: grid;
+  gap: 6px;
+}
+
+.progress-bar {
+  height: 12px;
+  border-radius: 999px;
+  background: #f1e6cd;
+  overflow: hidden;
+}
+
+#progressFill {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #f08b3e, #62a8e8);
+}
+
+.result h2 {
+  margin: 0;
+}
+
+.result p {
+  margin: 8px 0 0;
+}
+
+@media (max-width: 900px) {
+  .play-stage {
+    grid-template-columns: 1fr;
+  }
+
+  .letter-pool,
+  .answer-slots,
+  .selector-actions,
+  .support-strip,
+  .stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .letter-pool,
+  .answer-slots,
+  .selector-actions,
+  .support-strip,
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}

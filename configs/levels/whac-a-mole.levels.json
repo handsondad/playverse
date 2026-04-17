@@ -1,0 +1,54 @@
+{
+  "levels": [
+    {
+      "id": "easy",
+      "name": "简单",
+      "durationSec": 45,
+      "spawnIntervalMs": 900,
+      "stayMs": 1200,
+      "maxActive": 1,
+      "targetRate": 0.85,
+      "hitScore": 10,
+      "wrongPenalty": 3,
+      "comboCurve": [
+        { "combo": 3, "multiplier": 1.2 },
+        { "combo": 6, "multiplier": 1.5 },
+        { "combo": 10, "multiplier": 2.0 }
+      ]
+    },
+    {
+      "id": "normal",
+      "name": "普通",
+      "durationSec": 60,
+      "spawnIntervalMs": 700,
+      "stayMs": 950,
+      "maxActive": 2,
+      "targetRate": 0.75,
+      "hitScore": 12,
+      "wrongPenalty": 4,
+      "comboCurve": [
+        { "combo": 3, "multiplier": 1.2 },
+        { "combo": 6, "multiplier": 1.5 },
+        { "combo": 10, "multiplier": 2.0 }
+      ]
+    },
+    {
+      "id": "hard",
+      "name": "困难",
+      "durationSec": 75,
+      "spawnIntervalMs": 560,
+      "stayMs": 780,
+      "maxActive": 3,
+      "targetRate": 0.68,
+      "hitScore": 14,
+      "wrongPenalty": 5,
+      "comboCurve": [
+        { "combo": 3, "multiplier": 1.2 },
+        { "combo": 6, "multiplier": 1.5 },
+        { "combo": 10, "multiplier": 2.0 }
+      ]
+    }
+  ],
+  "targetIcons": ["🐹", "🐰", "🦊", "🐸", "🐼", "🐧"],
+  "decoyIcons": ["💣", "🥦", "🪨", "🧊", "🌵", "🧽"]
+}

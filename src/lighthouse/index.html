@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>灯塔守护者 - 儿童小游戏</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="lighthouse-shell">
+    <header class="hero">
+      <h1>灯塔守护者</h1>
+      <p id="guideText">观察来船信号，切换相同灯光，护送船只安全进港。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../math/index.html">算术闯关</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="selector-panel">
+        <strong>守护难度</strong>
+        <div id="levelButtons" class="level-buttons"></div>
+        <strong class="action-title">开始操作</strong>
+        <div class="selector-actions">
+          <button id="startBtn" type="button">开始守护</button>
+          <button id="retryBtn" type="button">重新守护</button>
+          <button id="dailyBtn" type="button">今日航线</button>
+        </div>
+        <p id="selectorHint">先选难度，再开始值守。</p>
+      </section>
+
+      <section class="game-panel">
+        <section class="stats" aria-live="polite">
+          <div><span>进港</span><strong id="progressValue">0 / 0</strong></div>
+          <div><span>时间</span><strong id="timeValue">0 秒</strong></div>
+          <div><span>生命</span><strong id="livesValue">0</strong></div>
+          <div><span>分数</span><strong id="scoreValue">0</strong></div>
+          <div><span>连护</span><strong id="streakValue">0</strong></div>
+          <div><span>最佳</span><strong id="bestValue">0</strong></div>
+        </section>
+
+        <section class="harbor-panel">
+          <div class="panel-head">
+            <strong>港口雷达</strong>
+            <span id="weatherText">天气：晴朗</span>
+          </div>
+          <p id="feedbackText">准备就绪。</p>
+
+          <section class="active-boat" id="activeBoat">
+            <div class="boat-top">
+              <strong id="boatLabel">等待来船...</strong>
+              <span id="boatSignal">--</span>
+            </div>
+            <p id="boatType">等待下一艘来船</p>
+            <div class="progress-track">
+              <div id="boatProgressBar" class="progress-bar"></div>
+            </div>
+          </section>
+
+          <section class="beam-panel">
+            <strong>灯塔灯光</strong>
+            <div id="beamButtons" class="beam-buttons"></div>
+          </section>
+
+          <section class="queue-panel">
+            <strong>后续来船</strong>
+            <div id="queueList" class="queue-list"></div>
+          </section>
+        </section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <button id="voiceBtn" type="button">语音引导：开</button>
+      <button id="narrationBtn" type="button">播报模式：关键</button>
+      <button id="parentModeBtn" type="button">护眼模式：标准</button>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

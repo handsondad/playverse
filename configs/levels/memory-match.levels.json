@@ -1,0 +1,33 @@
+{
+  "levels": [
+    {
+      "id": "easy",
+      "name": "简单 3x4",
+      "rows": 3,
+      "cols": 4,
+      "timeLimit": 90,
+      "basePairScore": 20
+    },
+    {
+      "id": "normal",
+      "name": "普通 4x4",
+      "rows": 4,
+      "cols": 4,
+      "timeLimit": 120,
+      "basePairScore": 24
+    },
+    {
+      "id": "hard",
+      "name": "困难 4x5",
+      "rows": 4,
+      "cols": 5,
+      "timeLimit": 150,
+      "basePairScore": 28
+    }
+  ],
+  "themes": {
+    "animals": ["🐶", "🐱", "🐭", "🐹", "🐼", "🐰", "🦊", "🐸", "🐵", "🦁", "🐨", "🐮"],
+    "fruits": ["🍎", "🍌", "🍓", "🍇", "🍉", "🍒", "🍑", "🥝", "🍍", "🥥", "🍐", "🍊"],
+    "transport": ["🚗", "🚌", "🚲", "🚀", "🚂", "🚁", "🚜", "🚢", "🛵", "🚒", "✈️", "🚕"]
+  }
+}

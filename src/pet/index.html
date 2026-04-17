@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>小小宠物诊所 - 儿童小游戏</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="pet-shell">
+    <header class="hero">
+      <h1>小小宠物诊所</h1>
+      <p id="guideText">看清宠物症状，把它安排到对应诊室。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../farm/index.html">迷你农场小镇</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="selector-panel">
+        <strong>接诊难度</strong>
+        <div id="levelButtons" class="level-buttons"></div>
+        <strong class="theme-title">诊所主题</strong>
+        <div id="themeButtons" class="theme-buttons"></div>
+        <strong class="action-title">开始操作</strong>
+        <div class="selector-actions">
+          <button id="startBtn" type="button">开始接诊</button>
+          <button id="retryBtn" type="button">重新接诊</button>
+          <button id="dailyBtn" type="button">今日门诊</button>
+        </div>
+        <p id="selectorHint">先选难度，再开始接诊。</p>
+      </section>
+
+      <section class="game-panel">
+        <section class="stats" aria-live="polite">
+          <div><span>已接诊</span><strong id="progressValue">0 / 0</strong></div>
+          <div><span>时间</span><strong id="timeValue">0 秒</strong></div>
+          <div><span>耐心</span><strong id="livesValue">0</strong></div>
+          <div><span>分数</span><strong id="scoreValue">0</strong></div>
+          <div><span>连对</span><strong id="streakValue">0</strong></div>
+          <div><span>最佳</span><strong id="bestValue">0</strong></div>
+        </section>
+
+        <section class="clinic-panel">
+          <div class="panel-head">
+            <strong>当前病例</strong>
+            <span id="weatherText">天气：晴天</span>
+          </div>
+          <p id="feedbackText">准备好后开始接诊。</p>
+
+          <section class="active-case">
+            <div class="case-top">
+              <strong id="caseLabel">等待病例...</strong>
+              <span class="case-meta"><span id="caseTypeBadge" class="badge normal">待分诊</span><span id="caseEmoji">🤧</span></span>
+            </div>
+            <p id="caseHint">请选择对应症状的诊室。</p>
+          </section>
+
+          <section class="room-panel">
+            <strong>诊室区域</strong>
+            <div id="roomButtons" class="room-buttons"></div>
+          </section>
+
+          <section class="queue-panel">
+            <strong>后续病例</strong>
+            <div id="queueList" class="queue-list"></div>
+          </section>
+        </section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <button id="voiceBtn" type="button">语音引导：开</button>
+      <button id="narrationBtn" type="button">播报模式：关键</button>
+      <button id="parentModeBtn" type="button">护眼模式：标准</button>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

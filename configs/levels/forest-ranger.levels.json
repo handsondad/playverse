@@ -1,0 +1,73 @@
+{
+  "id": "forest-ranger",
+  "title": "森林巡护员",
+  "description": "识别森林线索类型，快速送到对应观察站。",
+  "levels": [
+    {
+      "id": "easy",
+      "name": "清晨巡林",
+      "timeLimitSec": 85,
+      "targetFindings": 16,
+      "spawnMs": 1500,
+      "weatherCycleMs": 9300,
+      "urgentChance": 0.11,
+      "rareChance": 0.07,
+      "urgentLimitMs": 2700,
+      "lives": 4,
+      "stationIds": ["track", "leaf", "sound"]
+    },
+    {
+      "id": "normal",
+      "name": "午后巡线",
+      "timeLimitSec": 80,
+      "targetFindings": 22,
+      "spawnMs": 1250,
+      "weatherCycleMs": 8600,
+      "urgentChance": 0.14,
+      "rareChance": 0.09,
+      "urgentLimitMs": 2400,
+      "lives": 4,
+      "stationIds": ["track", "leaf", "sound", "nest"]
+    },
+    {
+      "id": "hard",
+      "name": "暮色守望",
+      "timeLimitSec": 75,
+      "targetFindings": 28,
+      "spawnMs": 1050,
+      "weatherCycleMs": 7800,
+      "urgentChance": 0.17,
+      "rareChance": 0.11,
+      "urgentLimitMs": 2100,
+      "lives": 3,
+      "stationIds": ["track", "leaf", "sound", "nest", "water"]
+    }
+  ],
+  "themes": [
+    {
+      "id": "pine",
+      "name": "松林巡线",
+      "palette": { "brand": "#5f8e4f", "bg": "#eaf5e3", "panel": "rgba(255, 255, 255, 0.95)" },
+      "weatherPool": [{ "id": "sunny", "name": "晴光" }, { "id": "cloudy", "name": "薄云" }, { "id": "windy", "name": "林风" }]
+    },
+    {
+      "id": "bamboo",
+      "name": "竹林晨露",
+      "palette": { "brand": "#4c9b71", "bg": "#e8f8ef", "panel": "rgba(255, 255, 255, 0.95)" },
+      "weatherPool": [{ "id": "sunny", "name": "晴光" }, { "id": "mist", "name": "薄雾" }, { "id": "rainy", "name": "细雨" }]
+    },
+    {
+      "id": "maple",
+      "name": "枫林暮巡",
+      "palette": { "brand": "#b36b4a", "bg": "#fbf0e8", "panel": "rgba(255, 255, 255, 0.95)" },
+      "weatherPool": [{ "id": "sunny", "name": "晴光" }, { "id": "cloudy", "name": "高云" }, { "id": "windy", "name": "秋风" }]
+    }
+  ],
+  "stations": [
+    { "id": "track", "name": "足迹站", "emoji": "🐾", "color": "#7ea46a", "freq": 520 },
+    { "id": "leaf", "name": "叶片站", "emoji": "🍃", "color": "#6fbf8f", "freq": 590 },
+    { "id": "sound", "name": "声纹站", "emoji": "🔊", "color": "#6a96d8", "freq": 650 },
+    { "id": "nest", "name": "巢穴站", "emoji": "🪺", "color": "#c99a61", "freq": 720 },
+    { "id": "water", "name": "水迹站", "emoji": "💧", "color": "#66b4d7", "freq": 790 }
+  ]
+}

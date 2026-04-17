@@ -1,0 +1,380 @@
+:root {
+  --bg: #e7f4ff;
+  --panel: rgba(255, 255, 255, 0.95);
+  --text: #2f3e55;
+  --brand: #3f8fce;
+  --shadow: rgba(80, 110, 148, 0.18);
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+  margin: 0;
+  touch-action: manipulation;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 8% 13%, rgba(132, 190, 240, 0.3), transparent 34%),
+    radial-gradient(circle at 86% 12%, rgba(120, 220, 205, 0.28), transparent 30%),
+    radial-gradient(circle at 48% 92%, rgba(151, 185, 255, 0.24), transparent 34%),
+    var(--bg);
+}
+
+button { font: inherit; }
+
+.ocean-shell {
+  width: min(1120px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 18px 14px 34px;
+  display: grid;
+  gap: 14px;
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.support-strip,
+.result {
+  background: var(--panel);
+  border-radius: 24px;
+  box-shadow: 0 10px 20px var(--shadow);
+  border: 2px solid rgba(161, 203, 232, 0.42);
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.result { padding: 16px; }
+
+.hero h1 {
+  margin: 0;
+  color: var(--brand);
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.hero p { margin: 8px 0 0; }
+.hero-links { margin-top: 10px; }
+.hero-links a { color: #3f79b8; font-weight: 700; }
+
+.play-stage {
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.level-buttons,
+.selector-actions,
+.stats,
+.net-buttons,
+.queue-list,
+.support-strip {
+  display: grid;
+  gap: 10px;
+}
+
+.level-buttons {
+  margin-top: 10px;
+  grid-template-columns: 1fr;
+}
+
+.theme-title {
+  margin-top: 8px;
+  display: block;
+}
+
+.action-title {
+  margin-top: 12px;
+  display: block;
+}
+
+.theme-buttons {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.theme-btn {
+  border: 2px solid #c9d8ea;
+  border-radius: 999px;
+  background: #fff;
+  color: #344f73;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.theme-btn:hover,
+.theme-btn:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(28, 42, 70, 0.12);
+  outline: none;
+}
+
+.theme-btn.is-active {
+  box-shadow: 0 8px 20px rgba(58, 86, 130, 0.2);
+}
+
+.level-btn,
+.support-strip button,
+.net-btn {
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(96, 110, 145, 0.16);
+}
+
+.level-btn,
+.net-btn {
+  background: linear-gradient(180deg, #ffffff 0%, #eaf5ff 100%);
+  color: #3d4e6e;
+}
+
+.level-btn.is-active {
+  background: linear-gradient(180deg, #6fb2e6 0%, #458fcb 100%);
+  color: #fff;
+}
+
+.selector-actions {
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #f2f8ff 0%, #e8f2ff 100%);
+  border: 1px solid rgba(151, 188, 233, 0.45);
+}
+
+.selector-actions button {
+  min-height: 50px;
+  border: 0;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: 0 6px 0 rgba(64, 95, 146, 0.2);
+}
+
+.selector-actions button:first-child {
+  background: linear-gradient(180deg, #4f98e2 0%, #3479c8 100%);
+}
+
+.selector-actions button:nth-child(2) {
+  background: linear-gradient(180deg, #6f8ed9 0%, #4f6fc2 100%);
+}
+
+.selector-actions button:nth-child(3) {
+  background: linear-gradient(180deg, #57a8b5 0%, #3e8f9d 100%);
+}
+
+.selector-actions button:active {
+  transform: translateY(1px);
+}
+
+#selectorHint { margin: 10px 0 0; color: #617da0; }
+
+.stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.stats div {
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #edf6ff 100%);
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.stats span {
+  display: block;
+  font-size: 13px;
+  color: #6983a4;
+}
+
+.stats strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 20px;
+}
+
+.cleanup-panel {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(162, 196, 226, 0.44);
+  background: linear-gradient(180deg, #fcfeff 0%, #eef7ff 100%);
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+#feedbackText {
+  color: #49698f;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+#weatherText {
+  color: #49698f;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.active-trash {
+  margin-top: 12px;
+  border-radius: 14px;
+  padding: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #ecf6ff 100%);
+  border: 1px dashed rgba(130, 172, 212, 0.42);
+}
+
+.trash-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.trash-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge {
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.badge.normal { background: #7d92c7; }
+.badge.hazard { background: #de724f; }
+.badge.treasure { background: #9d7a33; }
+
+#trashEmoji { font-size: 28px; }
+#trashHint { margin: 8px 0 0; color: #627f9e; }
+
+.net-panel,
+.queue-panel {
+  margin-top: 12px;
+}
+
+.net-buttons {
+  margin-top: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.net-btn {
+  min-height: 84px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.net-btn .emoji { font-size: 26px; }
+.net-btn .name { font-size: 13px; }
+
+.net-btn.is-active {
+  transform: scale(1.03);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.95), 0 8px 16px rgba(86, 115, 168, 0.22);
+}
+
+.queue-list {
+  margin-top: 8px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.queue-item {
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid rgba(158, 188, 220, 0.42);
+  background: linear-gradient(180deg, #ffffff 0%, #edf6ff 100%);
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+}
+
+.queue-item.hazard {
+  border-color: rgba(222, 114, 79, 0.6);
+  background: linear-gradient(180deg, #fff3ed 0%, #ffdccc 100%);
+}
+
+.queue-item.treasure {
+  border-color: rgba(157, 122, 51, 0.62);
+  background: linear-gradient(180deg, #fff9ec 0%, #f9e7ae 100%);
+}
+
+.queue-item.empty {
+  opacity: 0.45;
+  font-size: 18px;
+}
+
+.support-strip {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 12px;
+}
+
+#voiceBtn { background: #4f99c8; color: #fff; }
+#narrationBtn { background: #6f84d8; color: #fff; }
+#parentModeBtn { background: #5ea48e; color: #fff; }
+
+.ocean-shell.weather-sunny {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(146, 206, 248, 0.3), transparent 40%),
+    linear-gradient(180deg, #eef8ff 0%, #e3f2ff 100%);
+}
+
+.ocean-shell.weather-cloudy {
+  background:
+    radial-gradient(circle at 25% 15%, rgba(183, 198, 220, 0.3), transparent 42%),
+    linear-gradient(180deg, #eff4fb 0%, #e2ebf8 100%);
+}
+
+.ocean-shell.weather-rainy {
+  background:
+    linear-gradient(120deg, rgba(99, 125, 170, 0.08) 0%, rgba(90, 117, 166, 0.16) 50%, rgba(99, 125, 170, 0.08) 100%),
+    linear-gradient(180deg, #eaf1fb 0%, #d8e4f3 100%);
+}
+
+.ocean-shell.weather-windy {
+  background:
+    linear-gradient(140deg, rgba(170, 224, 225, 0.22) 10%, transparent 38%),
+    linear-gradient(180deg, #ecfbf9 0%, #def5f2 100%);
+}
+
+.ocean-shell.weather-aurora {
+  background:
+    radial-gradient(circle at 84% 14%, rgba(152, 169, 245, 0.2), transparent 38%),
+    radial-gradient(circle at 12% 80%, rgba(156, 225, 199, 0.2), transparent 42%),
+    linear-gradient(180deg, #eff2ff 0%, #e4eaff 100%);
+}
+
+.ocean-shell.weather-rainy .cleanup-panel {
+  border-color: #9eb4d8;
+}
+
+.ocean-shell.weather-aurora .cleanup-panel {
+  border-color: #9db1e2;
+}
+
+@media (max-width: 920px) {
+  .play-stage { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .queue-list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .support-strip { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .net-buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .queue-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

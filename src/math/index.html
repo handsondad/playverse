@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>算术闯关 - 儿童小游戏</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="math-shell">
+    <header class="hero">
+      <h1>算术闯关</h1>
+      <p id="guideText">先选章节，再开始战斗。答对可以攻击怪物，连击还能触发技能。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../maze/index.html">迷宫解谜</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="selector-panel">
+        <strong>章节</strong>
+        <div id="stageButtons" class="stage-buttons"></div>
+        <div class="selector-actions">
+          <button id="startBtn">开始冒险</button>
+          <button id="retryBtn">再来一局</button>
+          <button id="dailyBtn">今日挑战</button>
+          <button id="reviewBtn">复习错题</button>
+        </div>
+        <p id="selectorHint">建议从加法新手开始。</p>
+        <section class="review-panel">
+          <strong>错题记录</strong>
+          <p id="reviewSummary">还没有错题，先去闯关吧。</p>
+        </section>
+      </section>
+
+      <section class="game-panel">
+        <div class="stats">
+          <div><span>分数</span><strong id="scoreValue">0</strong></div>
+          <div><span>连击</span><strong id="comboValue">0</strong></div>
+          <div><span>答对</span><strong id="correctValue">0</strong></div>
+          <div><span>答错</span><strong id="wrongValue">0</strong></div>
+        </div>
+
+        <section class="battle-card">
+          <div class="battle-row">
+            <div class="fighter ally">
+              <strong>小勇士</strong>
+              <span id="playerHpText">生命 3/3</span>
+            </div>
+            <div class="fighter enemy">
+              <strong>算术怪</strong>
+              <span id="enemyHpText">生命 60/60</span>
+            </div>
+          </div>
+          <div class="battle-bars">
+            <div class="bar"><div id="playerHpFill"></div></div>
+            <div class="bar enemy-bar"><div id="enemyHpFill"></div></div>
+          </div>
+          <div class="question-box">
+            <strong id="questionText">点击开始冒险</strong>
+            <span id="comboHint">连续答对可以触发技能伤害</span>
+          </div>
+        </section>
+
+        <section id="answerOptions" class="answer-options"></section>
+
+        <section class="progress-wrap">
+          <span id="progressText">进度 0%</span>
+          <div class="progress-bar"><div id="progressFill"></div></div>
+        </section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <button id="voiceBtn">语音引导：开</button>
+      <button id="narrationBtn">播报模式：关键</button>
+      <button id="parentModeBtn">护眼模式：标准</button>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+    </section>
+  </main>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>颜色形状分类 - 儿童小游戏</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="sort-shell">
+    <header class="hero">
+      <h1>颜色形状分类</h1>
+      <p id="guideText">先选模式和难度，再开始。先点物品，再点分类盒。</p>
+      <p id="playDurationHint" class="hero-note">建议每次游玩 6-8 分钟，完成后休息眼睛。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../memory/index.html">翻牌配对</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="selector-panel" aria-label="模式和难度">
+        <strong>分类模式</strong>
+        <div class="mode-buttons">
+          <button id="modeColorBtn" data-mode-id="color">颜色分类</button>
+          <button id="modeShapeBtn" data-mode-id="shape">形状分类</button>
+          <button id="modeMixedBtn" data-mode-id="mixed">混合分类</button>
+        </div>
+        <strong>难度</strong>
+        <div class="level-buttons">
+          <button id="levelEasyBtn" data-level-id="easy">慢慢分</button>
+          <button id="levelNormalBtn" data-level-id="normal">刚刚好</button>
+          <button id="levelHardBtn" data-level-id="hard">小专家</button>
+        </div>
+        <p id="selectorHint">先点模式和难度，再开始游戏。</p>
+      </section>
+
+      <section class="game-panel">
+        <div class="primary-actions" aria-label="核心操作">
+          <button id="startBtn">开始游戏</button>
+          <button id="retryBtn">再来一局</button>
+          <button id="hintBtn">提示一下</button>
+        </div>
+
+        <section class="stats" aria-live="polite">
+          <div><span>时间</span><strong id="timeValue">0</strong></div>
+          <div><span>分数</span><strong id="scoreValue">0</strong></div>
+          <div><span>正确</span><strong id="correctValue">0</strong></div>
+          <div><span>错误</span><strong id="wrongValue">0</strong></div>
+          <div><span>剩余</span><strong id="remainingValue">0</strong></div>
+          <div><span>最好</span><strong id="bestValue">--</strong></div>
+        </section>
+
+        <section id="board" class="board" aria-label="分类游戏区"></section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <section class="secondary-actions" aria-label="附加功能">
+        <strong>更多功能</strong>
+        <div class="secondary-actions-grid">
+          <button id="dailyBtn">今日挑战</button>
+          <button id="voiceBtn">语音引导：开</button>
+          <button id="narrationBtn">播报模式：关键</button>
+          <button id="parentModeBtn">护眼模式：标准</button>
+        </div>
+      </section>
+
+      <section class="meta-stats muted-panel" aria-live="polite">
+        <strong>数据统计</strong>
+        <div class="meta-grid">
+          <div><span>总局数</span><strong id="metaPlays">0</strong></div>
+          <div><span>胜率</span><strong id="metaWinRate">0%</strong></div>
+          <div><span>平均正确</span><strong id="metaAvgCorrect">0.0</strong></div>
+          <div><span>平均错误</span><strong id="metaAvgWrong">0.0</strong></div>
+          <div><span>最佳连胜</span><strong id="metaBestStreak">0</strong></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

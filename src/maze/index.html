@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>迷宫解谜 - 儿童小游戏</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="maze-shell">
+    <header class="hero">
+      <h1>迷宫解谜</h1>
+      <p id="guideText">先选关卡，再开始出发。收集钥匙、避开陷阱，找到出口就过关。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../rhythm/index.html">节奏点点乐</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="selector-panel">
+        <strong>迷宫关卡</strong>
+        <div id="levelButtons" class="level-buttons"></div>
+        <strong class="action-title">开始操作</strong>
+        <div class="selector-actions">
+          <button id="startBtn" type="button">开始挑战</button>
+          <button id="retryBtn" type="button">重新开始</button>
+          <button id="dailyBtn" type="button">今日迷宫</button>
+        </div>
+        <p id="selectorHint">建议从第一关开始熟悉移动规则。</p>
+        <section class="level-note">
+          <strong>当前目标</strong>
+          <p id="levelMeta">步数、时间和提示会显示在这里。</p>
+        </section>
+      </section>
+
+      <section class="game-panel">
+        <div class="stats">
+          <div><span>步数</span><strong id="stepsValue">0</strong></div>
+          <div><span>时间</span><strong id="timeValue">0 秒</strong></div>
+          <div><span>钥匙</span><strong id="keysValue">0 / 0</strong></div>
+          <div><span>陷阱</span><strong id="trapValue">0</strong></div>
+        </div>
+
+        <section class="hint-panel">
+          <button id="hintBtn" type="button">方向提示</button>
+          <p id="hintText">卡住时可以点一下，系统会告诉你下一步更适合往哪走。</p>
+        </section>
+
+        <section class="maze-board-wrap">
+          <div id="mazeBoard" class="maze-board" aria-label="迷宫地图"></div>
+          <div class="legend">
+            <span><i class="tile player"></i>你</span>
+            <span><i class="tile key"></i>钥匙</span>
+            <span><i class="tile door"></i>门</span>
+            <span><i class="tile trap"></i>陷阱</span>
+            <span><i class="tile exit"></i>出口</span>
+            <span><i class="tile switch"></i>机关</span>
+            <span><i class="tile bridge"></i>桥</span>
+            <span><i class="tile portal"></i>传送点</span>
+          </div>
+        </section>
+
+        <section class="controls" aria-label="方向控制">
+          <button id="moveUpBtn" type="button">向上</button>
+          <div class="control-row">
+            <button id="moveLeftBtn" type="button">向左</button>
+            <button id="moveDownBtn" type="button">向下</button>
+            <button id="moveRightBtn" type="button">向右</button>
+          </div>
+        </section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <button id="voiceBtn" type="button">语音引导：开</button>
+      <button id="narrationBtn" type="button">播报模式：关键</button>
+      <button id="parentModeBtn" type="button">护眼模式：标准</button>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

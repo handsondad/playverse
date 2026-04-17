@@ -1,0 +1,493 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #eef5da;
+  --panel: #fffdf3;
+  --panel-strong: #fff6df;
+  --text: #3c2f22;
+  --soft: #6e5d46;
+  --line: #dcc79f;
+  --shadow: rgba(69, 53, 31, 0.16);
+}
+
+html,
+body {
+  margin: 0;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 10% 10%, #fff3cc 0%, transparent 32%),
+    radial-gradient(circle at 88% 12%, #daefd2 0%, transparent 30%),
+    radial-gradient(circle at 42% 92%, #f6e9c9 0%, transparent 36%),
+    var(--bg);
+}
+
+.farm-shell {
+  width: min(1080px, 94vw);
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 16px 0 24px;
+  display: grid;
+  gap: 12px;
+}
+
+.hero,
+.seed-panel,
+.game-panel,
+.secondary-actions,
+.meta-stats,
+.result {
+  border-radius: 18px;
+  border: 2px solid var(--line);
+  box-shadow: 0 10px 24px var(--shadow);
+}
+
+.hero {
+  background: linear-gradient(180deg, #fffdf6 0%, #fff4d7 100%);
+  padding: 16px;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 3.6vw, 2.2rem);
+  color: #cc7a2f;
+}
+
+.hero p {
+  margin: 8px 0 0;
+}
+
+.hero-note {
+  color: var(--soft);
+}
+
+.weather-strip {
+  margin-top: 10px;
+  border: 1px solid #e4d2ad;
+  background: #fff7e3;
+  border-radius: 12px;
+  padding: 8px 10px;
+  display: grid;
+  gap: 2px;
+}
+
+.weather-strip strong {
+  color: #4c7a3a;
+}
+
+.weather-strip span {
+  color: #66563f;
+  font-size: 0.92rem;
+}
+
+.hero-links {
+  margin-top: 10px;
+}
+
+.hero-links a {
+  color: #497f49;
+  font-weight: 700;
+}
+
+.play-stage {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 12px;
+}
+
+.seed-panel {
+  background: var(--panel);
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.seed-buttons {
+  display: grid;
+  gap: 8px;
+}
+
+.seed-button {
+  border: 2px solid #d4c09b;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #fffef9 0%, #f6efd9 100%);
+  padding: 10px;
+  text-align: left;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.seed-button::before {
+  content: "";
+  width: 20px;
+  height: 6px;
+  display: block;
+  border-radius: 999px;
+  margin-bottom: 6px;
+  background: var(--seed-color, #ceb58a);
+}
+
+.seed-button.is-active {
+  border-color: #5d8f49;
+  background: linear-gradient(180deg, #ecf8df 0%, #d9edc8 100%);
+}
+
+.seed-button small {
+  display: block;
+  margin-top: 2px;
+  color: #725f46;
+}
+
+#seedHint {
+  margin: 0;
+  color: #63533f;
+}
+
+.game-panel {
+  background: var(--panel);
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.primary-actions,
+.secondary-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+button {
+  border: 2px solid #c9af82;
+  border-radius: 12px;
+  min-height: 48px;
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text);
+  background: linear-gradient(180deg, #fffef7 0%, #f0e5cb 100%);
+  transition: transform 0.12s ease, box-shadow 0.2s ease;
+}
+
+button:hover:not(:disabled),
+button:focus-visible:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 12px rgba(66, 49, 29, 0.2);
+}
+
+button.tap-flash {
+  transform: translateY(1px) scale(0.985);
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+#startBtn,
+#deliverBtn,
+#dailyBtn {
+  border-color: #4e8442;
+  color: #17320f;
+  background: linear-gradient(180deg, #9ad577 0%, #72ae55 100%);
+}
+
+#retryBtn,
+#harvestAllBtn {
+  border-color: #ba8f43;
+  background: linear-gradient(180deg, #f8de9c 0%, #e7b96a 100%);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.stats div {
+  border: 1px solid #e3d4b7;
+  border-radius: 10px;
+  background: #fff8e9;
+  padding: 8px;
+  display: grid;
+  gap: 2px;
+}
+
+.stats span {
+  font-size: 0.84rem;
+  color: #6e5c45;
+}
+
+.stats strong {
+  font-size: 1.15rem;
+}
+
+.order-panel {
+  border: 1px solid #e3d4b3;
+  border-radius: 12px;
+  padding: 10px;
+  background: var(--panel-strong);
+}
+
+.order-panel p {
+  margin: 6px 0 0;
+  color: #5f4d39;
+  line-height: 1.45;
+}
+
+.mission-panel {
+  border: 1px solid #dcc8a2;
+  border-radius: 12px;
+  padding: 10px;
+  background: linear-gradient(180deg, #fff8de 0%, #fef0cd 100%);
+  display: grid;
+  gap: 6px;
+}
+
+.mission-panel p {
+  margin: 0;
+  color: #5d4935;
+  line-height: 1.4;
+}
+
+.mission-panel span {
+  color: #6f5638;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.tutorial-panel {
+  border: 1px solid #e1d1af;
+  border-radius: 12px;
+  padding: 10px;
+  background: #fff8e8;
+  display: grid;
+  gap: 8px;
+}
+
+.tutorial-steps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.tutorial-step {
+  text-align: center;
+  font-size: 0.84rem;
+  border: 1px solid #ddcca8;
+  border-radius: 999px;
+  background: #fffdf4;
+  color: #77644a;
+  padding: 6px 8px;
+}
+
+.tutorial-step.is-active {
+  color: #204516;
+  border-color: #6ea456;
+  background: linear-gradient(180deg, #ecf8de 0%, #d7eec6 100%);
+  animation: step-pulse 1s ease-in-out infinite;
+}
+
+@keyframes step-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(126, 179, 94, 0.34);
+  }
+
+  70% {
+    box-shadow: 0 0 0 6px rgba(126, 179, 94, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(126, 179, 94, 0);
+  }
+}
+
+.field {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.plot small {
+  font-size: 0.78rem;
+  color: #6b5a44;
+}
+
+.plot {
+  min-height: 92px;
+  border-radius: 12px;
+  border: 2px solid #c8ac80;
+  background: linear-gradient(180deg, #f0dbb7 0%, #d8b58a 100%);
+  color: var(--text);
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+  gap: 4px;
+  padding: 6px;
+}
+
+.plot.growing {
+  border-color: #719752;
+  background: linear-gradient(180deg, #daeec8 0%, #b8d49a 100%);
+}
+
+.plot.ready {
+  border-color: #4d7f3f;
+  background: linear-gradient(180deg, #c7eca8 0%, #8ec369 100%);
+  animation: ready-glow 1.3s ease-in-out infinite;
+}
+
+@keyframes ready-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(138, 197, 93, 0.38);
+  }
+
+  70% {
+    box-shadow: 0 0 0 8px rgba(138, 197, 93, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(138, 197, 93, 0);
+  }
+}
+
+.support-strip {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 12px;
+}
+
+.processor-panel {
+  border: 1px solid #dfcfad;
+  border-radius: 12px;
+  background: #fff6e2;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+}
+
+.processor-panel p {
+  margin: 0;
+  color: #5b4a37;
+}
+
+.recipe-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.recipe-btn {
+  border: 2px solid #b88e45;
+  background: linear-gradient(180deg, #ffe6b2 0%, #efc675 100%);
+  color: #3f2f20;
+  min-height: 60px;
+  text-align: left;
+  padding: 8px;
+}
+
+.recipe-btn strong,
+.recipe-btn small {
+  display: block;
+}
+
+.recipe-btn small {
+  margin-top: 2px;
+  color: #694f2f;
+}
+
+.secondary-actions,
+.meta-stats {
+  padding: 14px;
+  background: var(--panel);
+}
+
+.secondary-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.meta-grid {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.meta-grid > div {
+  border: 1px solid #e2d5b7;
+  border-radius: 10px;
+  background: #fff8e9;
+  padding: 8px;
+  text-align: center;
+  display: grid;
+  gap: 2px;
+}
+
+.meta-grid span {
+  color: #6d5d47;
+  font-size: 0.82rem;
+}
+
+.meta-grid strong {
+  font-size: 1.05rem;
+}
+
+.result {
+  padding: 14px;
+  background: linear-gradient(180deg, #fffdf5 0%, #fff4dd 100%);
+}
+
+.result h2 {
+  margin: 0;
+}
+
+.result p {
+  margin: 8px 0 0;
+}
+
+.result h2.hint {
+  color: #527f42;
+}
+
+@media (max-width: 920px) {
+  .play-stage,
+  .support-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .seed-buttons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .recipe-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .meta-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .tutorial-steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .farm-shell {
+    width: min(96vw, 640px);
+  }
+
+  .primary-actions,
+  .secondary-actions-grid,
+  .stats,
+  .seed-buttons,
+  .field,
+  .recipe-buttons,
+  .tutorial-steps,
+  .meta-grid {
+    grid-template-columns: 1fr;
+  }
+}

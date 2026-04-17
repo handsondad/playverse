@@ -1,0 +1,380 @@
+:root {
+  --bg: #fff2f5;
+  --panel: rgba(255, 255, 255, 0.95);
+  --text: #4a3451;
+  --brand: #d26b8f;
+  --shadow: rgba(124, 93, 132, 0.18);
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+  margin: 0;
+  touch-action: manipulation;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 8% 13%, rgba(255, 194, 215, 0.3), transparent 34%),
+    radial-gradient(circle at 86% 12%, rgba(195, 225, 255, 0.28), transparent 30%),
+    radial-gradient(circle at 48% 92%, rgba(238, 205, 255, 0.24), transparent 34%),
+    var(--bg);
+}
+
+button { font: inherit; }
+
+.pet-shell {
+  width: min(1120px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 18px 14px 34px;
+  display: grid;
+  gap: 14px;
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.support-strip,
+.result {
+  background: var(--panel);
+  border-radius: 24px;
+  box-shadow: 0 10px 20px var(--shadow);
+  border: 2px solid rgba(232, 176, 204, 0.42);
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.result { padding: 16px; }
+
+.hero h1 {
+  margin: 0;
+  color: var(--brand);
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.hero p { margin: 8px 0 0; }
+.hero-links { margin-top: 10px; }
+.hero-links a { color: #b24b72; font-weight: 700; }
+
+.play-stage {
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.level-buttons,
+.selector-actions,
+.stats,
+.room-buttons,
+.queue-list,
+.support-strip {
+  display: grid;
+  gap: 10px;
+}
+
+.level-buttons {
+  margin-top: 10px;
+  grid-template-columns: 1fr;
+}
+
+.theme-title {
+  margin-top: 8px;
+  display: block;
+}
+
+.action-title {
+  margin-top: 12px;
+  display: block;
+}
+
+.theme-buttons {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.theme-btn {
+  border: 2px solid #dfc2d3;
+  border-radius: 999px;
+  background: #fff;
+  color: #5c456d;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.theme-btn:hover,
+.theme-btn:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(28, 42, 70, 0.12);
+  outline: none;
+}
+
+.theme-btn.is-active {
+  box-shadow: 0 8px 20px rgba(119, 82, 137, 0.2);
+}
+
+.level-btn,
+.support-strip button,
+.room-btn {
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(123, 92, 134, 0.16);
+}
+
+.level-btn,
+.room-btn {
+  background: linear-gradient(180deg, #ffffff 0%, #fff1f7 100%);
+  color: #604571;
+}
+
+.level-btn.is-active {
+  background: linear-gradient(180deg, #e888ad 0%, #cd648d 100%);
+  color: #fff;
+}
+
+.selector-actions {
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #fff6fb 0%, #fbeef7 100%);
+  border: 1px solid rgba(219, 176, 201, 0.45);
+}
+
+.selector-actions button {
+  min-height: 50px;
+  border: 0;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: 0 6px 0 rgba(132, 82, 111, 0.2);
+}
+
+.selector-actions button:first-child {
+  background: linear-gradient(180deg, #d97a9f 0%, #bf6288 100%);
+}
+
+.selector-actions button:nth-child(2) {
+  background: linear-gradient(180deg, #7e95dd 0%, #6078c7 100%);
+}
+
+.selector-actions button:nth-child(3) {
+  background: linear-gradient(180deg, #68b9ac 0%, #4c9d92 100%);
+}
+
+.selector-actions button:active {
+  transform: translateY(1px);
+}
+
+#selectorHint { margin: 10px 0 0; color: #866694; }
+
+.stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.stats div {
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #fff2f8 100%);
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.stats span {
+  display: block;
+  font-size: 13px;
+  color: #8a7298;
+}
+
+.stats strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 20px;
+}
+
+.clinic-panel {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(219, 176, 201, 0.44);
+  background: linear-gradient(180deg, #fffdfd 0%, #fff1f7 100%);
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+#feedbackText {
+  color: #735984;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+#weatherText {
+  color: #735984;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.active-case {
+  margin-top: 12px;
+  border-radius: 14px;
+  padding: 12px;
+  background: linear-gradient(180deg, #ffffff 0%, #fff3f8 100%);
+  border: 1px dashed rgba(213, 162, 192, 0.42);
+}
+
+.case-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.case-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge {
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.badge.normal { background: #7d92c7; }
+.badge.emergency { background: #e37e54; }
+.badge.vip { background: #9d7a33; }
+
+#caseEmoji { font-size: 28px; }
+#caseHint { margin: 8px 0 0; color: #7a638e; }
+
+.room-panel,
+.queue-panel {
+  margin-top: 12px;
+}
+
+.room-buttons {
+  margin-top: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.room-btn {
+  min-height: 84px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.room-btn .emoji { font-size: 26px; }
+.room-btn .name { font-size: 13px; }
+
+.room-btn.is-active {
+  transform: scale(1.03);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.95), 0 8px 16px rgba(124, 97, 152, 0.22);
+}
+
+.queue-list {
+  margin-top: 8px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.queue-item {
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid rgba(220, 186, 207, 0.42);
+  background: linear-gradient(180deg, #ffffff 0%, #fff2f8 100%);
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+}
+
+.queue-item.emergency {
+  border-color: rgba(227, 128, 92, 0.6);
+  background: linear-gradient(180deg, #fff5ef 0%, #ffe5d7 100%);
+}
+
+.queue-item.vip {
+  border-color: rgba(157, 122, 51, 0.62);
+  background: linear-gradient(180deg, #fff9ec 0%, #f9e7ae 100%);
+}
+
+.queue-item.empty {
+  opacity: 0.45;
+  font-size: 18px;
+}
+
+.support-strip {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 12px;
+}
+
+#voiceBtn { background: #6f9dd6; color: #fff; }
+#narrationBtn { background: #a27de0; color: #fff; }
+#parentModeBtn { background: #7ab08d; color: #fff; }
+
+.pet-shell.weather-sunny {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(255, 206, 224, 0.3), transparent 40%),
+    linear-gradient(180deg, #fff4f8 0%, #ffeeF6 100%);
+}
+
+.pet-shell.weather-cloudy {
+  background:
+    radial-gradient(circle at 25% 15%, rgba(205, 197, 220, 0.3), transparent 42%),
+    linear-gradient(180deg, #f6f4fb 0%, #ede8f6 100%);
+}
+
+.pet-shell.weather-rainy {
+  background:
+    linear-gradient(120deg, rgba(99, 125, 170, 0.08) 0%, rgba(90, 117, 166, 0.16) 50%, rgba(99, 125, 170, 0.08) 100%),
+    linear-gradient(180deg, #f3f5fb 0%, #e7ebf5 100%);
+}
+
+.pet-shell.weather-windy {
+  background:
+    linear-gradient(140deg, rgba(186, 218, 224, 0.2) 10%, transparent 38%),
+    linear-gradient(180deg, #f6fbfa 0%, #eaf5f2 100%);
+}
+
+.pet-shell.weather-aurora {
+  background:
+    radial-gradient(circle at 84% 14%, rgba(175, 153, 237, 0.18), transparent 38%),
+    radial-gradient(circle at 12% 80%, rgba(231, 167, 206, 0.2), transparent 42%),
+    linear-gradient(180deg, #f5f0ff 0%, #f0e9ff 100%);
+}
+
+.pet-shell.weather-rainy .clinic-panel {
+  border-color: #b5b4d8;
+}
+
+.pet-shell.weather-aurora .clinic-panel {
+  border-color: #c8a4d9;
+}
+
+@media (max-width: 920px) {
+  .play-stage { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .queue-list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .support-strip { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .room-buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .queue-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

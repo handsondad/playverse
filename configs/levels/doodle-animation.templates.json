@@ -1,0 +1,31 @@
+{
+  "templates": [
+    {
+      "id": "jump-basic",
+      "name": "跳跃",
+      "durationMs": 1200,
+      "loop": true,
+      "amplitude": 26,
+      "rotateDeg": 6,
+      "hint": "上下弹跳，适合小怪兽和小球。"
+    },
+    {
+      "id": "wave-hand",
+      "name": "摆手",
+      "durationMs": 1400,
+      "loop": true,
+      "amplitude": 16,
+      "rotateDeg": 10,
+      "hint": "左右轻摆，像在打招呼。"
+    },
+    {
+      "id": "spin-round",
+      "name": "旋转",
+      "durationMs": 1600,
+      "loop": true,
+      "amplitude": 0,
+      "rotateDeg": 360,
+      "hint": "绕中心旋转，适合风车和星星。"
+    }
+  ]
+}

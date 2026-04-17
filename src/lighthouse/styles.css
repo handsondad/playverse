@@ -1,0 +1,308 @@
+:root {
+  --bg: #e8f4ff;
+  --panel: rgba(255, 255, 255, 0.95);
+  --text: #2e3a55;
+  --brand: #3d8fd7;
+  --shadow: rgba(67, 95, 146, 0.18);
+}
+
+* { box-sizing: border-box; }
+
+html,
+body {
+  margin: 0;
+  touch-action: manipulation;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 10% 12%, rgba(120, 194, 243, 0.28), transparent 34%),
+    radial-gradient(circle at 84% 9%, rgba(255, 212, 131, 0.26), transparent 30%),
+    radial-gradient(circle at 50% 90%, rgba(145, 225, 198, 0.25), transparent 34%),
+    var(--bg);
+}
+
+button { font: inherit; }
+
+.lighthouse-shell {
+  width: min(1120px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 18px 14px 34px;
+  display: grid;
+  gap: 14px;
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.support-strip,
+.result {
+  background: var(--panel);
+  border-radius: 24px;
+  box-shadow: 0 10px 20px var(--shadow);
+  border: 2px solid rgba(165, 202, 236, 0.42);
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.result { padding: 16px; }
+
+.hero h1 {
+  margin: 0;
+  color: var(--brand);
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.hero p { margin: 8px 0 0; }
+.hero-links { margin-top: 10px; }
+.hero-links a { color: #3e73bf; font-weight: 700; }
+
+.play-stage {
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.level-buttons,
+.selector-actions,
+.stats,
+.beam-buttons,
+.queue-list,
+.support-strip {
+  display: grid;
+  gap: 10px;
+}
+
+.level-buttons {
+  margin-top: 10px;
+  grid-template-columns: 1fr;
+}
+
+.action-title {
+  margin-top: 12px;
+  display: block;
+}
+
+.level-btn,
+.support-strip button,
+.beam-btn {
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(84, 102, 146, 0.16);
+}
+
+.level-btn,
+.beam-btn {
+  background: linear-gradient(180deg, #ffffff 0%, #eaf3ff 100%);
+  color: #34527e;
+}
+
+.level-btn.is-active {
+  background: linear-gradient(180deg, #6ea8f2 0%, #4f84d6 100%);
+  color: #fff;
+}
+
+.selector-actions {
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #f2f8ff 0%, #e8f2ff 100%);
+  border: 1px solid rgba(151, 188, 233, 0.45);
+}
+
+.selector-actions button {
+  min-height: 50px;
+  border: 0;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: 0 6px 0 rgba(64, 95, 146, 0.2);
+}
+
+.selector-actions button:first-child {
+  background: linear-gradient(180deg, #4f98e2 0%, #3479c8 100%);
+}
+
+.selector-actions button:nth-child(2) {
+  background: linear-gradient(180deg, #6f8ed9 0%, #4f6fc2 100%);
+}
+
+.selector-actions button:nth-child(3) {
+  background: linear-gradient(180deg, #57a8b5 0%, #3e8f9d 100%);
+}
+
+.selector-actions button:active {
+  transform: translateY(1px);
+}
+
+#selectorHint { margin: 10px 0 0; color: #5f6f91; }
+
+.stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.stats div {
+  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #edf4ff 100%);
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.stats span {
+  display: block;
+  font-size: 13px;
+  color: #5f7194;
+}
+
+.stats strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 20px;
+}
+
+.harbor-panel {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(177, 202, 239, 0.45);
+  background: linear-gradient(180deg, #fefeff 0%, #f1f7ff 100%);
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+#weatherText {
+  color: #2f6fba;
+  font-weight: 700;
+}
+
+#feedbackText {
+  margin: 8px 0 0;
+  color: #5e7096;
+}
+
+.active-boat {
+  margin-top: 12px;
+  border-radius: 14px;
+  padding: 12px;
+  background: linear-gradient(180deg, #f9fcff 0%, #eaf3ff 100%);
+  border: 1px dashed rgba(120, 159, 221, 0.45);
+}
+
+.boat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+#boatSignal {
+  font-size: 26px;
+}
+
+#boatType {
+  margin: 8px 0 0;
+  color: #5c6d92;
+}
+
+.progress-track {
+  margin-top: 8px;
+  width: 100%;
+  height: 14px;
+  border-radius: 999px;
+  background: #dce7f8;
+  overflow: hidden;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #71d8b8 0%, #5f8de0 100%);
+  transition: width 0.08s linear;
+}
+
+.beam-panel,
+.queue-panel {
+  margin-top: 12px;
+}
+
+.beam-buttons {
+  margin-top: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.beam-btn {
+  min-height: 78px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.beam-btn .emoji { font-size: 26px; }
+.beam-btn .name { font-size: 13px; }
+
+.beam-btn.is-active {
+  transform: scale(1.03);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.95), 0 8px 16px rgba(86, 115, 168, 0.22);
+}
+
+.queue-list {
+  margin-top: 8px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.queue-item {
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid rgba(146, 176, 228, 0.42);
+  background: linear-gradient(180deg, #ffffff 0%, #edf4ff 100%);
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+}
+
+.queue-item.jammer {
+  border-color: rgba(226, 132, 106, 0.52);
+  background: linear-gradient(180deg, #fff4ef 0%, #ffe3d7 100%);
+}
+
+.queue-item.dual {
+  border-color: rgba(117, 183, 131, 0.55);
+  background: linear-gradient(180deg, #f0fff4 0%, #ddf4e5 100%);
+}
+
+.queue-item.empty {
+  opacity: 0.45;
+  font-size: 18px;
+}
+
+.support-strip {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 12px;
+}
+
+#voiceBtn { background: #5f9fd7; color: #fff; }
+#narrationBtn { background: #7d70d8; color: #fff; }
+#parentModeBtn { background: #6fa871; color: #fff; }
+
+@media (max-width: 920px) {
+  .play-stage { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .queue-list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .support-strip { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .beam-buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .queue-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

@@ -1,0 +1,94 @@
+{
+  "levels": [
+    {
+      "id": "easy",
+      "name": "社区慢送",
+      "timeLimitSec": 85,
+      "targetDeliveries": 16,
+      "spawnMs": 1500,
+      "lives": 4,
+      "weatherCycleMs": 9000,
+      "expressChance": 0.12,
+      "registeredChance": 0.08,
+      "expressLimitMs": 2600,
+      "mailboxIds": ["red", "blue", "green"]
+    },
+    {
+      "id": "normal",
+      "name": "街区速递",
+      "timeLimitSec": 80,
+      "targetDeliveries": 22,
+      "spawnMs": 1250,
+      "lives": 4,
+      "weatherCycleMs": 8400,
+      "expressChance": 0.16,
+      "registeredChance": 0.1,
+      "expressLimitMs": 2300,
+      "mailboxIds": ["red", "blue", "green", "yellow"]
+    },
+    {
+      "id": "hard",
+      "name": "城市急送",
+      "timeLimitSec": 75,
+      "targetDeliveries": 28,
+      "spawnMs": 1050,
+      "lives": 3,
+      "weatherCycleMs": 7800,
+      "expressChance": 0.2,
+      "registeredChance": 0.12,
+      "expressLimitMs": 2000,
+      "mailboxIds": ["red", "blue", "green", "yellow", "purple"]
+    }
+  ],
+  "themes": [
+    {
+      "id": "classic",
+      "name": "经典邮局",
+      "palette": {
+        "brand": "#d5754f",
+        "bg": "#fff3e2",
+        "panel": "rgba(255, 255, 255, 0.95)"
+      },
+      "weatherPool": [
+        { "id": "sunny", "name": "晴天" },
+        { "id": "cloudy", "name": "多云" },
+        { "id": "rainy", "name": "小雨" }
+      ]
+    },
+    {
+      "id": "campus",
+      "name": "校园邮局",
+      "palette": {
+        "brand": "#4a86cf",
+        "bg": "#ecf4ff",
+        "panel": "rgba(255, 255, 255, 0.95)"
+      },
+      "weatherPool": [
+        { "id": "sunny", "name": "晴天" },
+        { "id": "windy", "name": "微风" },
+        { "id": "cloudy", "name": "多云" }
+      ]
+    },
+    {
+      "id": "festival",
+      "name": "节日邮局",
+      "palette": {
+        "brand": "#b85a9c",
+        "bg": "#fff0fa",
+        "panel": "rgba(255, 255, 255, 0.95)"
+      },
+      "weatherPool": [
+        { "id": "sunny", "name": "晴天" },
+        { "id": "aurora", "name": "晚霞" },
+        { "id": "rainy", "name": "细雨" }
+      ]
+    }
+  ],
+  "mailboxes": [
+    { "id": "red", "name": "红色信箱", "emoji": "📮", "color": "#e36a6a", "freq": 520 },
+    { "id": "blue", "name": "蓝色信箱", "emoji": "📪", "color": "#5a9be5", "freq": 610 },
+    { "id": "green", "name": "绿色信箱", "emoji": "📫", "color": "#65b877", "freq": 680 },
+    { "id": "yellow", "name": "黄色信箱", "emoji": "📬", "color": "#e0b354", "freq": 740 },
+    { "id": "purple", "name": "紫色信箱", "emoji": "📯", "color": "#9870db", "freq": 810 }
+  ]
+}

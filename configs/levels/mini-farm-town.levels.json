@@ -1,0 +1,119 @@
+{
+  "plots": 6,
+  "startCoins": 20,
+  "xpPerLevel": 30,
+  "crops": [
+    {
+      "id": "carrot",
+      "name": "胡萝卜",
+      "growSec": 20,
+      "yield": 2,
+      "sellPrice": 3,
+      "xp": 3,
+      "color": "#f08b3e"
+    },
+    {
+      "id": "corn",
+      "name": "玉米",
+      "growSec": 32,
+      "yield": 3,
+      "sellPrice": 4,
+      "xp": 4,
+      "color": "#e3b53a"
+    },
+    {
+      "id": "strawberry",
+      "name": "草莓",
+      "growSec": 44,
+      "yield": 2,
+      "sellPrice": 7,
+      "xp": 6,
+      "color": "#df6b65"
+    }
+  ],
+  "orderRules": {
+    "qtyMin": 3,
+    "qtyMax": 7,
+    "rewardCoinBase": 12,
+    "rewardXpBase": 8
+  },
+  "fertility": {
+    "min": 35,
+    "max": 100,
+    "start": 90,
+    "dropPerHarvest": 8,
+    "restoreCost": 4,
+    "restoreAmount": 24
+  },
+  "weatherRules": {
+    "presets": [
+      {
+        "id": "sunny",
+        "name": "晴天",
+        "icon": "☀️",
+        "hint": "作物长得更快，适合快速补订单。",
+        "growMultiplier": 1.15,
+        "yieldMultiplier": 1,
+        "xpMultiplier": 1,
+        "fertilityHit": 2,
+        "weight": 3
+      },
+      {
+        "id": "breezy",
+        "name": "微风",
+        "icon": "🍃",
+        "hint": "均衡天气，适合稳定经营。",
+        "growMultiplier": 1,
+        "yieldMultiplier": 1.08,
+        "xpMultiplier": 1,
+        "fertilityHit": 0,
+        "weight": 4
+      },
+      {
+        "id": "rainy",
+        "name": "小雨",
+        "icon": "🌦️",
+        "hint": "产量稍高，土地也更滋润。",
+        "growMultiplier": 0.94,
+        "yieldMultiplier": 1.2,
+        "xpMultiplier": 1.08,
+        "fertilityHit": -2,
+        "weight": 2
+      },
+      {
+        "id": "cloudy",
+        "name": "多云",
+        "icon": "⛅",
+        "hint": "成熟速度稍慢，经验更容易上涨。",
+        "growMultiplier": 0.9,
+        "yieldMultiplier": 1,
+        "xpMultiplier": 1.16,
+        "fertilityHit": -1,
+        "weight": 1
+      }
+    ]
+  },
+  "recipes": [
+    {
+      "id": "veggie-salad",
+      "name": "农场沙拉",
+      "inputs": {
+        "carrot": 2,
+        "corn": 1
+      },
+      "processSec": 14,
+      "rewardCoins": 14,
+      "rewardXp": 9
+    },
+    {
+      "id": "berry-juice",
+      "name": "草莓果汁",
+      "inputs": {
+        "strawberry": 2
+      },
+      "processSec": 18,
+      "rewardCoins": 20,
+      "rewardXp": 12
+    }
+  ]
+}

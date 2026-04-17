@@ -1,0 +1,28 @@
+{
+  "levels": [
+    {
+      "id": "easy",
+      "name": "慢慢来",
+      "durationSec": 45,
+      "speed": 180,
+      "spawnIntervalMs": 1480,
+      "jumpVelocity": 610
+    },
+    {
+      "id": "normal",
+      "name": "刚刚好",
+      "durationSec": 55,
+      "speed": 240,
+      "spawnIntervalMs": 1220,
+      "jumpVelocity": 640
+    },
+    {
+      "id": "hard",
+      "name": "挑战王",
+      "durationSec": 65,
+      "speed": 300,
+      "spawnIntervalMs": 980,
+      "jumpVelocity": 670
+    }
+  ]
+}

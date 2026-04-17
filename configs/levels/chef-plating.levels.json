@@ -1,0 +1,98 @@
+{
+  "themes": [
+    { "id": "breakfast", "name": "早餐厨房", "emoji": "🍳", "description": "面包和鸡蛋主题，节奏轻快。" },
+    { "id": "picnic", "name": "野餐时光", "emoji": "🧺", "description": "水果和轻食主题，适合休闲配餐。" },
+    { "id": "festival", "name": "节日派对", "emoji": "🎉", "description": "点心和拼盘主题，组合更丰富。" }
+  ],
+  "levels": [
+    {
+      "id": "easy",
+      "name": "慢慢配",
+      "timeLimitSec": 95,
+      "targetOrders": 3,
+      "menuPool": ["fruit-bowl", "happy-breakfast", "veggie-plate"]
+    },
+    {
+      "id": "normal",
+      "name": "刚刚好",
+      "timeLimitSec": 85,
+      "targetOrders": 5,
+      "menuPool": ["fruit-bowl", "happy-breakfast", "veggie-plate", "sunny-sandwich"]
+    },
+    {
+      "id": "hard",
+      "name": "忙碌厨房",
+      "timeLimitSec": 76,
+      "targetOrders": 7,
+      "menuPool": ["fruit-bowl", "happy-breakfast", "veggie-plate", "sunny-sandwich", "party-snack"]
+    }
+  ],
+  "ingredients": [
+    { "id": "bread", "name": "面包", "icon": "🍞", "color": "#f0c78a" },
+    { "id": "egg", "name": "鸡蛋", "icon": "🥚", "color": "#f6e8b3" },
+    { "id": "tomato", "name": "番茄", "icon": "🍅", "color": "#ef8b7e" },
+    { "id": "lettuce", "name": "生菜", "icon": "🥬", "color": "#98d7a2" },
+    { "id": "banana", "name": "香蕉", "icon": "🍌", "color": "#f5d66d" },
+    { "id": "apple", "name": "苹果", "icon": "🍎", "color": "#ef7c74" },
+    { "id": "cheese", "name": "奶酪", "icon": "🧀", "color": "#ffd97f" },
+    { "id": "cookie", "name": "饼干", "icon": "🍪", "color": "#d9a674" }
+  ],
+  "recipes": [
+    {
+      "id": "fruit-bowl",
+      "name": "水果小碗",
+      "reward": 40,
+      "themeId": "picnic",
+      "ingredients": ["banana", "apple"]
+    },
+    {
+      "id": "happy-breakfast",
+      "name": "开心早餐",
+      "reward": 55,
+      "themeId": "breakfast",
+      "ingredients": ["bread", "egg", "banana"]
+    },
+    {
+      "id": "veggie-plate",
+      "name": "蔬菜拼盘",
+      "reward": 60,
+      "themeId": "picnic",
+      "ingredients": ["tomato", "lettuce", "cheese"]
+    },
+    {
+      "id": "sunny-sandwich",
+      "name": "阳光三明治",
+      "reward": 72,
+      "themeId": "breakfast",
+      "ingredients": ["bread", "cheese", "tomato", "lettuce"]
+    },
+    {
+      "id": "party-snack",
+      "name": "派对点心盘",
+      "reward": 88,
+      "themeId": "festival",
+      "ingredients": ["cookie", "apple", "banana", "cheese"]
+    },
+    {
+      "id": "festival-toast",
+      "name": "节日祝福吐司",
+      "reward": 94,
+      "themeId": "festival",
+      "ingredients": ["bread", "cookie", "apple", "cheese"]
+    },
+    {
+      "id": "picnic-rainbow",
+      "name": "野餐彩虹盘",
+      "reward": 78,
+      "themeId": "picnic",
+      "ingredients": ["apple", "banana", "tomato", "lettuce"]
+    },
+    {
+      "id": "morning-combo",
+      "name": "晨光能量盘",
+      "reward": 82,
+      "themeId": "breakfast",
+      "ingredients": ["egg", "bread", "cheese", "banana"]
+    }
+  ]
+}

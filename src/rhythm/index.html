@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>节奏点点乐 - 儿童小游戏</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="rhythm-shell">
+    <header class="hero">
+      <h1>节奏点点乐</h1>
+      <p id="guideText">先选歌曲和难度，再开始。等音符掉到判定线时点击对应颜色按钮。</p>
+      <p id="playDurationHint" class="hero-note">建议每次游玩 5-8 分钟，轻松体验节奏感。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../runner/index.html">亲子跑酷</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="selector-panel" aria-label="歌曲与难度选择">
+        <strong>歌曲</strong>
+        <div class="song-buttons" id="songButtons"></div>
+        <strong>难度</strong>
+        <div class="level-buttons">
+          <button id="levelEasyBtn" data-level-id="easy">慢慢拍</button>
+          <button id="levelNormalBtn" data-level-id="normal">刚刚好</button>
+          <button id="levelHardBtn" data-level-id="hard">节奏王</button>
+        </div>
+        <p id="selectorHint">先选歌曲和难度，再开始游戏。</p>
+      </section>
+
+      <section class="game-panel">
+        <div class="primary-actions" aria-label="核心操作">
+          <button id="startBtn">开始游戏</button>
+          <button id="retryBtn">再来一局</button>
+          <button id="dailyBtn">今日挑战</button>
+        </div>
+
+        <section class="stats" aria-live="polite">
+          <div><span>分数</span><strong id="scoreValue">0</strong></div>
+          <div><span>连击</span><strong id="comboValue">0</strong></div>
+          <div><span>Perfect</span><strong id="perfectValue">0</strong></div>
+          <div><span>Good</span><strong id="goodValue">0</strong></div>
+          <div><span>Miss</span><strong id="missValue">0</strong></div>
+          <div><span>最好</span><strong id="bestValue">--</strong></div>
+        </section>
+
+        <section class="rhythm-board">
+          <div class="track-head">
+            <div class="song-meta">
+              <strong id="songTitle">请先开始游戏</strong>
+              <span id="songSubTitle">4 条轨道，等音符下落到判定线再点。</span>
+            </div>
+            <div class="progress-wrap">
+              <span id="beatHelper">拍点提示：看到发光时更容易跟节奏</span>
+              <span>进度</span>
+              <div class="progress-bar"><div id="progressFill"></div></div>
+            </div>
+          </div>
+
+          <section id="lanes" class="lanes" aria-label="节奏轨道"></section>
+
+          <div class="lane-hits" id="laneHits" aria-label="点击区域">
+            <button data-lane="0" class="lane-hit lane-1">红拍</button>
+            <button data-lane="1" class="lane-hit lane-2">蓝拍</button>
+            <button data-lane="2" class="lane-hit lane-3">黄拍</button>
+            <button data-lane="3" class="lane-hit lane-4">绿拍</button>
+          </div>
+        </section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <section class="secondary-actions" aria-label="附加功能">
+        <strong>更多功能</strong>
+        <div class="secondary-actions-grid">
+          <button id="voiceBtn">语音引导：开</button>
+          <button id="narrationBtn">播报模式：关键</button>
+          <button id="parentModeBtn">护眼模式：标准</button>
+          <button id="calibrateBtn">延迟校准</button>
+        </div>
+        <section id="calibrationPanel" class="calibration-panel" hidden>
+          <p id="calibrationInfo">跟着节拍闪动点击 4 次，系统会自动调整延迟。</p>
+          <div id="calibrationBeat" class="calibration-beat" aria-hidden="true"></div>
+          <div class="calibration-actions">
+            <button id="calibrateTapBtn" type="button">跟拍一下</button>
+            <button id="calibrateCloseBtn" type="button">完成关闭</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="meta-stats muted-panel" aria-live="polite">
+        <strong>数据统计</strong>
+        <div class="meta-grid">
+          <div><span>总局数</span><strong id="metaPlays">0</strong></div>
+          <div><span>胜率</span><strong id="metaWinRate">0%</strong></div>
+          <div><span>平均分</span><strong id="metaAvgScore">0</strong></div>
+          <div><span>平均命中</span><strong id="metaAvgHitRate">0%</strong></div>
+          <div><span>最佳连击</span><strong id="metaBestCombo">0</strong></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
