@@ -152,6 +152,11 @@ board.addEventListener("click", (event) => {
   if (snapshot.success) {
     gameAudio.success();
     showCelebration("找到啦");
+    // Get the new target after success and prompt for it
+    const newSnapshot = game.getSnapshot();
+    setTimeout(() => {
+      speak(`现在找${newSnapshot.target.name}。`);
+    }, 1000);
   }
   speak(snapshot.feedback);
 });
@@ -196,3 +201,6 @@ loadProgress();
 renderSettingsUi();
 bindUiTapSounds(document.body, gameAudio);
 refresh();
+// Initial voice prompt
+const initialSnapshot = game.getSnapshot();
+speak(`找${initialSnapshot.target.name}。`, true);

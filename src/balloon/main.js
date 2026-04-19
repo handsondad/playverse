@@ -153,6 +153,11 @@ board.addEventListener("click", (event) => {
     gameAudio.pop();
     gameAudio.success(880);
     showCelebration("点中气球啦");
+    // Get the new target after success and prompt for it
+    const newSnapshot = game.getSnapshot();
+    setTimeout(() => {
+      speak(`现在找${newSnapshot.target.colorName}气球。`);
+    }, 1000);
   }
   speak(snapshot.feedback);
 });
@@ -197,3 +202,6 @@ loadProgress();
 renderSettingsUi();
 bindUiTapSounds(document.body, gameAudio);
 refresh();
+// Initial voice prompt
+const initialSnapshot = game.getSnapshot();
+speak(`找${initialSnapshot.target.colorName}气球。`, true);
