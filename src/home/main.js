@@ -12,6 +12,7 @@ const HOME_GROUPS = [
       "balloon-tap-play",
       "color-tap-play",
       "shape-tap-play",
+      "number-tap",
     ],
   },
   {
@@ -24,6 +25,7 @@ const HOME_GROUPS = [
       "doodle-animation",
       "animal-choir",
       "star-observer",
+      "fruit-count",
     ],
   },
   {
@@ -36,6 +38,7 @@ const HOME_GROUPS = [
       "mini-farm-town",
       "ocean-cleanup",
       "forest-ranger",
+      "market-shop",
     ],
   },
   {
@@ -52,7 +55,7 @@ const HOME_GROUPS = [
 ];
 
 const FALLBACK_MANIFEST = {
-  lastUpdated: "2026-04-17",
+  lastUpdated: "2026-07-28",
   cards: [
     {
       id: "car-tap",
@@ -279,6 +282,33 @@ const FALLBACK_MANIFEST = {
       updated: "2026-04-17",
       theme: "star",
     },
+    {
+      id: "number-tap",
+      title: "数字点点乐",
+      description: "低龄陪玩 | 认数字 | 1到10点对就奖励",
+      href: "./src/numbertap/index.html",
+      stage: "P1",
+      updated: "2026-07-28",
+      theme: "numbertap",
+    },
+    {
+      id: "fruit-count",
+      title: "水果计数乐",
+      description: "启蒙类 | 数水果 | 四选一答对升关",
+      href: "./src/fruitcount/index.html",
+      stage: "P1",
+      updated: "2026-07-28",
+      theme: "fruitcount",
+    },
+    {
+      id: "market-shop",
+      title: "超市购物",
+      description: "生活类 | 购物清单 | 选对商品来结账",
+      href: "./src/market/index.html",
+      stage: "P1",
+      updated: "2026-07-28",
+      theme: "market",
+    },
   ],
 };
 
@@ -292,7 +322,7 @@ function escapeHtml(text) {
 }
 
 function renderCard(card) {
-  const themeClass = ["car", "animal", "colortap", "balloon", "shape", "math", "maze", "doodle", "spell", "farm", "rhythm", "runner", "sort", "memory", "whac", "bubble", "chef", "choir", "lighthouse", "postman", "fruit", "ocean", "pet", "forest", "star"].includes(card.theme)
+  const themeClass = ["car", "animal", "colortap", "balloon", "shape", "math", "maze", "doodle", "spell", "farm", "rhythm", "runner", "sort", "memory", "whac", "bubble", "chef", "choir", "lighthouse", "postman", "fruit", "ocean", "pet", "forest", "star", "numbertap", "fruitcount", "market"].includes(card.theme)
     ? card.theme
     : "math";
 

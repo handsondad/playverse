@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-17",
+  "lastUpdated": "2026-07-28",
   "cards": [
     {
       "id": "car-tap",
@@ -225,6 +225,33 @@
       "stage": "P2",
       "updated": "2026-04-17",
       "theme": "star"
+    },
+    {
+      "id": "number-tap",
+      "title": "数字点点乐",
+      "description": "低龄陪玩 | 认数字 | 1到10点对就奖励",
+      "href": "./src/numbertap/index.html",
+      "stage": "P1",
+      "updated": "2026-07-28",
+      "theme": "numbertap"
+    },
+    {
+      "id": "fruit-count",
+      "title": "水果计数乐",
+      "description": "启蒙类 | 数水果 | 四选一答对升关",
+      "href": "./src/fruitcount/index.html",
+      "stage": "P1",
+      "updated": "2026-07-28",
+      "theme": "fruitcount"
+    },
+    {
+      "id": "market-shop",
+      "title": "超市购物",
+      "description": "生活类 | 购物清单 | 选对商品来结账",
+      "href": "./src/market/index.html",
+      "stage": "P1",
+      "updated": "2026-07-28",
+      "theme": "market"
     }
   ]
 }

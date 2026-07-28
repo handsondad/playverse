@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>超市购物 - 亲子小游戏</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <h1>超市购物</h1>
+      <p>看清购物清单，点选货架上对应的商品放进购物车，再提交。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../chef/index.html">小小厨师配餐</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="side-panel">
+        <section class="list-panel">
+          <div class="panel-head">
+            <span class="panel-icon">📋</span>
+            <strong>购物清单</strong>
+          </div>
+          <ul id="shoppingList" class="shopping-list" aria-label="购物清单"></ul>
+        </section>
+
+        <section class="cart-panel">
+          <div class="panel-head">
+            <span class="panel-icon">🛒</span>
+            <strong>购物车</strong>
+            <span id="cartCount" class="cart-count">0</span>
+          </div>
+          <div id="cartItems" class="cart-items" aria-label="购物车内容"></div>
+          <div class="cart-actions">
+            <button id="clearCartBtn" type="button">清空购物车</button>
+            <button id="submitBtn" type="button">结账</button>
+          </div>
+        </section>
+
+        <section class="stats-panel" aria-live="polite">
+          <div><span class="label">分数</span><strong id="scoreValue">0</strong></div>
+          <div><span class="label">完成</span><strong id="ordersValue">0</strong></div>
+          <div><span class="label">连续</span><strong id="streakValue">0</strong></div>
+        </section>
+      </section>
+
+      <section class="shelf-panel">
+        <div class="panel-head">
+          <span class="panel-icon">🏪</span>
+          <strong>货架</strong>
+        </div>
+        <div id="shelfGrid" class="shelf-grid" aria-label="货架商品"></div>
+      </section>
+    </section>
+
+    <section class="feedback-bar" aria-live="polite">
+      <p id="feedback"></p>
+      <button id="nextOrderBtn" type="button" hidden>下一单</button>
+    </section>
+
+    <section class="support-strip">
+      <button id="voiceBtn" type="button">语音引导：开</button>
+      <button id="resetBtn" type="button">重新开始</button>
+      <button id="parentModeBtn" type="button">护眼模式：标准</button>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
