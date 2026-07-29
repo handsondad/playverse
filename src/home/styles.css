@@ -211,6 +211,9 @@ body {
 .game-card.pet { background: linear-gradient(150deg, #df7da3, #8ca6ea); }
 .game-card.forest { background: linear-gradient(150deg, #7ca863, #5fa47d); }
 .game-card.star { background: linear-gradient(150deg, #7586df, #78b1d8); }
+.game-card.numbertap { background: linear-gradient(150deg, #5b9be8, #82c4f5); }
+.game-card.fruitcount { background: linear-gradient(150deg, #e87c38, #f0b06a); }
+.game-card.market { background: linear-gradient(150deg, #4aaa60, #62c478); }
 
 @keyframes floaty {
   0% {
