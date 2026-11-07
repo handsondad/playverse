@@ -1,3 +1,7 @@
+import { createSeededRandom } from "../shared/random.js";
+import { writeValue } from "../shared/storage.js";
+import { clearGameInterval, setGameInterval } from "../shared/timers.js";
+
 const STORAGE_KEY = "sort-best-score";
 
 const SHAPES = [
@@ -20,25 +24,6 @@ const MIXED_TARGETS = [
   { key: "yellow-triangle", colorId: "yellow", shapeId: "triangle", label: "黄色三角" },
   { key: "green-star", colorId: "green", shapeId: "star", label: "绿色星星" },
 ];
-
-function hashSeed(seedText) {
-  let hash = 2166136261;
-  for (let i = 0; i < seedText.length; i += 1) {
-    hash ^= seedText.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function createSeededRandom(seedText) {
-  let state = hashSeed(seedText || "sort-default-seed") || 1;
-  return () => {
-    state = (state + 0x6D2B79F5) >>> 0;
-    let t = Math.imul(state ^ (state >>> 15), 1 | state);
-    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
 
 function byId(list, id) {
   return list.find((item) => item.id === id);
@@ -88,7 +73,7 @@ export class SortGame {
   }
 
   saveBestScore(score) {
-    localStorage.setItem(STORAGE_KEY, String(score));
+    writeValue(STORAGE_KEY, score);
   }
 
   makeBins(mode) {
@@ -174,7 +159,7 @@ export class SortGame {
     };
 
     this.emit();
-    this.timerId = setInterval(() => this.tick(), 100);
+    this.timerId = setGameInterval(() => this.tick(), 100);
   }
 
   tick() {
@@ -287,7 +272,7 @@ export class SortGame {
 
   stop() {
     if (this.timerId) {
-      clearInterval(this.timerId);
+      clearGameInterval(this.timerId);
       this.timerId = null;
     }
   }

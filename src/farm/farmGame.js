@@ -1,21 +1,5 @@
-function hashSeed(seedText) {
-  let hash = 2166136261;
-  for (let i = 0; i < seedText.length; i += 1) {
-    hash ^= seedText.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function createSeededRandom(seedText) {
-  let state = hashSeed(seedText || "farm-default-seed") || 1;
-  return () => {
-    state = (state + 0x6D2B79F5) >>> 0;
-    let t = Math.imul(state ^ (state >>> 15), 1 | state);
-    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
+import { createSeededRandom } from "../shared/random.js";
+import { clearGameInterval, setGameInterval } from "../shared/timers.js";
 
 const DEFAULT_WEATHER_PRESETS = [
   {
@@ -295,7 +279,7 @@ export class FarmGame {
 
     this.state.order = this.createOrder(options.orderBoost || 0);
 
-    this.timerId = setInterval(() => this.tick(), 300);
+    this.timerId = setGameInterval(() => this.tick(), 300);
     this.emit();
   }
 
@@ -571,7 +555,7 @@ export class FarmGame {
 
   stop() {
     if (this.timerId) {
-      clearInterval(this.timerId);
+      clearGameInterval(this.timerId);
       this.timerId = null;
     }
     this.state.isRunning = false;

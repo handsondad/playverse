@@ -1,3 +1,6 @@
+import { createSeededRandom } from "../shared/random.js";
+import { clearGameInterval, setGameInterval } from "../shared/timers.js";
+
 const COLOR_IDS = ["red", "blue", "green", "yellow", "purple", "cyan"];
 const SPECIAL_NONE = "none";
 const SPECIAL_BOMB = "bomb";
@@ -13,25 +16,6 @@ function cloneCell(cell) {
     return createCell(cell);
   }
   return createCell(cell?.color || "", cell?.special || SPECIAL_NONE);
-}
-
-function hashSeed(seedText) {
-  let hash = 2166136261;
-  for (let i = 0; i < seedText.length; i += 1) {
-    hash ^= seedText.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function createSeededRandom(seedText) {
-  let state = hashSeed(seedText || "bubble-default-seed") || 1;
-  return () => {
-    state = (state + 0x6D2B79F5) >>> 0;
-    let t = Math.imul(state ^ (state >>> 15), 1 | state);
-    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
 }
 
 function keyOf(x, y) {
@@ -86,7 +70,7 @@ export class BubbleGame {
 
   stopTimer() {
     if (this.timerId) {
-      window.clearInterval(this.timerId);
+      clearGameInterval(this.timerId);
       this.timerId = 0;
     }
   }
@@ -123,7 +107,7 @@ export class BubbleGame {
     };
 
     this.emit();
-    this.timerId = window.setInterval(() => this.tick(), 100);
+    this.timerId = setGameInterval(() => this.tick(), 100);
   }
 
   tick() {

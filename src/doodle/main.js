@@ -1,18 +1,14 @@
 import { DoodleGame } from "./doodleGame.js";
 import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
+import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
+import { bindSoftTap } from "../shared/tap.js";
+import { writeJson } from "../shared/storage.js";
+import { loadGameConfig, showConfigError } from "../shared/config.js";
 
-const GLOBAL_SETTINGS_KEY = "kids-global-settings";
 const SETTINGS_KEY = "doodle-settings";
 const WORKS_KEY = "doodle-works";
 const MAX_WORKS = 12;
-
-const FALLBACK_DATA = {
-  templates: [
-    { id: "jump-basic", name: "跳跃", durationMs: 1200, loop: true, amplitude: 26, rotateDeg: 6, hint: "上下弹跳，适合小怪兽和小球。" },
-    { id: "wave-hand", name: "摆手", durationMs: 1400, loop: true, amplitude: 16, rotateDeg: 10, hint: "左右轻摆，像在打招呼。" },
-    { id: "spin-round", name: "旋转", durationMs: 1600, loop: true, amplitude: 0, rotateDeg: 360, hint: "绕中心旋转，适合风车和星星。" },
-  ],
-};
 
 const penBtn = document.querySelector("#penBtn");
 const eraserBtn = document.querySelector("#eraserBtn");
@@ -45,12 +41,12 @@ const voiceBtn = document.querySelector("#voiceBtn");
 const narrationBtn = document.querySelector("#narrationBtn");
 const parentModeBtn = document.querySelector("#parentModeBtn");
 
-const CARE_MODES = ["standard", "soft", "quiet"];
-const settingsState = { voiceOn: true, careMode: "standard", narrationLevel: "key" };
+const settingsState = loadSettings(SETTINGS_KEY);
+const speak = createSpeaker(settingsState, SPEECH_PRESETS.standard);
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
 
 let latestState = null;
-let templatesData = FALLBACK_DATA;
+let templatesData = null;
 let rafId = 0;
 let lastFrameTime = 0;
 let mediaRecorder = null;
@@ -64,58 +60,6 @@ let recordStartedAt = 0;
 let autoStopTimer = 0;
 let works = [];
 let isExportingClip = false;
-
-function careModeLabel(mode) {
-  if (mode === "soft") {
-    return "柔和";
-  }
-  if (mode === "quiet") {
-    return "安静";
-  }
-  return "标准";
-}
-
-function nextCareMode(current) {
-  const index = CARE_MODES.indexOf(current);
-  return index === -1 ? "standard" : CARE_MODES[(index + 1) % CARE_MODES.length];
-}
-
-function loadSettings() {
-  try {
-    const globalParsed = JSON.parse(localStorage.getItem(GLOBAL_SETTINGS_KEY) || "{}");
-    const localParsed = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    const merged = { ...localParsed, ...globalParsed };
-    settingsState.voiceOn = merged.voiceOn !== false;
-    settingsState.careMode = CARE_MODES.includes(merged.careMode) ? merged.careMode : "standard";
-    settingsState.narrationLevel = merged.narrationLevel === "detailed" ? "detailed" : "key";
-  } catch {
-    settingsState.voiceOn = true;
-    settingsState.careMode = "standard";
-    settingsState.narrationLevel = "key";
-  }
-}
-
-function saveSettings() {
-  const payload = {
-    voiceOn: settingsState.voiceOn,
-    careMode: settingsState.careMode,
-    narrationLevel: settingsState.narrationLevel,
-    parentMode: settingsState.careMode !== "standard",
-  };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
-  localStorage.setItem(GLOBAL_SETTINGS_KEY, JSON.stringify(payload));
-}
-
-function speak(text) {
-  if (!settingsState.voiceOn || !window.speechSynthesis || settingsState.careMode === "quiet") {
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "zh-CN";
-  utterance.rate = settingsState.careMode === "standard" ? 1 : 0.92;
-  window.speechSynthesis.speak(utterance);
-}
 
 function applySettingsUi() {
   voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
@@ -141,7 +85,7 @@ function loadWorks() {
 }
 
 function saveWorks() {
-  localStorage.setItem(WORKS_KEY, JSON.stringify(works));
+  writeJson(WORKS_KEY, works);
 }
 
 function renderWorks() {
@@ -712,34 +656,16 @@ function startLoop() {
   rafId = window.requestAnimationFrame(frame);
 }
 
-function bindSoftTap(button, handler) {
-  button.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    if (button.disabled) {
-      return;
-    }
-    handler();
-  });
-  button.addEventListener("click", (event) => event.preventDefault());
-}
-
 async function bootstrap() {
   try {
-    const response = await fetch("../../configs/levels/doodle-animation.templates.json");
-    if (!response.ok) {
-      throw new Error(`Failed to load templates: ${response.status}`);
-    }
-    templatesData = await response.json();
-  } catch {
-    templatesData = FALLBACK_DATA;
-    guideText.textContent = "模板加载失败，已使用内置动作。";
+    templatesData = await loadGameConfig("../../configs/levels/doodle-animation.templates.json", ["templates"]);
+  } catch (error) {
+    showConfigError(error);
+    return;
   }
 
-  const templates = Array.isArray(templatesData?.templates) && templatesData.templates.length > 0
-    ? templatesData.templates
-    : FALLBACK_DATA.templates;
+  const templates = templatesData.templates;
 
-  loadSettings();
   loadWorks();
   applySettingsUi();
   game.init(templates);
@@ -876,19 +802,19 @@ drawCanvas.addEventListener("pointerleave", endPointer);
 
 bindSoftTap(voiceBtn, () => {
   settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(narrationBtn, () => {
   settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(parentModeBtn, () => {
   settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 

@@ -1,23 +1,18 @@
 import { SortGame } from "./sortGame.js";
 import { createGameAudio } from "../shared/audio.js";
+import { GLOBAL_SETTINGS_KEY, careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
+import { createSoftTap } from "../shared/tap.js";
+import { todayString } from "../shared/random.js";
+import { writeJson } from "../shared/storage.js";
+import { loadGameConfig, showConfigError } from "../shared/config.js";
+import { setHtml } from "../shared/dom.js";
+
+const bindSoftTap = createSoftTap({ flashMs: 80, onTap: () => soundFx.tap() });
 
 const PROGRESS_KEY = "sort-progress";
 const STATS_KEY = "sort-stats";
 const SETTINGS_KEY = "sort-settings";
-const GLOBAL_SETTINGS_KEY = "kids-global-settings";
-
-const FALLBACK_LEVELS_DATA = {
-  levels: [
-    { id: "easy", name: "慢慢分", itemCount: 8, timeLimitSec: 80, targetScore: 80 },
-    { id: "normal", name: "刚刚好", itemCount: 12, timeLimitSec: 75, targetScore: 130 },
-    { id: "hard", name: "小专家", itemCount: 16, timeLimitSec: 70, targetScore: 190 },
-  ],
-  modes: [
-    { id: "color", name: "颜色分类" },
-    { id: "shape", name: "形状分类" },
-    { id: "mixed", name: "混合分类" },
-  ],
-};
 
 const startBtn = document.querySelector("#startBtn");
 const retryBtn = document.querySelector("#retryBtn");
@@ -83,40 +78,10 @@ const stats = {
   bestStreak: 0,
 };
 
-const settingsState = {
-  voiceOn: true,
-  careMode: "standard",
-  narrationLevel: "key",
-};
+const settingsState = loadSettings(SETTINGS_KEY);
+const speakGuide = createSpeaker(settingsState, SPEECH_PRESETS.guide);
 
-const CARE_MODES = ["standard", "soft", "quiet"];
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
-
-function careModeLabel(mode) {
-  if (mode === "soft") {
-    return "柔和";
-  }
-  if (mode === "quiet") {
-    return "安静";
-  }
-  return "标准";
-}
-
-function nextCareMode(current) {
-  const index = CARE_MODES.indexOf(current);
-  if (index === -1) {
-    return "standard";
-  }
-  return CARE_MODES[(index + 1) % CARE_MODES.length];
-}
-
-function isSoundEnabled() {
-  return settingsState.careMode !== "quiet";
-}
-
-function getSoundGainMultiplier() {
-  return settingsState.careMode === "soft" ? 0.6 : 1;
-}
 
 const soundFx = (() => {
   return {
@@ -156,7 +121,7 @@ function loadProgress() {
 }
 
 function saveProgress() {
-  localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+  writeJson(PROGRESS_KEY, progress);
 }
 
 function loadStats() {
@@ -174,58 +139,7 @@ function loadStats() {
 }
 
 function saveStats() {
-  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
-}
-
-function loadSettings() {
-  try {
-    const globalParsed = JSON.parse(localStorage.getItem(GLOBAL_SETTINGS_KEY) || "{}");
-    const localParsed = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    const merged = {
-      ...localParsed,
-      ...globalParsed,
-    };
-    settingsState.voiceOn = merged.voiceOn !== false;
-    if (CARE_MODES.includes(merged.careMode)) {
-      settingsState.careMode = merged.careMode;
-    } else {
-      settingsState.careMode = merged.parentMode ? "soft" : "standard";
-    }
-    settingsState.narrationLevel = merged.narrationLevel === "detailed" ? "detailed" : "key";
-  } catch {
-    settingsState.voiceOn = true;
-    settingsState.careMode = "standard";
-    settingsState.narrationLevel = "key";
-  }
-}
-
-function saveSettings() {
-  const payload = {
-    voiceOn: settingsState.voiceOn,
-    careMode: settingsState.careMode,
-    parentMode: settingsState.careMode !== "standard",
-    narrationLevel: settingsState.narrationLevel,
-  };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
-  localStorage.setItem(GLOBAL_SETTINGS_KEY, JSON.stringify(payload));
-}
-
-function speakGuide(text, options = {}) {
-  if (!settingsState.voiceOn || !window.speechSynthesis) {
-    return;
-  }
-  if (settingsState.careMode === "quiet" && !options.force) {
-    return;
-  }
-  if (options.detailOnly && settingsState.narrationLevel !== "detailed") {
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "zh-CN";
-  utterance.rate = settingsState.careMode === "standard" ? 1 : 0.92;
-  utterance.volume = settingsState.careMode === "standard" ? 0.95 : 0.72;
-  window.speechSynthesis.speak(utterance);
+  writeJson(STATS_KEY, stats);
 }
 
 function applySettingsUi() {
@@ -279,7 +193,7 @@ function getMode() {
 function renderBoard(state) {
   if (!state.level) {
     boardEl.classList.remove("is-dragging");
-    boardEl.innerHTML = "<p class=\"empty-note\">请选择模式和难度并开始游戏。</p>";
+    setHtml(boardEl, "<p class=\"empty-note\">请选择模式和难度并开始游戏。</p>");
     return;
   }
 
@@ -306,7 +220,7 @@ function renderBoard(state) {
     `;
   }).join("");
 
-  boardEl.innerHTML = `
+  setHtml(boardEl, `
     <p class="${promptClass}">${state.selectedPrompt}</p>
     <section class="board-section items-section" aria-label="待分类物品区">
       <div class="section-head">
@@ -325,7 +239,7 @@ function renderBoard(state) {
       </div>
       <div class="bins-grid">${binsMarkup}</div>
     </section>
-  `;
+  `);
 }
 
 function renderState(state) {
@@ -510,14 +424,6 @@ const game = new SortGame({
   onResult: showResult,
 });
 
-function todayString() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
 function hashText(input) {
   let hash = 0;
   for (let i = 0; i < input.length; i += 1) {
@@ -575,29 +481,6 @@ function start(options = null) {
   });
 }
 
-function bindSoftTap(button, handler) {
-  const run = () => {
-    if (button.disabled) {
-      return;
-    }
-    button.classList.add("tap-flash");
-    setTimeout(() => {
-      button.classList.remove("tap-flash");
-      soundFx.tap();
-      handler();
-    }, 80);
-  };
-
-  button.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    run();
-  });
-
-  button.addEventListener("click", (event) => {
-    event.preventDefault();
-  });
-}
-
 function bindBoardPointer() {
   boardEl.addEventListener("pointerdown", (event) => {
     const itemBtn = event.target.closest("[data-item-id]");
@@ -650,29 +533,18 @@ function bindBoardPointer() {
 
 async function bootstrap() {
   try {
-    const response = await fetch("../../configs/levels/sort.levels.json");
-    if (!response.ok) {
-      throw new Error(`Failed to load levels: ${response.status}`);
-    }
-    levelsData = await response.json();
-  } catch {
-    levelsData = FALLBACK_LEVELS_DATA;
-    guideText.textContent = "配置加载失败，已使用内置难度。";
+    levelsData = await loadGameConfig("../../configs/levels/sort.levels.json", ["levels", "modes"]);
+  } catch (error) {
+    showConfigError(error);
+    return;
   }
 
-  levelsData.levels = Array.isArray(levelsData?.levels) && levelsData.levels.length > 0
-    ? levelsData.levels
-    : FALLBACK_LEVELS_DATA.levels;
-  levelsData.modes = Array.isArray(levelsData?.modes) && levelsData.modes.length > 0
-    ? levelsData.modes
-    : FALLBACK_LEVELS_DATA.modes;
 
   currentLevelId = levelsData.levels[0].id;
   currentModeId = levelsData.modes[0].id;
 
   loadProgress();
   loadStats();
-  loadSettings();
   renderMeta();
   updateSelectorsUi();
   applySettingsUi();
@@ -685,7 +557,7 @@ async function bootstrap() {
     if (event.key !== GLOBAL_SETTINGS_KEY) {
       return;
     }
-    loadSettings();
+    loadSettings(SETTINGS_KEY, settingsState);
     applySettingsUi();
   });
 }
@@ -728,7 +600,7 @@ bindSoftTap(dailyBtn, () => {
 
 bindSoftTap(voiceBtn, () => {
   settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
   if (settingsState.voiceOn) {
     speakGuide(guideText.textContent);
@@ -737,14 +609,14 @@ bindSoftTap(voiceBtn, () => {
 
 bindSoftTap(narrationBtn, () => {
   settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
   speakGuide(`已切换到${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}播报`);
 });
 
 bindSoftTap(parentModeBtn, () => {
   settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
   speakGuide(`已切换到${careModeLabel(settingsState.careMode)}模式`, { force: true });
 });

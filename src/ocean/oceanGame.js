@@ -1,21 +1,5 @@
-function hashSeed(seedText) {
-  let hash = 2166136261;
-  for (let i = 0; i < seedText.length; i += 1) {
-    hash ^= seedText.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function createSeededRandom(seedText) {
-  let state = hashSeed(seedText || "ocean-default-seed") || 1;
-  return () => {
-    state = (state + 0x6D2B79F5) >>> 0;
-    let t = Math.imul(state ^ (state >>> 15), 1 | state);
-    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
+import { createSeededRandom } from "../shared/random.js";
+import { clearGameInterval, setGameInterval } from "../shared/timers.js";
 
 export class OceanGame {
   constructor({ onStateChange, onResult, onToast }) {
@@ -72,7 +56,7 @@ export class OceanGame {
 
   stop() {
     if (this.timerId) {
-      window.clearInterval(this.timerId);
+      clearGameInterval(this.timerId);
       this.timerId = 0;
     }
   }
@@ -118,7 +102,7 @@ export class OceanGame {
     };
 
     this.emit();
-    this.timerId = window.setInterval(() => this.tick(), 100);
+    this.timerId = setGameInterval(() => this.tick(), 100);
   }
 
   createQueue(pool, count) {

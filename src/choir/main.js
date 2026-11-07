@@ -1,57 +1,15 @@
 import { ChoirGame } from "./choirGame.js";
 import { createGameAudio } from "../shared/audio.js";
+import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
+import { bindSoftTap } from "../shared/tap.js";
+import { todayString } from "../shared/random.js";
+import { writeValue } from "../shared/storage.js";
+import { loadGameConfig, showConfigError } from "../shared/config.js";
+import { setHtml } from "../shared/dom.js";
 
 const SETTINGS_KEY = "choir-settings";
-const GLOBAL_SETTINGS_KEY = "kids-global-settings";
 const BEST_KEY = "choir-best-streak";
-
-const FALLBACK_DATA = {
-  themes: [
-    {
-      id: "forest",
-      name: "森林合唱",
-      wave: "triangle",
-      toneShift: 0,
-      tempoMs: 360,
-      gapMs: 140,
-      gain: 1,
-      palette: { accent: "#5f9f6c", accentSoft: "#e6f4ea" },
-    },
-    {
-      id: "ocean",
-      name: "海洋合唱",
-      wave: "sine",
-      toneShift: -3,
-      tempoMs: 380,
-      gapMs: 150,
-      gain: 0.9,
-      palette: { accent: "#4c96d8", accentSoft: "#e4f1fb" },
-    },
-    {
-      id: "farm",
-      name: "农场合唱",
-      wave: "square",
-      toneShift: 4,
-      tempoMs: 340,
-      gapMs: 120,
-      gain: 0.85,
-      palette: { accent: "#cc8d45", accentSoft: "#fff3e2" },
-    },
-  ],
-  levels: [
-    { id: "easy", name: "慢慢唱", targetRounds: 5, timeLimitSec: 85, animalIds: ["cat", "dog", "duck", "frog"] },
-    { id: "normal", name: "刚刚好", targetRounds: 7, timeLimitSec: 80, animalIds: ["cat", "dog", "duck", "frog", "cow"] },
-    { id: "hard", name: "合唱大师", targetRounds: 9, timeLimitSec: 75, animalIds: ["cat", "dog", "duck", "frog", "cow", "sheep"] },
-  ],
-  animals: [
-    { id: "cat", name: "小猫", emoji: "🐱", freq: 523, color: "#f19c79" },
-    { id: "dog", name: "小狗", emoji: "🐶", freq: 587, color: "#7cb4f8" },
-    { id: "duck", name: "小鸭", emoji: "🦆", freq: 659, color: "#f2cc67" },
-    { id: "frog", name: "小青蛙", emoji: "🐸", freq: 698, color: "#7fd48e" },
-    { id: "cow", name: "小牛", emoji: "🐮", freq: 784, color: "#b7a3f0" },
-    { id: "sheep", name: "小羊", emoji: "🐑", freq: 880, color: "#f7b0c1" },
-  ],
-};
 
 const startBtn = document.querySelector("#startBtn");
 const retryBtn = document.querySelector("#retryBtn");
@@ -83,11 +41,11 @@ const resultEl = document.querySelector("#result");
 const resultTitle = document.querySelector("#resultTitle");
 const resultText = document.querySelector("#resultText");
 
-const CARE_MODES = ["standard", "soft", "quiet"];
-const settingsState = { voiceOn: true, careMode: "standard", narrationLevel: "key" };
+const settingsState = loadSettings(SETTINGS_KEY);
+const speak = createSpeaker(settingsState, SPEECH_PRESETS.standard);
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
 
-let levelsData = FALLBACK_DATA;
+let levelsData = null;
 let currentLevelId = "easy";
 let currentThemeId = "forest";
 let latestState = null;
@@ -95,65 +53,10 @@ let lastWatchRound = 0;
 let playSequenceToken = 0;
 let rewardHintResetTimer = 0;
 
-function careModeLabel(mode) {
-  if (mode === "soft") {
-    return "柔和";
-  }
-  if (mode === "quiet") {
-    return "安静";
-  }
-  return "标准";
-}
-
-function nextCareMode(current) {
-  const index = CARE_MODES.indexOf(current);
-  return index === -1 ? "standard" : CARE_MODES[(index + 1) % CARE_MODES.length];
-}
-
-function loadSettings() {
-  try {
-    const globalParsed = JSON.parse(localStorage.getItem(GLOBAL_SETTINGS_KEY) || "{}");
-    const localParsed = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    const merged = { ...localParsed, ...globalParsed };
-    settingsState.voiceOn = merged.voiceOn !== false;
-    settingsState.careMode = CARE_MODES.includes(merged.careMode) ? merged.careMode : "standard";
-    settingsState.narrationLevel = merged.narrationLevel === "detailed" ? "detailed" : "key";
-  } catch {
-    settingsState.voiceOn = true;
-    settingsState.careMode = "standard";
-    settingsState.narrationLevel = "key";
-  }
-}
-
-function saveSettings() {
-  const payload = {
-    voiceOn: settingsState.voiceOn,
-    careMode: settingsState.careMode,
-    narrationLevel: settingsState.narrationLevel,
-    parentMode: settingsState.careMode !== "standard",
-  };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
-  localStorage.setItem(GLOBAL_SETTINGS_KEY, JSON.stringify(payload));
-}
-
 function applySettingsUi() {
   voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
   narrationBtn.textContent = `播报模式：${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}`;
   parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
-}
-
-function speak(text, detailOnly = false) {
-  if (!settingsState.voiceOn || !window.speechSynthesis || settingsState.careMode === "quiet") {
-    return;
-  }
-  if (detailOnly && settingsState.narrationLevel !== "detailed") {
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "zh-CN";
-  utterance.rate = settingsState.careMode === "standard" ? 1 : 0.92;
-  window.speechSynthesis.speak(utterance);
 }
 
 function loadBestStreak() {
@@ -165,7 +68,7 @@ function loadBestStreak() {
 }
 
 function saveBestStreak(streak) {
-  localStorage.setItem(BEST_KEY, String(streak));
+  writeValue(BEST_KEY, streak);
 }
 
 function getAnimalById(id) {
@@ -177,7 +80,7 @@ function getLevelById(id) {
 }
 
 function getThemes() {
-  return Array.isArray(levelsData.themes) && levelsData.themes.length > 0 ? levelsData.themes : FALLBACK_DATA.themes;
+  return levelsData.themes;
 }
 
 function getThemeById(id) {
@@ -226,7 +129,7 @@ function phaseLabel(phase) {
 }
 
 function renderAnimalButtons(state) {
-  animalGrid.innerHTML = state.animalsInPlay.map((animal) => {
+  setHtml(animalGrid, state.animalsInPlay.map((animal) => {
     const isActive = state.activeAnimalId === animal.id;
     const classes = ["animal-btn"];
     if (isActive) {
@@ -234,14 +137,14 @@ function renderAnimalButtons(state) {
     }
     const disabled = !state.isRunning || !state.canInput;
     return `<button class="${classes.join(" ")}" data-animal-id="${animal.id}" type="button" style="background:${animal.color};" ${disabled ? "disabled" : ""}><span class="emoji">${animal.emoji}</span><span class="name">${animal.name}</span><span class="note">跟唱点这里</span></button>`;
-  }).join("");
+  }).join(""));
 }
 
 function renderMimicTrack(state) {
   if (!mimicTrack) {
     return;
   }
-  mimicTrack.innerHTML = state.sequence.map((animalId, index) => {
+  setHtml(mimicTrack, state.sequence.map((animalId, index) => {
     const animal = getAnimalById(animalId);
     const classes = ["mimic-step"];
 
@@ -268,7 +171,7 @@ function renderMimicTrack(state) {
     }
 
     return `<span class="${classes.join(" ")}">${animal?.emoji || "•"}</span>`;
-  }).join("");
+  }).join(""));
 }
 
 function flashPerfectInput(animalId) {
@@ -376,38 +279,19 @@ function showResult(payload) {
   }
 }
 
-function todayString() {
-  const date = new Date();
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
-
-function bindSoftTap(button, handler) {
-  button.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    if (button.disabled) {
-      return;
-    }
-    handler();
-  });
-  button.addEventListener("click", (event) => event.preventDefault());
-}
-
 const game = new ChoirGame({
   onStateChange: updateUi,
   onResult: showResult,
   onToast: (text) => {
     hintText.textContent = text;
-    speak(text, true);
+    speak(text, { detailOnly: true });
   },
   onReward: (payload) => {
     showRewardBurst(payload);
     if (payload.animalId) {
       flashPerfectInput(payload.animalId);
     }
-    speak(`完美合唱，奖励 ${payload.rewardSec} 秒`, true);
+    speak(`完美合唱，奖励 ${payload.rewardSec} 秒`, { detailOnly: true });
   },
 });
 
@@ -439,19 +323,19 @@ bindSoftTap(hintBtn, () => {
 
 bindSoftTap(voiceBtn, () => {
   settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(narrationBtn, () => {
   settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(parentModeBtn, () => {
   settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
@@ -496,21 +380,13 @@ animalGrid.addEventListener("pointerup", (event) => {
 
 async function bootstrap() {
   try {
-    const response = await fetch("../../configs/levels/animal-choir.levels.json");
-    if (!response.ok) {
-      throw new Error(`Failed to load levels: ${response.status}`);
-    }
-    levelsData = await response.json();
-  } catch {
-    levelsData = FALLBACK_DATA;
-    selectorHint.textContent = "配置加载失败，已使用内置合唱关卡。";
+    levelsData = await loadGameConfig("../../configs/levels/animal-choir.levels.json", ["themes", "levels", "animals"]);
+  } catch (error) {
+    showConfigError(error);
+    return;
   }
 
-  levelsData.levels = Array.isArray(levelsData.levels) && levelsData.levels.length > 0 ? levelsData.levels : FALLBACK_DATA.levels;
-  levelsData.animals = Array.isArray(levelsData.animals) && levelsData.animals.length > 0 ? levelsData.animals : FALLBACK_DATA.animals;
-  levelsData.themes = Array.isArray(levelsData.themes) && levelsData.themes.length > 0 ? levelsData.themes : FALLBACK_DATA.themes;
 
-  loadSettings();
   applySettingsUi();
 
   currentLevelId = levelsData.levels[0].id;

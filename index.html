@@ -9,47 +9,52 @@
 <body>
   <main class="home-shell">
     <section class="hero">
-      <h1>亲子小游戏</h1>
-      <p>适合日常陪孩子一起玩，点开就能开始。</p>
-      <div class="group-nav" aria-label="玩法分组导航">
-        <a href="#group-toddler">低龄陪玩</a>
-        <a href="#group-cognition">启蒙益智</a>
-        <a href="#group-life">生活探索</a>
-        <a href="#group-action">反应闯关</a>
+      <div class="hero-brand">
+        <img class="hero-mark" src="./icons/icon.svg" width="88" height="88" alt="" />
+        <div class="hero-copy">
+          <h1>亲子小游戏</h1>
+          <p>点开就能玩，适合日常陪孩子一起点一点。</p>
+        </div>
       </div>
+      <nav class="group-nav" aria-label="玩法分组导航">
+        <a href="#group-toddler" data-group-link="toddler">低龄陪玩</a>
+        <a href="#group-cognition" data-group-link="cognition">启蒙益智</a>
+        <a href="#group-life" data-group-link="life">生活探索</a>
+        <a href="#group-action" data-group-link="action">反应闯关</a>
+      </nav>
     </section>
 
     <section class="group-sections" aria-label="按玩法推荐游戏分组">
-      <section class="age-group" id="group-toddler">
+      <section class="age-group" id="group-toddler" data-group="toddler">
         <div class="group-head">
           <h2>低龄陪玩</h2>
           <p>更适合 2 岁左右一起点一点、认一认，不用读字也能玩。</p>
         </div>
-        <div class="menu-grid" id="groupGridToddler"></div>
+        <div class="menu-grid" data-group="toddler"></div>
       </section>
 
-      <section class="age-group" id="group-cognition">
+      <section class="age-group" id="group-cognition" data-group="cognition">
         <div class="group-head">
           <h2>启蒙益智</h2>
           <p>适合练习识别、记忆、拼读、观察和轻量创作。</p>
         </div>
-        <div class="menu-grid" id="groupGridCognition"></div>
+        <div class="menu-grid" data-group="cognition"></div>
       </section>
 
-      <section class="age-group" id="group-life">
+      <section class="age-group" id="group-life" data-group="life">
         <div class="group-head">
           <h2>生活探索</h2>
           <p>围绕自然、职业和日常场景，边玩边建立观察力和生活感知。</p>
         </div>
-        <div class="menu-grid" id="groupGridLife"></div>
+        <div class="menu-grid" data-group="life"></div>
       </section>
 
-      <section class="age-group" id="group-action">
+      <section class="age-group" id="group-action" data-group="action">
         <div class="group-head">
           <h2>反应闯关</h2>
           <p>更强调节奏、反应、推理和连续闯关的刺激感。</p>
         </div>
-        <div class="menu-grid" id="groupGridAction"></div>
+        <div class="menu-grid" data-group="action"></div>
       </section>
     </section>
   </main>

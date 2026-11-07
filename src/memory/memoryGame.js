@@ -1,23 +1,8 @@
+import { hashSeed, mulberry32 } from "../shared/random.js";
+import { writeValue } from "../shared/storage.js";
+import { clearGameInterval, setGameInterval } from "../shared/timers.js";
+
 const STORAGE_KEY_PREFIX = "memory-match-best";
-
-function mulberry32(seed) {
-  let t = seed >>> 0;
-  return function random() {
-    t += 0x6d2b79f5;
-    let value = Math.imul(t ^ (t >>> 15), 1 | t);
-    value ^= value + Math.imul(value ^ (value >>> 7), 61 | value);
-    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-function stringToSeed(input) {
-  let hash = 2166136261;
-  for (let i = 0; i < input.length; i += 1) {
-    hash ^= input.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
 
 function shuffle(list, randomFn = Math.random) {
   const next = [...list];
@@ -99,13 +84,13 @@ export class MemoryGame {
     this.seed = options.seed || null;
 
     const pairCount = (level.rows * level.cols) / 2;
-    const randomFn = this.seed ? mulberry32(stringToSeed(String(this.seed))) : Math.random;
+    const randomFn = this.seed ? mulberry32(hashSeed(String(this.seed))) : Math.random;
     this.deck = buildDeck(icons, pairCount, randomFn);
     this.remainingSec = level.timeLimit;
     this.isRunning = true;
 
     this.emit();
-    this.timer = setInterval(() => {
+    this.timer = setGameInterval(() => {
       if (!this.isRunning) {
         return;
       }
@@ -122,7 +107,7 @@ export class MemoryGame {
 
   stopTimer() {
     if (this.timer) {
-      clearInterval(this.timer);
+      clearGameInterval(this.timer);
       this.timer = null;
     }
   }
@@ -319,7 +304,7 @@ export class MemoryGame {
     const key = `${STORAGE_KEY_PREFIX}:${this.level.id}:${this.theme}`;
     const previous = Number(localStorage.getItem(key) || 0);
     if (this.score > previous) {
-      localStorage.setItem(key, String(this.score));
+      writeValue(key, this.score);
     }
   }
 

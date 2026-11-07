@@ -1,24 +1,15 @@
 import { LighthouseGame } from "./lighthouseGame.js";
 import { createGameAudio } from "../shared/audio.js";
+import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
+import { bindSoftTap } from "../shared/tap.js";
+import { todayString } from "../shared/random.js";
+import { readNumber, writeValue } from "../shared/storage.js";
+import { loadGameConfig, showConfigError } from "../shared/config.js";
+import { setHtml } from "../shared/dom.js";
 
 const SETTINGS_KEY = "lighthouse-settings";
-const GLOBAL_SETTINGS_KEY = "kids-global-settings";
 const BEST_KEY = "lighthouse-best-score";
-
-const FALLBACK_DATA = {
-  levels: [
-    { id: "easy", name: "海湾巡逻", timeLimitSec: 80, targetBoats: 14, boatTravelMs: 2600, spawnMs: 900, lives: 4, weatherCycleMs: 10000, jammerChance: 0.06, dualChance: 0.1, signalIds: ["sun", "moon", "star"] },
-    { id: "normal", name: "夜港守望", timeLimitSec: 78, targetBoats: 18, boatTravelMs: 2200, spawnMs: 820, lives: 4, weatherCycleMs: 9000, jammerChance: 0.1, dualChance: 0.13, signalIds: ["sun", "moon", "star", "comet"] },
-    { id: "hard", name: "暴风灯塔", timeLimitSec: 75, targetBoats: 22, boatTravelMs: 1900, spawnMs: 760, lives: 3, weatherCycleMs: 8400, jammerChance: 0.14, dualChance: 0.16, signalIds: ["sun", "moon", "star", "comet", "wave"] },
-  ],
-  signals: [
-    { id: "sun", name: "太阳灯", emoji: "☀️", color: "#f2b84b", freq: 520 },
-    { id: "moon", name: "月光灯", emoji: "🌙", color: "#7fa8ff", freq: 600 },
-    { id: "star", name: "星辉灯", emoji: "⭐", color: "#f58ec5", freq: 680 },
-    { id: "comet", name: "彗星灯", emoji: "☄️", color: "#60c5bd", freq: 740 },
-    { id: "wave", name: "海浪灯", emoji: "🌊", color: "#4f9bdc", freq: 810 },
-  ],
-};
 
 const startBtn = document.querySelector("#startBtn");
 const retryBtn = document.querySelector("#retryBtn");
@@ -52,73 +43,18 @@ const resultEl = document.querySelector("#result");
 const resultTitle = document.querySelector("#resultTitle");
 const resultText = document.querySelector("#resultText");
 
-const CARE_MODES = ["standard", "soft", "quiet"];
-const settingsState = { voiceOn: true, careMode: "standard", narrationLevel: "key" };
+const settingsState = loadSettings(SETTINGS_KEY);
+const speak = createSpeaker(settingsState, SPEECH_PRESETS.standard);
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
 
-let data = FALLBACK_DATA;
+let data = null;
 let currentLevelId = "easy";
 let latestState = null;
-
-function careModeLabel(mode) {
-  if (mode === "soft") {
-    return "柔和";
-  }
-  if (mode === "quiet") {
-    return "安静";
-  }
-  return "标准";
-}
-
-function nextCareMode(current) {
-  const index = CARE_MODES.indexOf(current);
-  return index === -1 ? "standard" : CARE_MODES[(index + 1) % CARE_MODES.length];
-}
-
-function loadSettings() {
-  try {
-    const globalParsed = JSON.parse(localStorage.getItem(GLOBAL_SETTINGS_KEY) || "{}");
-    const localParsed = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    const merged = { ...localParsed, ...globalParsed };
-    settingsState.voiceOn = merged.voiceOn !== false;
-    settingsState.careMode = CARE_MODES.includes(merged.careMode) ? merged.careMode : "standard";
-    settingsState.narrationLevel = merged.narrationLevel === "detailed" ? "detailed" : "key";
-  } catch {
-    settingsState.voiceOn = true;
-    settingsState.careMode = "standard";
-    settingsState.narrationLevel = "key";
-  }
-}
-
-function saveSettings() {
-  const payload = {
-    voiceOn: settingsState.voiceOn,
-    careMode: settingsState.careMode,
-    narrationLevel: settingsState.narrationLevel,
-    parentMode: settingsState.careMode !== "standard",
-  };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
-  localStorage.setItem(GLOBAL_SETTINGS_KEY, JSON.stringify(payload));
-}
 
 function applySettingsUi() {
   voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
   narrationBtn.textContent = `播报模式：${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}`;
   parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
-}
-
-function speak(text, detailOnly = false) {
-  if (!settingsState.voiceOn || !window.speechSynthesis || settingsState.careMode === "quiet") {
-    return;
-  }
-  if (detailOnly && settingsState.narrationLevel !== "detailed") {
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "zh-CN";
-  utterance.rate = settingsState.careMode === "standard" ? 1 : 0.92;
-  window.speechSynthesis.speak(utterance);
 }
 
 function getLevelById(id) {
@@ -127,18 +63,6 @@ function getLevelById(id) {
 
 function getSignalById(id) {
   return data.signals.find((item) => item.id === id) || null;
-}
-
-function loadBestScore() {
-  try {
-    return Number(localStorage.getItem(BEST_KEY) || 0);
-  } catch {
-    return 0;
-  }
-}
-
-function saveBestScore(score) {
-  localStorage.setItem(BEST_KEY, String(score));
 }
 
 function playTone(freq = 560, durationMs = 160) {
@@ -155,13 +79,13 @@ function renderLevelButtons() {
 
 function renderBeamButtons(state) {
   const pool = Array.isArray(state?.signalPool) ? state.signalPool : [];
-  beamButtonsEl.innerHTML = pool.map((signal) => {
+  setHtml(beamButtonsEl, pool.map((signal) => {
     const classes = ["beam-btn"];
     if (signal.id === state.beamId) {
       classes.push("is-active");
     }
     return `<button class="${classes.join(" ")}" data-beam-id="${signal.id}" style="background:${signal.color};" type="button"><span class="emoji">${signal.emoji}</span><span class="name">${signal.name}</span></button>`;
-  }).join("");
+  }).join(""));
 }
 
 function renderQueue(state) {
@@ -169,7 +93,7 @@ function renderQueue(state) {
   while (queue.length < 5) {
     queue.push(null);
   }
-  queueList.innerHTML = queue.map((boat) => {
+  setHtml(queueList, queue.map((boat) => {
     if (!boat) {
       return "<div class=\"queue-item empty\">·</div>";
     }
@@ -177,7 +101,7 @@ function renderQueue(state) {
       ? "干扰船：显示信号可能是假的"
       : (boat.isDual ? "双信号船：两种灯光都可护航" : "普通来船");
     return `<div class="queue-item ${boat.isJammer ? "jammer" : ""} ${boat.isDual ? "dual" : ""}" title="${title}">${getBoatSignalText(boat, state.weatherEvent)}</div>`;
-  }).join("");
+  }).join(""));
 }
 
 function getBoatSignalText(boat, weatherEvent) {
@@ -267,28 +191,9 @@ function showResult(payload) {
   } else {
     gameAudio.lose();
   }
-  if (payload.bestScore > loadBestScore()) {
-    saveBestScore(payload.bestScore);
+  if (payload.bestScore > readNumber(BEST_KEY)) {
+    writeValue(BEST_KEY, payload.bestScore);
   }
-}
-
-function todayString() {
-  const date = new Date();
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-}
-
-function bindSoftTap(button, handler) {
-  button.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    if (button.disabled) {
-      return;
-    }
-    handler();
-  });
-  button.addEventListener("click", (event) => event.preventDefault());
 }
 
 const game = new LighthouseGame({
@@ -296,7 +201,7 @@ const game = new LighthouseGame({
   onResult: showResult,
   onToast: (text) => {
     feedbackText.textContent = text;
-    speak(text, true);
+    speak(text, { detailOnly: true });
   },
 });
 
@@ -313,19 +218,19 @@ bindSoftTap(dailyBtn, () => startGame(`${todayString()}|${currentLevelId}|lighth
 
 bindSoftTap(voiceBtn, () => {
   settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(narrationBtn, () => {
   settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(parentModeBtn, () => {
   settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
@@ -355,18 +260,12 @@ beamButtonsEl.addEventListener("pointerup", (event) => {
 
 async function bootstrap() {
   try {
-    const response = await fetch("../../configs/levels/lighthouse-keeper.levels.json");
-    if (!response.ok) {
-      throw new Error(`Failed to load levels: ${response.status}`);
-    }
-    data = await response.json();
-  } catch {
-    data = FALLBACK_DATA;
-    selectorHint.textContent = "配置加载失败，已使用内置航线。";
+    data = await loadGameConfig("../../configs/levels/lighthouse-keeper.levels.json", ["levels", "signals"]);
+  } catch (error) {
+    showConfigError(error);
+    return;
   }
 
-  data.levels = Array.isArray(data.levels) && data.levels.length > 0 ? data.levels : FALLBACK_DATA.levels;
-  data.signals = Array.isArray(data.signals) && data.signals.length > 0 ? data.signals : FALLBACK_DATA.signals;
   data.levels = data.levels.map((level) => ({
     weatherCycleMs: 9000,
     jammerChance: 0.1,
@@ -374,12 +273,11 @@ async function bootstrap() {
     ...level,
   }));
 
-  loadSettings();
   applySettingsUi();
 
   currentLevelId = data.levels[0].id;
   renderLevelButtons();
-  game.init(data, loadBestScore());
+  game.init(data, readNumber(BEST_KEY));
 }
 
 bootstrap();

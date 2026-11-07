@@ -1,16 +1,17 @@
 import { MathGame } from "./mathGame.js";
 import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
+import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
+import { createSoftTap } from "../shared/tap.js";
+import { todayString } from "../shared/random.js";
+import { writeJson } from "../shared/storage.js";
+import { loadGameConfig, showConfigError } from "../shared/config.js";
 
-const GLOBAL_SETTINGS_KEY = "kids-global-settings";
+const bindSoftTap = createSoftTap({ flashMs: 70 });
+
 const SETTINGS_KEY = "math-settings";
 const STATS_KEY = "math-stats";
 const WRONG_QUESTIONS_KEY = "math-wrong-questions";
-
-const FALLBACK_DATA = {
-  stages: [
-    { id: "ma-1", name: "加法新手", operators: ["+"], range: [1, 10], enemyHp: 60, playerHp: 3, questionCount: 6, skillCombo: 3, damage: 12, wrongDamage: 1 },
-  ],
-};
 
 const startBtn = document.querySelector("#startBtn");
 const retryBtn = document.querySelector("#retryBtn");
@@ -42,33 +43,18 @@ const resultTitle = document.querySelector("#resultTitle");
 const resultText = document.querySelector("#resultText");
 
 const stats = { plays: 0, wins: 0 };
-const settingsState = { voiceOn: true, careMode: "standard", narrationLevel: "key" };
-const CARE_MODES = ["standard", "soft", "quiet"];
+const settingsState = loadSettings(SETTINGS_KEY);
+const speak = createSpeaker(settingsState, SPEECH_PRESETS.standard);
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
 
-let levelsData = FALLBACK_DATA;
+let levelsData = null;
 let currentStageId = "";
 let latestState = null;
 let wrongQuestions = [];
 let activeReviewQuestions = [];
 
-function careModeLabel(mode) {
-  if (mode === "soft") {
-    return "柔和";
-  }
-  if (mode === "quiet") {
-    return "安静";
-  }
-  return "标准";
-}
-
-function nextCareMode(current) {
-  const index = CARE_MODES.indexOf(current);
-  return index === -1 ? "standard" : CARE_MODES[(index + 1) % CARE_MODES.length];
-}
-
 function saveStats() {
-  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+  writeJson(STATS_KEY, stats);
 }
 
 function loadWrongQuestions() {
@@ -81,7 +67,7 @@ function loadWrongQuestions() {
 }
 
 function saveWrongQuestions() {
-  localStorage.setItem(WRONG_QUESTIONS_KEY, JSON.stringify(wrongQuestions));
+  writeJson(WRONG_QUESTIONS_KEY, wrongQuestions);
 }
 
 function addWrongQuestion(question, stageId, stageName) {
@@ -120,43 +106,6 @@ function loadStats() {
     stats.plays = 0;
     stats.wins = 0;
   }
-}
-
-function loadSettings() {
-  try {
-    const globalParsed = JSON.parse(localStorage.getItem(GLOBAL_SETTINGS_KEY) || "{}");
-    const localParsed = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    const merged = { ...localParsed, ...globalParsed };
-    settingsState.voiceOn = merged.voiceOn !== false;
-    settingsState.careMode = CARE_MODES.includes(merged.careMode) ? merged.careMode : "standard";
-    settingsState.narrationLevel = merged.narrationLevel === "detailed" ? "detailed" : "key";
-  } catch {
-    settingsState.voiceOn = true;
-    settingsState.careMode = "standard";
-    settingsState.narrationLevel = "key";
-  }
-}
-
-function saveSettings() {
-  const payload = {
-    voiceOn: settingsState.voiceOn,
-    careMode: settingsState.careMode,
-    narrationLevel: settingsState.narrationLevel,
-    parentMode: settingsState.careMode !== "standard",
-  };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
-  localStorage.setItem(GLOBAL_SETTINGS_KEY, JSON.stringify(payload));
-}
-
-function speak(text) {
-  if (!settingsState.voiceOn || !window.speechSynthesis || settingsState.careMode === "quiet") {
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "zh-CN";
-  utterance.rate = settingsState.careMode === "standard" ? 1 : 0.92;
-  window.speechSynthesis.speak(utterance);
 }
 
 function applySettingsUi() {
@@ -256,14 +205,6 @@ function hashText(input) {
   return Math.abs(hash);
 }
 
-function todayString() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
 function start(options = {}) {
   resultEl.hidden = true;
   const stageId = options.stageId || currentStageId;
@@ -273,26 +214,6 @@ function start(options = {}) {
     seed: options.seed || `${Date.now()}|math`,
     reviewQuestions: options.reviewQuestions,
   });
-}
-
-function bindSoftTap(button, handler) {
-  const run = () => {
-    if (button.disabled) {
-      return;
-    }
-    button.classList.add("tap-flash");
-    setTimeout(() => {
-      button.classList.remove("tap-flash");
-      handler();
-    }, 70);
-  };
-
-  button.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    run();
-  });
-
-  button.addEventListener("click", (event) => event.preventDefault());
 }
 
 const game = new MathGame({
@@ -310,21 +231,15 @@ bindUiTapSounds(document.body, gameAudio);
 
 async function bootstrap() {
   try {
-    const response = await fetch("../../configs/levels/math-adventure.levels.json");
-    if (!response.ok) {
-      throw new Error(`Failed to load levels: ${response.status}`);
-    }
-    levelsData = await response.json();
-  } catch {
-    levelsData = FALLBACK_DATA;
-    selectorHint.textContent = "算术配置加载失败，已使用内置章节。";
+    levelsData = await loadGameConfig("../../configs/levels/math-adventure.levels.json", ["stages"]);
+  } catch (error) {
+    showConfigError(error);
+    return;
   }
 
-  levelsData.stages = Array.isArray(levelsData?.stages) && levelsData.stages.length > 0 ? levelsData.stages : FALLBACK_DATA.stages;
   currentStageId = levelsData.stages[0].id;
   loadStats();
   loadWrongQuestions();
-  loadSettings();
   applySettingsUi();
   renderStageButtons();
   renderReviewSummary();
@@ -364,19 +279,19 @@ bindSoftTap(reviewBtn, () => {
 
 bindSoftTap(voiceBtn, () => {
   settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(narrationBtn, () => {
   settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(parentModeBtn, () => {
   settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 

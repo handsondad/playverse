@@ -1,18 +1,16 @@
 import { BubbleGame } from "./bubbleGame.js";
 import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
+import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
+import { bindSoftTap } from "../shared/tap.js";
+import { todayString } from "../shared/random.js";
+import { readNumber, writeJson, writeValue } from "../shared/storage.js";
+import { loadGameConfig, showConfigError } from "../shared/config.js";
+import { setHtml } from "../shared/dom.js";
 
 const SETTINGS_KEY = "bubble-settings";
-const GLOBAL_SETTINGS_KEY = "kids-global-settings";
 const STATS_KEY = "bubble-stats";
 const BEST_KEY = "bubble-best-score";
-
-const FALLBACK_DATA = {
-  levels: [
-    { id: "easy", name: "慢慢连", width: 7, height: 7, colorCount: 4, timeLimitSec: 90, targetScore: 240 },
-    { id: "normal", name: "刚刚好", width: 8, height: 8, colorCount: 5, timeLimitSec: 80, targetScore: 360 },
-    { id: "hard", name: "挑战王", width: 8, height: 9, colorCount: 6, timeLimitSec: 72, targetScore: 480 },
-  ],
-};
 
 const startBtn = document.querySelector("#startBtn");
 const retryBtn = document.querySelector("#retryBtn");
@@ -40,72 +38,17 @@ const resultEl = document.querySelector("#result");
 const resultTitle = document.querySelector("#resultTitle");
 const resultText = document.querySelector("#resultText");
 
-const settingsState = { voiceOn: true, careMode: "standard", narrationLevel: "key" };
-const CARE_MODES = ["standard", "soft", "quiet"];
+const settingsState = loadSettings(SETTINGS_KEY);
+const speak = createSpeaker(settingsState, SPEECH_PRESETS.standard);
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
 const stats = { plays: 0, wins: 0, totalScore: 0, bestCombo: 0 };
 
-let levelsData = FALLBACK_DATA;
+let levelsData = null;
 let currentLevelId = "easy";
 let latestState = null;
 let pointerActive = false;
 let lastClearEffectId = 0;
 let effectClearTimer = 0;
-
-function careModeLabel(mode) {
-  if (mode === "soft") {
-    return "柔和";
-  }
-  if (mode === "quiet") {
-    return "安静";
-  }
-  return "标准";
-}
-
-function nextCareMode(current) {
-  const index = CARE_MODES.indexOf(current);
-  return index === -1 ? "standard" : CARE_MODES[(index + 1) % CARE_MODES.length];
-}
-
-function speak(text, detailOnly = false) {
-  if (!settingsState.voiceOn || !window.speechSynthesis || settingsState.careMode === "quiet") {
-    return;
-  }
-  if (detailOnly && settingsState.narrationLevel !== "detailed") {
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "zh-CN";
-  utterance.rate = settingsState.careMode === "standard" ? 1 : 0.92;
-  window.speechSynthesis.speak(utterance);
-}
-
-function loadSettings() {
-  try {
-    const globalParsed = JSON.parse(localStorage.getItem(GLOBAL_SETTINGS_KEY) || "{}");
-    const localParsed = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    const merged = { ...localParsed, ...globalParsed };
-    settingsState.voiceOn = merged.voiceOn !== false;
-    settingsState.careMode = CARE_MODES.includes(merged.careMode) ? merged.careMode : "standard";
-    settingsState.narrationLevel = merged.narrationLevel === "detailed" ? "detailed" : "key";
-  } catch {
-    settingsState.voiceOn = true;
-    settingsState.careMode = "standard";
-    settingsState.narrationLevel = "key";
-  }
-}
-
-function saveSettings() {
-  const payload = {
-    voiceOn: settingsState.voiceOn,
-    careMode: settingsState.careMode,
-    narrationLevel: settingsState.narrationLevel,
-    parentMode: settingsState.careMode !== "standard",
-  };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
-  localStorage.setItem(GLOBAL_SETTINGS_KEY, JSON.stringify(payload));
-}
 
 function applySettingsUi() {
   voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
@@ -129,19 +72,7 @@ function loadStats() {
 }
 
 function saveStats() {
-  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
-}
-
-function loadBestScore() {
-  try {
-    return Number(localStorage.getItem(BEST_KEY) || 0);
-  } catch {
-    return 0;
-  }
-}
-
-function saveBestScore(score) {
-  localStorage.setItem(BEST_KEY, String(score));
+  writeJson(STATS_KEY, stats);
 }
 
 function getLevelById(levelId) {
@@ -231,7 +162,7 @@ function showClearEffect(effect) {
 
 function renderBoard(state) {
   if (!state.grid?.length) {
-    boardEl.innerHTML = "<p class=\"empty-note\">点击开始救援，棋盘会出现彩色泡泡。</p>";
+    setHtml(boardEl, "<p class=\"empty-note\">点击开始救援，棋盘会出现彩色泡泡。</p>");
     return;
   }
 
@@ -239,7 +170,7 @@ function renderBoard(state) {
   const selectedSet = new Set(state.activePath.map((point) => keyOf(point.x, point.y)));
   const hintSet = new Set(state.hintCells.map((point) => keyOf(point.x, point.y)));
 
-  boardEl.innerHTML = state.grid.map((row, y) => {
+  setHtml(boardEl, state.grid.map((row, y) => {
     return row.map((cell, x) => {
       const key = keyOf(x, y);
       const classes = ["bubble-cell", `bubble-${cell.color}`];
@@ -255,7 +186,7 @@ function renderBoard(state) {
       const symbol = cell.special === "rainbow" ? "✦" : "●";
       return `<div class="${classes.join(" ")}" data-x="${x}" data-y="${y}"><span class="bubble-symbol">${symbol}</span></div>`;
     }).join("");
-  }).join("");
+  }).join(""));
 
   renderPathOverlay(state);
 }
@@ -304,22 +235,14 @@ function showResult(payload) {
   stats.bestCombo = Math.max(stats.bestCombo, payload.bestCombo);
   saveStats();
 
-  const currentBest = loadBestScore();
+  const currentBest = readNumber(BEST_KEY);
   if (payload.score > currentBest) {
-    saveBestScore(payload.score);
+    writeValue(BEST_KEY, payload.score);
   }
 
   if (payload.isWin) {
-    speak("太棒了，救援成功。", true);
+    speak("太棒了，救援成功。", { detailOnly: true });
   }
-}
-
-function todayString() {
-  const date = new Date();
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
 }
 
 function startGame(seed = "") {
@@ -329,23 +252,12 @@ function startGame(seed = "") {
   selectorHint.textContent = `已开始：${level.name}，目标分数 ${level.targetScore}`;
 }
 
-function bindSoftTap(button, handler) {
-  button.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    if (button.disabled) {
-      return;
-    }
-    handler();
-  });
-  button.addEventListener("click", (event) => event.preventDefault());
-}
-
 const game = new BubbleGame({
   onStateChange: updateUi,
   onResult: showResult,
   onToast: (text) => {
     selectorHint.textContent = text;
-    speak(text, true);
+    speak(text, { detailOnly: true });
   },
 });
 
@@ -367,19 +279,19 @@ bindSoftTap(hintBtn, () => {
 
 bindSoftTap(voiceBtn, () => {
   settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(narrationBtn, () => {
   settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(parentModeBtn, () => {
   settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
@@ -449,28 +361,20 @@ window.addEventListener("pointerup", finishPointerPath);
 
 async function bootstrap() {
   try {
-    const response = await fetch("../../configs/levels/bubble-link-rescue.levels.json");
-    if (!response.ok) {
-      throw new Error(`Failed to load levels: ${response.status}`);
-    }
-    levelsData = await response.json();
-  } catch {
-    levelsData = FALLBACK_DATA;
-    selectorHint.textContent = "配置加载失败，已使用内置关卡。";
+    levelsData = await loadGameConfig("../../configs/levels/bubble-link-rescue.levels.json", ["levels"]);
+  } catch (error) {
+    showConfigError(error);
+    return;
   }
 
-  levelsData.levels = Array.isArray(levelsData.levels) && levelsData.levels.length > 0
-    ? levelsData.levels
-    : FALLBACK_DATA.levels;
 
-  loadSettings();
   loadStats();
   applySettingsUi();
 
   currentLevelId = levelsData.levels[0].id;
   renderLevelButtons();
 
-  game.init(levelsData.levels, loadBestScore());
+  game.init(levelsData.levels, readNumber(BEST_KEY));
 }
 
 bootstrap();

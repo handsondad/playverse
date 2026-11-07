@@ -1,24 +1,23 @@
 import { WhacGame } from "./whacGame.js";
 import { createGameAudio } from "../shared/audio.js";
+import { GLOBAL_SETTINGS_KEY, careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
+import { createSoftTap } from "../shared/tap.js";
+import { todayString } from "../shared/random.js";
+import { writeJson } from "../shared/storage.js";
+import { loadGameConfig, showConfigError } from "../shared/config.js";
+import { setGameInterval } from "../shared/timers.js";
+import { setHtml } from "../shared/dom.js";
+
+const bindSoftTap = createSoftTap({ flashMs: 80, onTap: () => soundFx.tap() });
 
 const PROGRESS_KEY = "whac-progress";
 const STATS_KEY = "whac-stats";
 const SETTINGS_KEY = "whac-settings";
-const GLOBAL_SETTINGS_KEY = "kids-global-settings";
 const PLAYTIME_KEY = "kids-playtime-tracker";
 const PLAYTIME_TICK_MS = 15000;
 const PLAYTIME_BREAK_GAP_MS = 5 * 60 * 1000;
 const PLAYTIME_GRACE_MS = 5 * 60 * 1000;
-
-const FALLBACK_LEVELS_DATA = {
-  levels: [
-    { id: "easy", name: "简单", durationSec: 30, spawnIntervalMs: 900 },
-    { id: "normal", name: "普通", durationSec: 40, spawnIntervalMs: 700 },
-    { id: "hard", name: "困难", durationSec: 50, spawnIntervalMs: 540 },
-  ],
-  targetIcons: ["🐹", "🐰", "🐶", "🐱", "🐼", "🦊"],
-  decoyIcons: ["💣", "🪨", "🌵", "🕸️"],
-};
 
 const startBtn = document.querySelector("#startBtn");
 const freezeBtn = document.querySelector("#freezeBtn");
@@ -97,7 +96,7 @@ function loadPlaytime() {
 }
 
 function savePlaytime(state) {
-  localStorage.setItem(PLAYTIME_KEY, JSON.stringify(state));
+  writeJson(PLAYTIME_KEY, state);
 }
 
 function hideRestReminder() {
@@ -162,7 +161,7 @@ function startPlaytimeTracker() {
     return;
   }
   tickPlaytime();
-  playtimeTimer = window.setInterval(tickPlaytime, PLAYTIME_TICK_MS);
+  playtimeTimer = setGameInterval(tickPlaytime, PLAYTIME_TICK_MS);
 }
 
 function wireRestReminderActions() {
@@ -203,43 +202,10 @@ const stats = {
   bestCombo: 0,
 };
 
-const settingsState = {
-  voiceOn: true,
-  careMode: "standard",
-  narrationLevel: "key",
-};
+const settingsState = loadSettings(SETTINGS_KEY);
+const speakGuide = createSpeaker(settingsState, SPEECH_PRESETS.calmGuide);
 
-const CARE_MODES = ["standard", "soft", "quiet"];
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
-
-function careModeLabel(mode) {
-  if (mode === "soft") {
-    return "柔和";
-  }
-  if (mode === "quiet") {
-    return "安静";
-  }
-  return "标准";
-}
-
-function nextCareMode(current) {
-  const index = CARE_MODES.indexOf(current);
-  if (index === -1) {
-    return "standard";
-  }
-  return CARE_MODES[(index + 1) % CARE_MODES.length];
-}
-
-function isSoundEnabled() {
-  return settingsState.careMode !== "quiet";
-}
-
-function getSoundGainMultiplier() {
-  if (settingsState.careMode === "soft") {
-    return 0.6;
-  }
-  return 1;
-}
 
 const soundFx = (() => {
   return {
@@ -260,64 +226,6 @@ const soundFx = (() => {
     },
   };
 })();
-
-function loadSettings() {
-  try {
-    const globalParsed = JSON.parse(localStorage.getItem(GLOBAL_SETTINGS_KEY) || "{}");
-    const localParsed = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    const merged = {
-      ...localParsed,
-      ...globalParsed,
-    };
-    settingsState.voiceOn = merged.voiceOn !== false;
-    if (CARE_MODES.includes(merged.careMode)) {
-      settingsState.careMode = merged.careMode;
-    } else {
-      settingsState.careMode = merged.parentMode ? "soft" : "standard";
-    }
-    settingsState.narrationLevel = merged.narrationLevel === "detailed" ? "detailed" : "key";
-  } catch {
-    settingsState.voiceOn = true;
-    settingsState.careMode = "standard";
-    settingsState.narrationLevel = "key";
-  }
-}
-
-function saveSettings() {
-  const payload = {
-    voiceOn: settingsState.voiceOn,
-    careMode: settingsState.careMode,
-    parentMode: settingsState.careMode !== "standard",
-    narrationLevel: settingsState.narrationLevel,
-  };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
-  localStorage.setItem(GLOBAL_SETTINGS_KEY, JSON.stringify(payload));
-}
-
-function speakGuide(text, options = {}) {
-  if (!settingsState.voiceOn || !window.speechSynthesis) {
-    return;
-  }
-  if (settingsState.careMode === "quiet" && !options.force) {
-    return;
-  }
-  if (options.detailOnly && settingsState.narrationLevel !== "detailed") {
-    return;
-  }
-  if (settingsState.careMode === "soft" && options.detailOnly) {
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "zh-CN";
-  utterance.rate = settingsState.careMode === "standard"
-    ? 1
-    : (settingsState.careMode === "soft" ? 0.92 : 0.88);
-  utterance.volume = settingsState.careMode === "standard"
-    ? 0.95
-    : (settingsState.careMode === "soft" ? 0.72 : 0.5);
-  window.speechSynthesis.speak(utterance);
-}
 
 function applySettingsUi() {
   document.body.classList.toggle("mode-soft", settingsState.careMode === "soft");
@@ -346,14 +254,6 @@ function pulseCombo() {
   comboValue.classList.add("combo-pop");
 }
 
-function todayString() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
 function hashText(input) {
   let hash = 0;
   for (let i = 0; i < input.length; i += 1) {
@@ -379,7 +279,7 @@ function loadProgress() {
 }
 
 function saveProgress() {
-  localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress));
+  writeJson(PROGRESS_KEY, progress);
 }
 
 function loadStats() {
@@ -396,7 +296,7 @@ function loadStats() {
 }
 
 function saveStats() {
-  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+  writeJson(STATS_KEY, stats);
 }
 
 function renderMeta() {
@@ -456,7 +356,7 @@ function updateGuide(state) {
 function renderArena(state) {
   const holes = Array.from({ length: 9 }, (_, index) => index);
 
-  arenaEl.innerHTML = holes
+  setHtml(arenaEl, holes
     .map((holeIndex) => {
       const entity = state.entities.find((item) => item.holeIndex === holeIndex);
       if (!entity) {
@@ -472,7 +372,7 @@ function renderArena(state) {
         </div>
       `;
     })
-    .join("");
+    .join(""));
 }
 
 function renderState(state) {
@@ -619,50 +519,19 @@ function start(options = null) {
   });
 }
 
-function bindSoftTap(button, handler) {
-  const run = () => {
-    if (button.disabled) {
-      return;
-    }
-    button.classList.add("tap-flash");
-    setTimeout(() => {
-      button.classList.remove("tap-flash");
-      soundFx.tap();
-      handler();
-    }, 80);
-  };
-
-  button.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    run();
-  });
-
-  button.addEventListener("click", (event) => {
-    event.preventDefault();
-  });
-}
-
 async function bootstrap() {
   try {
-    const response = await fetch("../../configs/levels/whac-a-mole.levels.json");
-    if (!response.ok) {
-      throw new Error(`Failed to load levels: ${response.status}`);
-    }
-    levelsData = await response.json();
-  } catch {
-    levelsData = FALLBACK_LEVELS_DATA;
-    guideText.textContent = "关卡配置加载失败，已使用内置难度。";
+    levelsData = await loadGameConfig("../../configs/levels/whac-a-mole.levels.json", ["levels", "targetIcons", "decoyIcons"]);
+  } catch (error) {
+    showConfigError(error);
+    return;
   }
 
-  const safeLevels = Array.isArray(levelsData?.levels) && levelsData.levels.length > 0
-    ? levelsData.levels
-    : FALLBACK_LEVELS_DATA.levels;
-  levelsData.levels = safeLevels;
+  const safeLevels = levelsData.levels;
   currentLevelId = safeLevels[0]?.id || "easy";
 
   loadProgress();
   loadStats();
-  loadSettings();
   renderMeta();
   updateChapterUi();
   applySettingsUi();
@@ -678,7 +547,7 @@ async function bootstrap() {
     if (event.key !== GLOBAL_SETTINGS_KEY) {
       return;
     }
-    loadSettings();
+    loadSettings(SETTINGS_KEY, settingsState);
     applySettingsUi();
   });
 
@@ -704,7 +573,7 @@ bindSoftTap(doubleBtn, () => {
 });
 bindSoftTap(voiceBtn, () => {
   settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
   if (settingsState.voiceOn) {
     speakGuide(guideText.textContent);
@@ -712,13 +581,13 @@ bindSoftTap(voiceBtn, () => {
 });
 bindSoftTap(narrationBtn, () => {
   settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
   speakGuide(`已切换到${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}播报`);
 });
 bindSoftTap(parentModeBtn, () => {
   settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
   speakGuide(`已切换到${careModeLabel(settingsState.careMode)}模式`, { force: true });
 });

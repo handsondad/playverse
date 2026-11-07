@@ -1,44 +1,15 @@
 import { PetClinicGame } from "./petClinicGame.js";
 import { createGameAudio } from "../shared/audio.js";
+import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
+import { bindSoftTap } from "../shared/tap.js";
+import { todayString } from "../shared/random.js";
+import { readNumber, writeValue } from "../shared/storage.js";
+import { loadGameConfig, showConfigError } from "../shared/config.js";
+import { setHtml } from "../shared/dom.js";
 
 const SETTINGS_KEY = "pet-settings";
-const GLOBAL_SETTINGS_KEY = "kids-global-settings";
 const BEST_KEY = "pet-best-score";
-
-const FALLBACK_DATA = {
-  levels: [
-    { id: "easy", name: "晨间接诊", timeLimitSec: 85, targetTreatments: 16, spawnMs: 1500, lives: 4, weatherCycleMs: 9200, emergencyChance: 0.12, vipChance: 0.08, emergencyLimitMs: 2700, roomIds: ["cold", "stomach", "check"] },
-    { id: "normal", name: "午后门诊", timeLimitSec: 80, targetTreatments: 22, spawnMs: 1250, lives: 4, weatherCycleMs: 8600, emergencyChance: 0.15, vipChance: 0.1, emergencyLimitMs: 2400, roomIds: ["cold", "stomach", "check", "injury"] },
-    { id: "hard", name: "夜间急诊", timeLimitSec: 75, targetTreatments: 28, spawnMs: 1050, lives: 3, weatherCycleMs: 7800, emergencyChance: 0.18, vipChance: 0.12, emergencyLimitMs: 2100, roomIds: ["cold", "stomach", "check", "injury", "eye"] },
-  ],
-  themes: [
-    {
-      id: "warm",
-      name: "暖心诊所",
-      palette: { brand: "#d26b8f", bg: "#fff2f5", panel: "rgba(255, 255, 255, 0.95)" },
-      weatherPool: [{ id: "sunny", name: "晴天" }, { id: "cloudy", name: "多云" }, { id: "windy", name: "微风" }],
-    },
-    {
-      id: "garden",
-      name: "花园诊所",
-      palette: { brand: "#6ea77d", bg: "#f0faef", panel: "rgba(255, 255, 255, 0.95)" },
-      weatherPool: [{ id: "sunny", name: "晴天" }, { id: "rainy", name: "细雨" }, { id: "cloudy", name: "薄云" }],
-    },
-    {
-      id: "night",
-      name: "夜班诊所",
-      palette: { brand: "#7b7fce", bg: "#f1f2ff", panel: "rgba(255, 255, 255, 0.95)" },
-      weatherPool: [{ id: "sunny", name: "晴天" }, { id: "aurora", name: "晚霞" }, { id: "windy", name: "夜风" }],
-    },
-  ],
-  rooms: [
-    { id: "cold", name: "感冒诊室", emoji: "🤧", color: "#6ea9e5", freq: 520 },
-    { id: "stomach", name: "肠胃诊室", emoji: "🤢", color: "#e4a86a", freq: 590 },
-    { id: "check", name: "体检诊室", emoji: "🩺", color: "#6fbb87", freq: 650 },
-    { id: "injury", name: "外伤诊室", emoji: "🩹", color: "#d97f8b", freq: 720 },
-    { id: "eye", name: "眼科诊室", emoji: "👀", color: "#7b8fde", freq: 790 },
-  ],
-};
 
 const startBtn = document.querySelector("#startBtn");
 const retryBtn = document.querySelector("#retryBtn");
@@ -74,85 +45,18 @@ const resultEl = document.querySelector("#result");
 const resultTitle = document.querySelector("#resultTitle");
 const resultText = document.querySelector("#resultText");
 
-const CARE_MODES = ["standard", "soft", "quiet"];
-const settingsState = { voiceOn: true, careMode: "standard", narrationLevel: "key" };
+const settingsState = loadSettings(SETTINGS_KEY);
+const speak = createSpeaker(settingsState, SPEECH_PRESETS.standard);
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
 
-let data = FALLBACK_DATA;
+let data = null;
 let currentLevelId = "easy";
 let currentThemeId = "warm";
-
-function careModeLabel(mode) {
-  if (mode === "soft") {
-    return "柔和";
-  }
-  if (mode === "quiet") {
-    return "安静";
-  }
-  return "标准";
-}
-
-function nextCareMode(current) {
-  const index = CARE_MODES.indexOf(current);
-  return index === -1 ? "standard" : CARE_MODES[(index + 1) % CARE_MODES.length];
-}
-
-function loadSettings() {
-  try {
-    const globalParsed = JSON.parse(localStorage.getItem(GLOBAL_SETTINGS_KEY) || "{}");
-    const localParsed = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    const merged = { ...localParsed, ...globalParsed };
-    settingsState.voiceOn = merged.voiceOn !== false;
-    settingsState.careMode = CARE_MODES.includes(merged.careMode) ? merged.careMode : "standard";
-    settingsState.narrationLevel = merged.narrationLevel === "detailed" ? "detailed" : "key";
-  } catch {
-    settingsState.voiceOn = true;
-    settingsState.careMode = "standard";
-    settingsState.narrationLevel = "key";
-  }
-}
-
-function saveSettings() {
-  const payload = {
-    voiceOn: settingsState.voiceOn,
-    careMode: settingsState.careMode,
-    narrationLevel: settingsState.narrationLevel,
-    parentMode: settingsState.careMode !== "standard",
-  };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
-  localStorage.setItem(GLOBAL_SETTINGS_KEY, JSON.stringify(payload));
-}
 
 function applySettingsUi() {
   voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
   narrationBtn.textContent = `播报模式：${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}`;
   parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
-}
-
-function speak(text, detailOnly = false) {
-  if (!settingsState.voiceOn || !window.speechSynthesis || settingsState.careMode === "quiet") {
-    return;
-  }
-  if (detailOnly && settingsState.narrationLevel !== "detailed") {
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "zh-CN";
-  utterance.rate = settingsState.careMode === "standard" ? 1 : 0.92;
-  window.speechSynthesis.speak(utterance);
-}
-
-function loadBestScore() {
-  try {
-    return Number(localStorage.getItem(BEST_KEY) || 0);
-  } catch {
-    return 0;
-  }
-}
-
-function saveBestScore(score) {
-  localStorage.setItem(BEST_KEY, String(score));
 }
 
 function getLevelById(id) {
@@ -164,7 +68,7 @@ function getRoomById(id) {
 }
 
 function getThemes() {
-  return Array.isArray(data.themes) && data.themes.length > 0 ? data.themes : FALLBACK_DATA.themes;
+  return data.themes;
 }
 
 function getThemeById(id) {
@@ -217,14 +121,14 @@ function applyWeatherLook(weatherId) {
 
 function renderRoomButtons(state) {
   const pool = Array.isArray(state?.roomPool) ? state.roomPool : [];
-  roomButtonsEl.innerHTML = pool.map((room) => {
+  setHtml(roomButtonsEl, pool.map((room) => {
     const classes = ["room-btn"];
     if (state.activeCase?.roomId === room.id) {
       classes.push("is-active");
     }
     const disabled = !state.isRunning || !state.activeCase;
     return `<button class="${classes.join(" ")}" data-room-id="${room.id}" style="background:${room.color};" type="button" ${disabled ? "disabled" : ""}><span class="emoji">${room.emoji}</span><span class="name">${room.name}</span></button>`;
-  }).join("");
+  }).join(""));
 }
 
 function renderQueue(state) {
@@ -232,7 +136,7 @@ function renderQueue(state) {
   while (queue.length < 5) {
     queue.push(null);
   }
-  queueList.innerHTML = queue.map((item) => {
+  setHtml(queueList, queue.map((item) => {
     if (!item) {
       return "<div class=\"queue-item empty\">·</div>";
     }
@@ -246,7 +150,7 @@ function renderQueue(state) {
     }
     const tag = item.type === "emergency" ? "⚡" : (item.type === "vip" ? "⭐" : "");
     return `<div class="${cls.join(" ")}" title="${room?.name || item.roomId}">${room?.emoji || "🤧"}${tag}</div>`;
-  }).join("");
+  }).join(""));
 }
 
 function updateUi(state) {
@@ -309,17 +213,9 @@ function showResult(payload) {
   resultEl.hidden = false;
   resultTitle.textContent = payload.isWin ? "接诊成功 ⭐" : "接诊结束，再试一次";
   resultText.textContent = `难度：${payload.levelName} | 接诊：${payload.treated}/${payload.targetTreatments} | 分数：${payload.score} | 耐心：${payload.lives} | 剩余时间：${payload.remainTime} 秒`;
-  if (payload.bestScore > loadBestScore()) {
-    saveBestScore(payload.bestScore);
+  if (payload.bestScore > readNumber(BEST_KEY)) {
+    writeValue(BEST_KEY, payload.bestScore);
   }
-}
-
-function todayString() {
-  const date = new Date();
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
 }
 
 function startGame(seed = "") {
@@ -333,23 +229,12 @@ function startGame(seed = "") {
   });
 }
 
-function bindSoftTap(button, handler) {
-  button.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    if (button.disabled) {
-      return;
-    }
-    handler();
-  });
-  button.addEventListener("click", (event) => event.preventDefault());
-}
-
 const game = new PetClinicGame({
   onStateChange: updateUi,
   onResult: showResult,
   onToast: (text) => {
     feedbackText.textContent = text;
-    speak(text, true);
+    speak(text, { detailOnly: true });
   },
 });
 
@@ -359,19 +244,19 @@ bindSoftTap(dailyBtn, () => startGame(`${todayString()}|${currentLevelId}|${curr
 
 bindSoftTap(voiceBtn, () => {
   settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(narrationBtn, () => {
   settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(parentModeBtn, () => {
   settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
@@ -417,19 +302,12 @@ roomButtonsEl.addEventListener("pointerup", (event) => {
 
 async function loadData() {
   try {
-    const response = await fetch("../../configs/levels/pet-clinic.levels.json");
-    if (!response.ok) {
-      throw new Error(`Failed to load level data: ${response.status}`);
-    }
-    data = await response.json();
-  } catch {
-    data = FALLBACK_DATA;
-    feedbackText.textContent = "关卡配置加载失败，已切换默认配置。";
+    data = await loadGameConfig("../../configs/levels/pet-clinic.levels.json", ["levels", "themes", "rooms"]);
+  } catch (error) {
+    showConfigError(error);
+    return false;
   }
 
-  data.levels = Array.isArray(data.levels) && data.levels.length > 0 ? data.levels : FALLBACK_DATA.levels;
-  data.themes = Array.isArray(data.themes) && data.themes.length > 0 ? data.themes : FALLBACK_DATA.themes;
-  data.rooms = Array.isArray(data.rooms) && data.rooms.length > 0 ? data.rooms : FALLBACK_DATA.rooms;
   data.levels = data.levels.map((level) => ({
     weatherCycleMs: 8500,
     emergencyChance: 0.12,
@@ -442,17 +320,19 @@ async function loadData() {
   currentThemeId = data.themes[0].id;
   renderLevelButtons();
   renderThemeButtons();
-  game.init(data, loadBestScore());
+  game.init(data, readNumber(BEST_KEY));
+  return true;
 }
 
 async function bootstrap() {
-  loadSettings();
   applySettingsUi();
-  await loadData();
+  if (!(await loadData())) {
+    return;
+  }
   const level = getLevelById(currentLevelId);
   const theme = getThemeById(currentThemeId);
   selectorHint.textContent = `已选择：${level.name} + ${theme.name}，目标接诊 ${level.targetTreatments} 位宠物。`;
-  speak("欢迎来到小小宠物诊所，准备开始。", true);
+  speak("欢迎来到小小宠物诊所，准备开始。", { detailOnly: true });
 }
 
 bootstrap();

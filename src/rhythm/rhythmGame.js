@@ -1,4 +1,8 @@
+import { writeValue } from "../shared/storage.js";
+
 const STORAGE_KEY = "rhythm-best-score";
+// requestAnimationFrame stops while the tab is hidden; a longer gap is a pause, not elapsed song time.
+const MAX_FRAME_GAP_MS = 250;
 
 export class RhythmGame {
   constructor({ onStateChange, onResult }) {
@@ -7,6 +11,7 @@ export class RhythmGame {
     this.state = this.createIdleState();
     this.rafId = null;
     this.startTs = 0;
+    this.lastFrameTs = 0;
   }
 
   createIdleState() {
@@ -51,7 +56,7 @@ export class RhythmGame {
   }
 
   saveBestScore(score) {
-    localStorage.setItem(STORAGE_KEY, String(score));
+    writeValue(STORAGE_KEY, score);
   }
 
   start(song, levelId, chart, options = {}) {
@@ -88,6 +93,7 @@ export class RhythmGame {
     };
 
     this.startTs = 0;
+    this.lastFrameTs = 0;
     this.emit();
     this.rafId = requestAnimationFrame((ts) => this.loop(ts));
   }
@@ -99,7 +105,10 @@ export class RhythmGame {
 
     if (!this.startTs) {
       this.startTs = ts;
+    } else if (ts - this.lastFrameTs > MAX_FRAME_GAP_MS) {
+      this.startTs += ts - this.lastFrameTs;
     }
+    this.lastFrameTs = ts;
 
     this.state.elapsedMs = ts - this.startTs;
     this.state.beatPulse = (this.state.elapsedMs % this.state.beatMs) < 120;

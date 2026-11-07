@@ -1,39 +1,18 @@
 import { RhythmGame } from "./rhythmGame.js";
 import { createGameAudio } from "../shared/audio.js";
+import { GLOBAL_SETTINGS_KEY, careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
+import { createSoftTap } from "../shared/tap.js";
+import { todayString } from "../shared/random.js";
+import { writeJson } from "../shared/storage.js";
+import { loadGameConfig, showConfigError } from "../shared/config.js";
+import { clearGameInterval, setGameInterval } from "../shared/timers.js";
+
+const bindSoftTap = createSoftTap({ flashMs: 70, onTap: () => soundFx.tap() });
 
 const STATS_KEY = "rhythm-stats";
 const SETTINGS_KEY = "rhythm-settings";
-const GLOBAL_SETTINGS_KEY = "kids-global-settings";
 const CALIBRATION_KEY = "rhythm-calibration";
-
-const FALLBACK_LEVELS_DATA = {
-  songs: [
-    {
-      id: "sunny-steps",
-      name: "小太阳节拍",
-      theme: "暖暖拍手歌",
-      bpm: 116,
-      charts: {
-        easy: {
-          label: "慢慢拍",
-          durationSec: 10,
-          travelMs: 2000,
-          judgeWindowMs: { perfect: 110, good: 220 },
-          notes: [
-            { t: 1.2, lane: 0 },
-            { t: 2.0, lane: 1 },
-            { t: 2.8, lane: 2, type: "hold", hold: 0.8 },
-            { t: 3.6, lane: 3 },
-            { t: 4.4, lane: 0 },
-            { t: 5.2, lane: 2 },
-            { t: 6.0, lane: 1 },
-            { t: 6.8, lane: 3 }
-          ]
-        }
-      }
-    }
-  ]
-};
 
 const startBtn = document.querySelector("#startBtn");
 const retryBtn = document.querySelector("#retryBtn");
@@ -104,41 +83,11 @@ const stats = {
   bestCombo: 0,
 };
 
-const settingsState = {
-  voiceOn: true,
-  careMode: "standard",
-  narrationLevel: "key",
-};
+const settingsState = loadSettings(SETTINGS_KEY);
+const speakGuide = createSpeaker(settingsState, SPEECH_PRESETS.guide);
 
-const CARE_MODES = ["standard", "soft", "quiet"];
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
 const LANE_COLORS = ["lane-1", "lane-2", "lane-3", "lane-4"];
-
-function careModeLabel(mode) {
-  if (mode === "soft") {
-    return "柔和";
-  }
-  if (mode === "quiet") {
-    return "安静";
-  }
-  return "标准";
-}
-
-function nextCareMode(current) {
-  const index = CARE_MODES.indexOf(current);
-  if (index === -1) {
-    return "standard";
-  }
-  return CARE_MODES[(index + 1) % CARE_MODES.length];
-}
-
-function isSoundEnabled() {
-  return settingsState.careMode !== "quiet";
-}
-
-function getSoundGainMultiplier() {
-  return settingsState.careMode === "soft" ? 0.55 : 1;
-}
 
 const soundFx = (() => {
   return {
@@ -180,40 +129,7 @@ function loadStats() {
 }
 
 function saveStats() {
-  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
-}
-
-function loadSettings() {
-  try {
-    const globalParsed = JSON.parse(localStorage.getItem(GLOBAL_SETTINGS_KEY) || "{}");
-    const localParsed = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    const merged = {
-      ...localParsed,
-      ...globalParsed,
-    };
-    settingsState.voiceOn = merged.voiceOn !== false;
-    if (CARE_MODES.includes(merged.careMode)) {
-      settingsState.careMode = merged.careMode;
-    } else {
-      settingsState.careMode = merged.parentMode ? "soft" : "standard";
-    }
-    settingsState.narrationLevel = merged.narrationLevel === "detailed" ? "detailed" : "key";
-  } catch {
-    settingsState.voiceOn = true;
-    settingsState.careMode = "standard";
-    settingsState.narrationLevel = "key";
-  }
-}
-
-function saveSettings() {
-  const payload = {
-    voiceOn: settingsState.voiceOn,
-    careMode: settingsState.careMode,
-    parentMode: settingsState.careMode !== "standard",
-    narrationLevel: settingsState.narrationLevel,
-  };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
-  localStorage.setItem(GLOBAL_SETTINGS_KEY, JSON.stringify(payload));
+  writeJson(STATS_KEY, stats);
 }
 
 function clamp(value, min, max) {
@@ -230,27 +146,9 @@ function loadCalibration() {
 }
 
 function saveCalibration() {
-  localStorage.setItem(CALIBRATION_KEY, JSON.stringify({
+  writeJson(CALIBRATION_KEY, {
     offsetAdjustMs: calibrationState.offsetAdjustMs,
-  }));
-}
-
-function speakGuide(text, options = {}) {
-  if (!settingsState.voiceOn || !window.speechSynthesis) {
-    return;
-  }
-  if (settingsState.careMode === "quiet" && !options.force) {
-    return;
-  }
-  if (options.detailOnly && settingsState.narrationLevel !== "detailed") {
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "zh-CN";
-  utterance.rate = settingsState.careMode === "standard" ? 1 : 0.92;
-  utterance.volume = settingsState.careMode === "standard" ? 0.95 : 0.72;
-  window.speechSynthesis.speak(utterance);
+  });
 }
 
 function applySettingsUi() {
@@ -271,7 +169,7 @@ function applySettingsUi() {
 
 function stopCalibrationSession() {
   if (calibrationTimerId) {
-    clearInterval(calibrationTimerId);
+    clearGameInterval(calibrationTimerId);
     calibrationTimerId = null;
   }
   calibrationSession = null;
@@ -322,7 +220,7 @@ function startCalibrationSession() {
 
   calibrationInfo.textContent = "准备中：先听两拍，再跟拍 4 次。";
 
-  calibrationTimerId = setInterval(() => {
+  calibrationTimerId = setGameInterval(() => {
     if (!calibrationSession) {
       return;
     }
@@ -533,14 +431,6 @@ function hashText(input) {
   return Math.abs(hash);
 }
 
-function todayString() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
 function pickDailySetup() {
   const day = todayString();
   const hash = hashText(`${day}|rhythm`);
@@ -601,29 +491,6 @@ function start(options = null) {
   });
 }
 
-function bindSoftTap(button, handler) {
-  const run = () => {
-    if (button.disabled) {
-      return;
-    }
-    button.classList.add("tap-flash");
-    setTimeout(() => {
-      button.classList.remove("tap-flash");
-      soundFx.tap();
-      handler();
-    }, 70);
-  };
-
-  button.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    run();
-  });
-
-  button.addEventListener("click", (event) => {
-    event.preventDefault();
-  });
-}
-
 function applyLaneFx(lane, result) {
   const laneButton = laneHitsEl.querySelector(`[data-lane="${lane}"]`);
   laneButton?.classList.add("is-hit");
@@ -668,23 +535,15 @@ const game = new RhythmGame({
 
 async function bootstrap() {
   try {
-    const response = await fetch("../../configs/levels/rhythm-tap.levels.json");
-    if (!response.ok) {
-      throw new Error(`Failed to load levels: ${response.status}`);
-    }
-    levelsData = await response.json();
-  } catch {
-    levelsData = FALLBACK_LEVELS_DATA;
-    guideText.textContent = "节奏配置加载失败，已使用内置歌曲。";
+    levelsData = await loadGameConfig("../../configs/levels/rhythm-tap.levels.json", ["songs"]);
+  } catch (error) {
+    showConfigError(error);
+    return;
   }
 
-  levelsData.songs = Array.isArray(levelsData?.songs) && levelsData.songs.length > 0
-    ? levelsData.songs
-    : FALLBACK_LEVELS_DATA.songs;
 
   currentSongId = levelsData.songs[0].id;
   loadStats();
-  loadSettings();
   loadCalibration();
   renderMeta();
   updateSelectorsUi();
@@ -697,7 +556,7 @@ async function bootstrap() {
     if (event.key !== GLOBAL_SETTINGS_KEY) {
       return;
     }
-    loadSettings();
+    loadSettings(SETTINGS_KEY, settingsState);
     applySettingsUi();
   });
 }
@@ -717,7 +576,7 @@ bindSoftTap(dailyBtn, () => {
 
 bindSoftTap(voiceBtn, () => {
   settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
   if (settingsState.voiceOn) {
     speakGuide(guideText.textContent);
@@ -726,14 +585,14 @@ bindSoftTap(voiceBtn, () => {
 
 bindSoftTap(narrationBtn, () => {
   settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
   speakGuide(`已切换到${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}播报`);
 });
 
 bindSoftTap(parentModeBtn, () => {
   settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
   speakGuide(`已切换到${careModeLabel(settingsState.careMode)}模式`, { force: true });
 });

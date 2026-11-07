@@ -1,316 +1,6 @@
-const groupGridToddler = document.querySelector("#groupGridToddler");
-const groupGridCognition = document.querySelector("#groupGridCognition");
-const groupGridLife = document.querySelector("#groupGridLife");
-const groupGridAction = document.querySelector("#groupGridAction");
-
-const HOME_GROUPS = [
-  {
-    element: groupGridToddler,
-    gameIds: [
-      "car-tap",
-      "animal-sound-play",
-      "balloon-tap-play",
-      "color-tap-play",
-      "shape-tap-play",
-      "number-tap",
-    ],
-  },
-  {
-    element: groupGridCognition,
-    gameIds: [
-      "literacy-spell",
-      "color-shape-sort",
-      "memory-match",
-      "bubble-link-rescue",
-      "doodle-animation",
-      "animal-choir",
-      "star-observer",
-      "fruit-count",
-    ],
-  },
-  {
-    element: groupGridLife,
-    gameIds: [
-      "chef-plating",
-      "postman-delivery",
-      "fruit-sorter",
-      "pet-clinic",
-      "mini-farm-town",
-      "ocean-cleanup",
-      "forest-ranger",
-      "market-shop",
-    ],
-  },
-  {
-    element: groupGridAction,
-    gameIds: [
-      "math-adventure",
-      "maze-puzzle",
-      "rhythm-tap",
-      "runner",
-      "whac-a-mole",
-      "lighthouse-keeper",
-    ],
-  },
-];
-
-const FALLBACK_MANIFEST = {
-  lastUpdated: "2026-07-28",
-  cards: [
-    {
-      id: "car-tap",
-      title: "小车拍一拍",
-      description: "低龄陪玩 | 大卡片车辆 | 点一下就有反馈",
-      href: "./src/car/index.html",
-      stage: "P1",
-      updated: "2026-04-17",
-      theme: "car",
-    },
-    {
-      id: "animal-sound-play",
-      title: "动物叫叫乐",
-      description: "低龄陪玩 | 认动物 | 点对就换下一只",
-      href: "./src/animal/index.html",
-      stage: "P1",
-      updated: "2026-04-17",
-      theme: "animal",
-    },
-    {
-      id: "color-tap-play",
-      title: "颜色点点看",
-      description: "低龄陪玩 | 认颜色 | 大圆块点按反馈",
-      href: "./src/colortap/index.html",
-      stage: "P1",
-      updated: "2026-04-17",
-      theme: "colortap",
-    },
-    {
-      id: "balloon-tap-play",
-      title: "气球点点乐",
-      description: "低龄陪玩 | 认颜色气球 | 轻点就有反馈",
-      href: "./src/balloon/index.html",
-      stage: "P1",
-      updated: "2026-04-17",
-      theme: "balloon",
-    },
-    {
-      id: "shape-tap-play",
-      title: "形状拍拍乐",
-      description: "低龄陪玩 | 认形状 | 大块点按反馈",
-      href: "./src/shape/index.html",
-      stage: "P1",
-      updated: "2026-04-17",
-      theme: "shape",
-    },
-    {
-      id: "math-adventure",
-      title: "算术闯关",
-      description: "教育类 | 算术战斗 | 错题复习",
-      href: "./src/math/index.html",
-      stage: "P2",
-      updated: "2026-04-16",
-      theme: "math",
-    },
-    {
-      id: "maze-puzzle",
-      title: "迷宫解谜",
-      description: "解谜类 | 机关迷宫 | 传送桥面",
-      href: "./src/maze/index.html",
-      stage: "P2",
-      updated: "2026-04-16",
-      theme: "maze",
-    },
-    {
-      id: "doodle-animation",
-      title: "涂鸦互动动画",
-      description: "创意类 | 配音同步 | 图卡+短动图",
-      href: "./src/doodle/index.html",
-      stage: "P2",
-      updated: "2026-04-16",
-      theme: "doodle",
-    },
-    {
-      id: "literacy-spell",
-      title: "字母拼读启蒙",
-      description: "启蒙类 | 主题词包 | 拼读反馈",
-      href: "./src/spell/index.html",
-      stage: "P2",
-      updated: "2026-04-17",
-      theme: "spell",
-    },
-    {
-      id: "mini-farm-town",
-      title: "迷你农场小镇",
-      description: "经营类 | 天气肥力 | 加工订单",
-      href: "./src/farm/index.html",
-      stage: "P2",
-      updated: "2026-04-16",
-      theme: "farm",
-    },
-    {
-      id: "rhythm-tap",
-      title: "节奏点点乐",
-      description: "节奏类 | 4 轨点击 | 每日挑战",
-      href: "./src/rhythm/index.html",
-      stage: "P2",
-      updated: "2026-04-16",
-      theme: "rhythm",
-    },
-    {
-      id: "runner",
-      title: "亲子跑酷",
-      description: "跑酷类 | 章节难度 | 每日挑战",
-      href: "./src/runner/index.html",
-      stage: "P2",
-      updated: "2026-04-16",
-      theme: "runner",
-    },
-    {
-      id: "color-shape-sort",
-      title: "颜色形状分类",
-      description: "认知类 | 颜色形状 | 每日挑战",
-      href: "./src/sort/index.html",
-      stage: "P2",
-      updated: "2026-04-16",
-      theme: "sort",
-    },
-    {
-      id: "memory-match",
-      title: "翻牌配对",
-      description: "记忆类 | 主题解锁 | 每日挑战",
-      href: "./src/memory/index.html",
-      stage: "P2",
-      updated: "2026-04-16",
-      theme: "memory",
-    },
-    {
-      id: "whac-a-mole",
-      title: "打地鼠升级版",
-      description: "反应类 | 章节解锁 | 每日挑战",
-      href: "./src/whac/index.html",
-      stage: "P2",
-      updated: "2026-04-16",
-      theme: "whac",
-    },
-    {
-      id: "bubble-link-rescue",
-      title: "泡泡连线救援",
-      description: "益智类 | 特殊泡泡 | 每日挑战",
-      href: "./src/bubble/index.html",
-      stage: "P2",
-      updated: "2026-04-17",
-      theme: "bubble",
-    },
-    {
-      id: "chef-plating",
-      title: "小小厨师配餐",
-      description: "生活类 | 主题菜单 | 拖拽摆盘",
-      href: "./src/chef/index.html",
-      stage: "P2",
-      updated: "2026-04-17",
-      theme: "chef",
-    },
-    {
-      id: "animal-choir",
-      title: "动物合唱团",
-      description: "听觉类 | 主题音色 | 模仿轨迹+完美奖励",
-      href: "./src/choir/index.html",
-      stage: "P2",
-      updated: "2026-04-17",
-      theme: "choir",
-    },
-    {
-      id: "lighthouse-keeper",
-      title: "灯塔守护者",
-      description: "反应类 | 天气事件 | 干扰船挑战",
-      href: "./src/lighthouse/index.html",
-      stage: "P2",
-      updated: "2026-04-17",
-      theme: "lighthouse",
-    },
-    {
-      id: "postman-delivery",
-      title: "小小邮差送信",
-      description: "反应类 | 特殊信件 | 每日路线",
-      href: "./src/postman/index.html",
-      stage: "P2",
-      updated: "2026-04-17",
-      theme: "postman",
-    },
-    {
-      id: "fruit-sorter",
-      title: "果园分拣员",
-      description: "认知类 | 特殊水果 | 主题果园",
-      href: "./src/fruit/index.html",
-      stage: "P2",
-      updated: "2026-04-17",
-      theme: "fruit",
-    },
-    {
-      id: "ocean-cleanup",
-      title: "海底清洁队",
-      description: "环保类 | 特殊漂浮物 | 主题海域",
-      href: "./src/ocean/index.html",
-      stage: "P2",
-      updated: "2026-04-17",
-      theme: "ocean",
-    },
-    {
-      id: "pet-clinic",
-      title: "小小宠物诊所",
-      description: "生活类 | 特殊病例 | 主题诊所",
-      href: "./src/pet/index.html",
-      stage: "P2",
-      updated: "2026-04-17",
-      theme: "pet",
-    },
-    {
-      id: "forest-ranger",
-      title: "森林巡护员",
-      description: "认知类 | 特殊线索 | 主题林区",
-      href: "./src/forest/index.html",
-      stage: "P2",
-      updated: "2026-04-17",
-      theme: "forest",
-    },
-    {
-      id: "star-observer",
-      title: "星空观测员",
-      description: "认知类 | 特殊天象 | 主题星域",
-      href: "./src/star/index.html",
-      stage: "P2",
-      updated: "2026-04-17",
-      theme: "star",
-    },
-    {
-      id: "number-tap",
-      title: "数字点点乐",
-      description: "低龄陪玩 | 认数字 | 1到10点对就奖励",
-      href: "./src/numbertap/index.html",
-      stage: "P1",
-      updated: "2026-07-28",
-      theme: "numbertap",
-    },
-    {
-      id: "fruit-count",
-      title: "水果计数乐",
-      description: "启蒙类 | 数水果 | 四选一答对升关",
-      href: "./src/fruitcount/index.html",
-      stage: "P1",
-      updated: "2026-07-28",
-      theme: "fruitcount",
-    },
-    {
-      id: "market-shop",
-      title: "超市购物",
-      description: "生活类 | 购物清单 | 选对商品来结账",
-      href: "./src/market/index.html",
-      stage: "P1",
-      updated: "2026-07-28",
-      theme: "market",
-    },
-  ],
-};
+const groupGrids = [...document.querySelectorAll(".menu-grid[data-group]")];
+const groupSections = [...document.querySelectorAll(".age-group[data-group]")];
+const groupLinks = [...document.querySelectorAll(".group-nav [data-group-link]")];
 
 function escapeHtml(text) {
   return String(text)
@@ -321,66 +11,81 @@ function escapeHtml(text) {
     .replaceAll("'", "&#39;");
 }
 
-function renderCard(card) {
-  const themeClass = ["car", "animal", "colortap", "balloon", "shape", "math", "maze", "doodle", "spell", "farm", "rhythm", "runner", "sort", "memory", "whac", "bubble", "chef", "choir", "lighthouse", "postman", "fruit", "ocean", "pet", "forest", "star", "numbertap", "fruitcount", "market"].includes(card.theme)
-    ? card.theme
-    : "math";
-
+function renderCard(card, index) {
+  const icon = card.icon || "🎮";
   return `
-    <a class="game-card ${themeClass}" href="${escapeHtml(card.href)}">
+    <a class="game-card ${escapeHtml(card.theme || "")}" href="${escapeHtml(card.href)}" style="--card-i:${index}">
+      <span class="card-icon" aria-hidden="true">${escapeHtml(icon)}</span>
       <strong>${escapeHtml(card.title)}</strong>
-      <span class="meta-line">
-        <em class="badge">阶段 ${escapeHtml(card.stage)}</em>
-        <em class="badge">更新时间 ${escapeHtml(card.updated)}</em>
-      </span>
-      <span>${escapeHtml(card.description)}</span>
+      <span class="card-blurb">${escapeHtml(card.description)}</span>
     </a>
   `;
 }
 
-function renderAgeGroups(data) {
-  const cards = Array.isArray(data.cards)
-    ? data.cards.filter((card) => card.id !== "project-readme")
-    : [];
-
-  if (!cards.length) {
-    HOME_GROUPS.forEach((group) => {
-      if (group.element) {
-        group.element.innerHTML = "<p class=\"menu-error\">暂无可展示的游戏卡片，请检查配置。</p>";
-      }
-    });
-    return;
-  }
-
-  HOME_GROUPS.forEach((group) => {
-    if (!group.element) {
-      return;
-    }
-
-    const groupCards = group.gameIds
-      .map((gameId) => cards.find((card) => card.id === gameId))
-      .filter(Boolean);
-
-    group.element.innerHTML = groupCards.length
+function renderGroups(cards) {
+  groupGrids.forEach((grid) => {
+    const groupCards = cards.filter((card) => card.group === grid.dataset.group);
+    grid.innerHTML = groupCards.length
       ? groupCards.map(renderCard).join("")
-      : "<p class=\"menu-error\">该年龄段暂时还没有可展示的游戏。</p>";
+      : "<p class=\"menu-error\">这个分组暂时还没有可展示的游戏。</p>";
   });
 }
 
+function renderLoadError() {
+  groupGrids.forEach((grid) => {
+    grid.innerHTML = "<p class=\"menu-error\">游戏列表加载失败，请检查网络后刷新页面。</p>";
+  });
+}
+
+function setActiveGroup(groupId) {
+  groupLinks.forEach((link) => {
+    link.classList.toggle("is-active", link.dataset.groupLink === groupId);
+  });
+}
+
+function bindGroupNav() {
+  if (!groupLinks.length || !groupSections.length) {
+    return;
+  }
+
+  setActiveGroup(groupSections[0].dataset.group);
+
+  groupLinks.forEach((link) => {
+    link.addEventListener("click", () => {
+      setActiveGroup(link.dataset.groupLink);
+    });
+  });
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible?.target?.dataset?.group) {
+        setActiveGroup(visible.target.dataset.group);
+      }
+    },
+    {
+      rootMargin: "-28% 0px -48% 0px",
+      threshold: [0.15, 0.35, 0.55],
+    },
+  );
+
+  groupSections.forEach((section) => observer.observe(section));
+}
+
 async function bootstrap() {
+  bindGroupNav();
   try {
     const response = await fetch("./configs/game-manifest.json");
     if (!response.ok) {
       throw new Error(`Failed to load manifest: ${response.status}`);
     }
     const data = await response.json();
-    renderAgeGroups(data);
-  } catch {
-    renderAgeGroups(FALLBACK_MANIFEST);
-    HOME_GROUPS[0]?.element?.insertAdjacentHTML(
-      "afterbegin",
-      "<p class=\"menu-error\">配置加载失败，已切换到默认入口。</p>",
-    );
+    renderGroups(Array.isArray(data.cards) ? data.cards : []);
+  } catch (error) {
+    console.error(error);
+    renderLoadError();
   }
 }
 

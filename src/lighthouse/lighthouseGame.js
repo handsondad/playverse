@@ -1,21 +1,5 @@
-function hashSeed(seedText) {
-  let hash = 2166136261;
-  for (let i = 0; i < seedText.length; i += 1) {
-    hash ^= seedText.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function createSeededRandom(seedText) {
-  let state = hashSeed(seedText || "lighthouse-default-seed") || 1;
-  return () => {
-    state = (state + 0x6D2B79F5) >>> 0;
-    let t = Math.imul(state ^ (state >>> 15), 1 | state);
-    t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
+import { createSeededRandom } from "../shared/random.js";
+import { clearGameInterval, setGameInterval } from "../shared/timers.js";
 
 const WEATHER_EVENTS = [
   { id: "clear", name: "晴朗", speedFactor: 1, hint: "航道清晰，保持节奏。" },
@@ -77,7 +61,7 @@ export class LighthouseGame {
 
   stop() {
     if (this.timerId) {
-      window.clearInterval(this.timerId);
+      clearGameInterval(this.timerId);
       this.timerId = 0;
     }
   }
@@ -119,7 +103,7 @@ export class LighthouseGame {
     };
 
     this.emit();
-    this.timerId = window.setInterval(() => this.tick(), 100);
+    this.timerId = setGameInterval(() => this.tick(), 100);
   }
 
   createInitialQueue(pool, count) {

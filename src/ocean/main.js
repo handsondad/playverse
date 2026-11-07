@@ -1,44 +1,15 @@
 import { OceanGame } from "./oceanGame.js";
 import { createGameAudio } from "../shared/audio.js";
+import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
+import { bindSoftTap } from "../shared/tap.js";
+import { todayString } from "../shared/random.js";
+import { readNumber, writeValue } from "../shared/storage.js";
+import { loadGameConfig, showConfigError } from "../shared/config.js";
+import { setHtml } from "../shared/dom.js";
 
 const SETTINGS_KEY = "ocean-settings";
-const GLOBAL_SETTINGS_KEY = "kids-global-settings";
 const BEST_KEY = "ocean-best-score";
-
-const FALLBACK_DATA = {
-  levels: [
-    { id: "easy", name: "海湾巡查", timeLimitSec: 85, targetCleanups: 16, spawnMs: 1500, lives: 4, weatherCycleMs: 9200, hazardChance: 0.12, treasureChance: 0.08, hazardLimitMs: 2700, netIds: ["plastic", "metal", "organic"] },
-    { id: "normal", name: "礁区守护", timeLimitSec: 80, targetCleanups: 22, spawnMs: 1250, lives: 4, weatherCycleMs: 8600, hazardChance: 0.15, treasureChance: 0.1, hazardLimitMs: 2400, netIds: ["plastic", "metal", "organic", "glass"] },
-    { id: "hard", name: "深海突击", timeLimitSec: 75, targetCleanups: 28, spawnMs: 1050, lives: 3, weatherCycleMs: 7800, hazardChance: 0.18, treasureChance: 0.12, hazardLimitMs: 2100, netIds: ["plastic", "metal", "organic", "glass", "paper"] },
-  ],
-  themes: [
-    {
-      id: "bay",
-      name: "晴蓝海湾",
-      palette: { brand: "#3f8fce", bg: "#e7f4ff", panel: "rgba(255, 255, 255, 0.95)" },
-      weatherPool: [{ id: "sunny", name: "晴海" }, { id: "cloudy", name: "薄云" }, { id: "windy", name: "海风" }],
-    },
-    {
-      id: "reef",
-      name: "珊瑚礁区",
-      palette: { brand: "#2f9b99", bg: "#e8fbf8", panel: "rgba(255, 255, 255, 0.95)" },
-      weatherPool: [{ id: "sunny", name: "晴海" }, { id: "rainy", name: "细雨" }, { id: "cloudy", name: "阴云" }],
-    },
-    {
-      id: "night-tide",
-      name: "夜潮海域",
-      palette: { brand: "#5a7cc6", bg: "#eef1ff", panel: "rgba(255, 255, 255, 0.95)" },
-      weatherPool: [{ id: "sunny", name: "晴海" }, { id: "aurora", name: "极光" }, { id: "windy", name: "急潮风" }],
-    },
-  ],
-  nets: [
-    { id: "plastic", name: "塑料网", emoji: "🧴", color: "#58a8e8", freq: 520 },
-    { id: "metal", name: "金属网", emoji: "🥫", color: "#8b98a9", freq: 590 },
-    { id: "organic", name: "有机网", emoji: "🍃", color: "#61b87a", freq: 650 },
-    { id: "glass", name: "玻璃网", emoji: "🍾", color: "#7d91d6", freq: 720 },
-    { id: "paper", name: "纸类网", emoji: "📦", color: "#d8aa62", freq: 790 },
-  ],
-};
 
 const startBtn = document.querySelector("#startBtn");
 const retryBtn = document.querySelector("#retryBtn");
@@ -74,85 +45,18 @@ const resultEl = document.querySelector("#result");
 const resultTitle = document.querySelector("#resultTitle");
 const resultText = document.querySelector("#resultText");
 
-const CARE_MODES = ["standard", "soft", "quiet"];
-const settingsState = { voiceOn: true, careMode: "standard", narrationLevel: "key" };
+const settingsState = loadSettings(SETTINGS_KEY);
+const speak = createSpeaker(settingsState, SPEECH_PRESETS.standard);
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
 
-let data = FALLBACK_DATA;
+let data = null;
 let currentLevelId = "easy";
 let currentThemeId = "bay";
-
-function careModeLabel(mode) {
-  if (mode === "soft") {
-    return "柔和";
-  }
-  if (mode === "quiet") {
-    return "安静";
-  }
-  return "标准";
-}
-
-function nextCareMode(current) {
-  const index = CARE_MODES.indexOf(current);
-  return index === -1 ? "standard" : CARE_MODES[(index + 1) % CARE_MODES.length];
-}
-
-function loadSettings() {
-  try {
-    const globalParsed = JSON.parse(localStorage.getItem(GLOBAL_SETTINGS_KEY) || "{}");
-    const localParsed = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    const merged = { ...localParsed, ...globalParsed };
-    settingsState.voiceOn = merged.voiceOn !== false;
-    settingsState.careMode = CARE_MODES.includes(merged.careMode) ? merged.careMode : "standard";
-    settingsState.narrationLevel = merged.narrationLevel === "detailed" ? "detailed" : "key";
-  } catch {
-    settingsState.voiceOn = true;
-    settingsState.careMode = "standard";
-    settingsState.narrationLevel = "key";
-  }
-}
-
-function saveSettings() {
-  const payload = {
-    voiceOn: settingsState.voiceOn,
-    careMode: settingsState.careMode,
-    narrationLevel: settingsState.narrationLevel,
-    parentMode: settingsState.careMode !== "standard",
-  };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
-  localStorage.setItem(GLOBAL_SETTINGS_KEY, JSON.stringify(payload));
-}
 
 function applySettingsUi() {
   voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
   narrationBtn.textContent = `播报模式：${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}`;
   parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
-}
-
-function speak(text, detailOnly = false) {
-  if (!settingsState.voiceOn || !window.speechSynthesis || settingsState.careMode === "quiet") {
-    return;
-  }
-  if (detailOnly && settingsState.narrationLevel !== "detailed") {
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "zh-CN";
-  utterance.rate = settingsState.careMode === "standard" ? 1 : 0.92;
-  window.speechSynthesis.speak(utterance);
-}
-
-function loadBestScore() {
-  try {
-    return Number(localStorage.getItem(BEST_KEY) || 0);
-  } catch {
-    return 0;
-  }
-}
-
-function saveBestScore(score) {
-  localStorage.setItem(BEST_KEY, String(score));
 }
 
 function getLevelById(id) {
@@ -164,7 +68,7 @@ function getNetById(id) {
 }
 
 function getThemes() {
-  return Array.isArray(data.themes) && data.themes.length > 0 ? data.themes : FALLBACK_DATA.themes;
+  return data.themes;
 }
 
 function getThemeById(id) {
@@ -219,14 +123,14 @@ function applyWeatherLook(weatherId) {
 
 function renderNetButtons(state) {
   const pool = Array.isArray(state?.netPool) ? state.netPool : [];
-  netButtonsEl.innerHTML = pool.map((net) => {
+  setHtml(netButtonsEl, pool.map((net) => {
     const classes = ["net-btn"];
     if (state.activeTrash?.netId === net.id) {
       classes.push("is-active");
     }
     const disabled = !state.isRunning || !state.activeTrash;
     return `<button class="${classes.join(" ")}" data-net-id="${net.id}" style="background:${net.color};" type="button" ${disabled ? "disabled" : ""}><span class="emoji">${net.emoji}</span><span class="name">${net.name}</span></button>`;
-  }).join("");
+  }).join(""));
 }
 
 function renderQueue(state) {
@@ -234,7 +138,7 @@ function renderQueue(state) {
   while (queue.length < 5) {
     queue.push(null);
   }
-  queueList.innerHTML = queue.map((trash) => {
+  setHtml(queueList, queue.map((trash) => {
     if (!trash) {
       return "<div class=\"queue-item empty\">·</div>";
     }
@@ -248,7 +152,7 @@ function renderQueue(state) {
     }
     const tag = trash.type === "hazard" ? "☣" : (trash.type === "treasure" ? "✨" : "");
     return `<div class="${cls.join(" ")}" title="${net?.name || trash.netId}">${net?.emoji || "🧴"}${tag}</div>`;
-  }).join("");
+  }).join(""));
 }
 
 function updateUi(state) {
@@ -318,17 +222,9 @@ function showResult(payload) {
   } else {
     gameAudio.lose();
   }
-  if (payload.bestScore > loadBestScore()) {
-    saveBestScore(payload.bestScore);
+  if (payload.bestScore > readNumber(BEST_KEY)) {
+    writeValue(BEST_KEY, payload.bestScore);
   }
-}
-
-function todayString() {
-  const date = new Date();
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
 }
 
 function startGame(seed = "") {
@@ -342,23 +238,12 @@ function startGame(seed = "") {
   });
 }
 
-function bindSoftTap(button, handler) {
-  button.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    if (button.disabled) {
-      return;
-    }
-    handler();
-  });
-  button.addEventListener("click", (event) => event.preventDefault());
-}
-
 const game = new OceanGame({
   onStateChange: updateUi,
   onResult: showResult,
   onToast: (text) => {
     feedbackText.textContent = text;
-    speak(text, true);
+    speak(text, { detailOnly: true });
   },
 });
 
@@ -368,19 +253,19 @@ bindSoftTap(dailyBtn, () => startGame(`${todayString()}|${currentLevelId}|${curr
 
 bindSoftTap(voiceBtn, () => {
   settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(narrationBtn, () => {
   settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(parentModeBtn, () => {
   settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
@@ -426,19 +311,12 @@ netButtonsEl.addEventListener("pointerup", (event) => {
 
 async function loadData() {
   try {
-    const response = await fetch("../../configs/levels/ocean-cleanup.levels.json");
-    if (!response.ok) {
-      throw new Error(`Failed to load level data: ${response.status}`);
-    }
-    data = await response.json();
-  } catch {
-    data = FALLBACK_DATA;
-    feedbackText.textContent = "关卡配置加载失败，已切换默认配置。";
+    data = await loadGameConfig("../../configs/levels/ocean-cleanup.levels.json", ["levels", "themes", "nets"]);
+  } catch (error) {
+    showConfigError(error);
+    return false;
   }
 
-  data.levels = Array.isArray(data.levels) && data.levels.length > 0 ? data.levels : FALLBACK_DATA.levels;
-  data.themes = Array.isArray(data.themes) && data.themes.length > 0 ? data.themes : FALLBACK_DATA.themes;
-  data.nets = Array.isArray(data.nets) && data.nets.length > 0 ? data.nets : FALLBACK_DATA.nets;
   data.levels = data.levels.map((level) => ({
     weatherCycleMs: 8500,
     hazardChance: 0.12,
@@ -451,17 +329,19 @@ async function loadData() {
   currentThemeId = data.themes[0].id;
   renderLevelButtons();
   renderThemeButtons();
-  game.init(data, loadBestScore());
+  game.init(data, readNumber(BEST_KEY));
+  return true;
 }
 
 async function bootstrap() {
-  loadSettings();
   applySettingsUi();
-  await loadData();
+  if (!(await loadData())) {
+    return;
+  }
   const level = getLevelById(currentLevelId);
   const theme = getThemeById(currentThemeId);
   selectorHint.textContent = `已选择：${level.name} + ${theme.name}，目标清理 ${level.targetCleanups} 份漂浮物。`;
-  speak("欢迎加入海底清洁队，准备开始。", true);
+  speak("欢迎加入海底清洁队，准备开始。", { detailOnly: true });
 }
 
 bootstrap();

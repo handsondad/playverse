@@ -1,52 +1,17 @@
 ﻿import { FarmGame } from "./farmGame.js";
 import { createGameAudio } from "../shared/audio.js";
+import { GLOBAL_SETTINGS_KEY, careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
+import { createSoftTap } from "../shared/tap.js";
+import { todayString } from "../shared/random.js";
+import { writeJson } from "../shared/storage.js";
+import { loadGameConfig, showConfigError } from "../shared/config.js";
+import { setHtml } from "../shared/dom.js";
+
+const bindSoftTap = createSoftTap({ flashMs: 70, onTap: () => soundFx.tap() });
 
 const STATS_KEY = "farm-stats";
 const SETTINGS_KEY = "farm-settings";
-const GLOBAL_SETTINGS_KEY = "kids-global-settings";
-
-const FALLBACK_LEVELS = {
-  plots: 6,
-  startCoins: 20,
-  xpPerLevel: 30,
-  crops: [
-    { id: "carrot", name: "胡萝卜", growSec: 20, yield: 2, sellPrice: 3, xp: 3, color: "#f08b3e" },
-    { id: "corn", name: "玉米", growSec: 32, yield: 3, sellPrice: 4, xp: 4, color: "#e3b53a" },
-    { id: "strawberry", name: "草莓", growSec: 44, yield: 2, sellPrice: 7, xp: 6, color: "#df6b65" },
-  ],
-  orderRules: {
-    qtyMin: 3,
-    qtyMax: 7,
-    rewardCoinBase: 12,
-    rewardXpBase: 8,
-  },
-  fertility: {
-    min: 35,
-    max: 100,
-    start: 90,
-    dropPerHarvest: 8,
-    restoreCost: 4,
-    restoreAmount: 24,
-  },
-  recipes: [
-    {
-      id: "veggie-salad",
-      name: "农场沙拉",
-      inputs: { carrot: 2, corn: 1 },
-      processSec: 14,
-      rewardCoins: 14,
-      rewardXp: 9,
-    },
-    {
-      id: "berry-juice",
-      name: "草莓果汁",
-      inputs: { strawberry: 2 },
-      processSec: 18,
-      rewardCoins: 20,
-      rewardXp: 12,
-    },
-  ],
-};
 
 const startBtn = document.querySelector("#startBtn");
 const retryBtn = document.querySelector("#retryBtn");
@@ -102,40 +67,10 @@ const stats = {
   totalCoins: 0,
 };
 
-const settingsState = {
-  voiceOn: true,
-  careMode: "standard",
-  narrationLevel: "key",
-};
+const settingsState = loadSettings(SETTINGS_KEY);
+const speakGuide = createSpeaker(settingsState, SPEECH_PRESETS.guide);
 
-const CARE_MODES = ["standard", "soft", "quiet"];
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
-
-function careModeLabel(mode) {
-  if (mode === "soft") {
-    return "柔和";
-  }
-  if (mode === "quiet") {
-    return "安静";
-  }
-  return "标准";
-}
-
-function nextCareMode(current) {
-  const index = CARE_MODES.indexOf(current);
-  if (index === -1) {
-    return "standard";
-  }
-  return CARE_MODES[(index + 1) % CARE_MODES.length];
-}
-
-function isSoundEnabled() {
-  return settingsState.careMode !== "quiet";
-}
-
-function getSoundGainMultiplier() {
-  return settingsState.careMode === "soft" ? 0.6 : 1;
-}
 
 const soundFx = (() => {
   return {
@@ -174,7 +109,7 @@ function loadStats() {
 }
 
 function saveStats() {
-  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
+  writeJson(STATS_KEY, stats);
 }
 
 function renderMeta() {
@@ -183,57 +118,6 @@ function renderMeta() {
   metaOrders.textContent = String(stats.totalOrders);
   metaTopLevel.textContent = String(stats.topLevel);
   metaCoins.textContent = String(stats.totalCoins);
-}
-
-function loadSettings() {
-  try {
-    const globalParsed = JSON.parse(localStorage.getItem(GLOBAL_SETTINGS_KEY) || "{}");
-    const localParsed = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    const merged = {
-      ...localParsed,
-      ...globalParsed,
-    };
-    settingsState.voiceOn = merged.voiceOn !== false;
-    if (CARE_MODES.includes(merged.careMode)) {
-      settingsState.careMode = merged.careMode;
-    } else {
-      settingsState.careMode = merged.parentMode ? "soft" : "standard";
-    }
-    settingsState.narrationLevel = merged.narrationLevel === "detailed" ? "detailed" : "key";
-  } catch {
-    settingsState.voiceOn = true;
-    settingsState.careMode = "standard";
-    settingsState.narrationLevel = "key";
-  }
-}
-
-function saveSettings() {
-  const payload = {
-    voiceOn: settingsState.voiceOn,
-    careMode: settingsState.careMode,
-    parentMode: settingsState.careMode !== "standard",
-    narrationLevel: settingsState.narrationLevel,
-  };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
-  localStorage.setItem(GLOBAL_SETTINGS_KEY, JSON.stringify(payload));
-}
-
-function speakGuide(text, options = {}) {
-  if (!settingsState.voiceOn || !window.speechSynthesis) {
-    return;
-  }
-  if (settingsState.careMode === "quiet" && !options.force) {
-    return;
-  }
-  if (options.detailOnly && settingsState.narrationLevel !== "detailed") {
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "zh-CN";
-  utterance.rate = settingsState.careMode === "standard" ? 1 : 0.92;
-  utterance.volume = settingsState.careMode === "standard" ? 0.95 : 0.72;
-  window.speechSynthesis.speak(utterance);
 }
 
 function applySettingsUi() {
@@ -253,7 +137,7 @@ function applySettingsUi() {
 }
 
 function renderSeedButtons(state) {
-  seedButtonsEl.innerHTML = levelsData.crops.map((crop) => {
+  setHtml(seedButtonsEl, levelsData.crops.map((crop) => {
     const activeClass = crop.id === state.currentSeedId ? "seed-button is-active" : "seed-button";
     return `
       <button class="${activeClass}" data-crop-id="${crop.id}" style="--seed-color:${crop.color};">
@@ -261,7 +145,7 @@ function renderSeedButtons(state) {
         <small>${crop.growSec} 秒成熟</small>
       </button>
     `;
-  }).join("");
+  }).join(""));
 }
 
 function inputText(inputs) {
@@ -284,7 +168,7 @@ function renderRecipeButtons(state) {
   if (!recipeButtonsEl) {
     return;
   }
-  recipeButtonsEl.innerHTML = (state.recipes || []).map((recipe) => {
+  setHtml(recipeButtonsEl, (state.recipes || []).map((recipe) => {
     const enabled = canCraft(state, recipe) && !state.process.active;
     return `
       <button class="recipe-btn" data-recipe-id="${recipe.id}" ${enabled ? "" : "disabled"}>
@@ -292,7 +176,7 @@ function renderRecipeButtons(state) {
         <small>${inputText(recipe.inputs)} -> +${recipe.rewardCoins} 金币</small>
       </button>
     `;
-  }).join("");
+  }).join(""));
 }
 
 function renderProcess(state) {
@@ -371,7 +255,7 @@ function renderField(state) {
     `;
   }).join("");
 
-  fieldEl.innerHTML = markup;
+  setHtml(fieldEl, markup);
 }
 
 function renderOrder(state) {
@@ -471,14 +355,6 @@ function hashText(input) {
   return Math.abs(hash);
 }
 
-function todayString() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
 function dailySeed() {
   const day = todayString();
   const hash = hashText(`${day}|farm`);
@@ -504,32 +380,6 @@ function startDay(options = {}) {
   }
 }
 
-function bindSoftTap(button, handler) {
-  if (!button) {
-    return;
-  }
-  const run = () => {
-    if (button.disabled) {
-      return;
-    }
-    button.classList.add("tap-flash");
-    setTimeout(() => {
-      button.classList.remove("tap-flash");
-      soundFx.tap();
-      handler();
-    }, 70);
-  };
-
-  button.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    run();
-  });
-
-  button.addEventListener("click", (event) => {
-    event.preventDefault();
-  });
-}
-
 const game = new FarmGame({
   onStateChange: renderState,
   onToast: showToast,
@@ -537,27 +387,13 @@ const game = new FarmGame({
 
 async function bootstrap() {
   try {
-    const response = await fetch("../../configs/levels/mini-farm-town.levels.json");
-    if (!response.ok) {
-      throw new Error(`Failed to load levels: ${response.status}`);
-    }
-    levelsData = await response.json();
-  } catch {
-    levelsData = FALLBACK_LEVELS;
-    guideText.textContent = "农场配置加载失败，已使用内置配置。";
+    levelsData = await loadGameConfig("../../configs/levels/mini-farm-town.levels.json", ["plots", "startCoins", "xpPerLevel", "crops", "orderRules", "fertility", "recipes"]);
+  } catch (error) {
+    showConfigError(error);
+    return;
   }
 
-  levelsData = {
-    ...FALLBACK_LEVELS,
-    ...levelsData,
-    crops: Array.isArray(levelsData?.crops) && levelsData.crops.length > 0 ? levelsData.crops : FALLBACK_LEVELS.crops,
-    orderRules: levelsData?.orderRules || FALLBACK_LEVELS.orderRules,
-    fertility: levelsData?.fertility || FALLBACK_LEVELS.fertility,
-    recipes: Array.isArray(levelsData?.recipes) && levelsData.recipes.length > 0 ? levelsData.recipes : FALLBACK_LEVELS.recipes,
-  };
-
   loadStats();
-  loadSettings();
   renderMeta();
   applySettingsUi();
 
@@ -568,7 +404,7 @@ async function bootstrap() {
     if (event.key !== GLOBAL_SETTINGS_KEY) {
       return;
     }
-    loadSettings();
+    loadSettings(SETTINGS_KEY, settingsState);
     applySettingsUi();
   });
 }
@@ -621,7 +457,7 @@ bindSoftTap(dailyBtn, () => {
 
 bindSoftTap(voiceBtn, () => {
   settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
   if (settingsState.voiceOn) {
     speakGuide(guideText.textContent);
@@ -630,14 +466,14 @@ bindSoftTap(voiceBtn, () => {
 
 bindSoftTap(narrationBtn, () => {
   settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
   speakGuide(`已切换到${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}播报`);
 });
 
 bindSoftTap(parentModeBtn, () => {
   settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
   speakGuide(`已切换到${careModeLabel(settingsState.careMode)}模式`, { force: true });
 });

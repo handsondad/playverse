@@ -98,7 +98,7 @@ export class MathGame {
     const max = stage.range[1];
     let left = this.randomInt(min, max);
     let right = this.randomInt(min, max);
-    let answer = 0;
+    let answer;
 
     if (operator === "+") {
       answer = left + right;

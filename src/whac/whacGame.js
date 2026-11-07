@@ -1,23 +1,8 @@
+import { hashSeed, mulberry32 } from "../shared/random.js";
+import { writeValue } from "../shared/storage.js";
+import { clearGameInterval, setGameInterval } from "../shared/timers.js";
+
 const BEST_KEY = "whac-best-score";
-
-function mulberry32(seed) {
-  let t = seed >>> 0;
-  return function random() {
-    t += 0x6d2b79f5;
-    let value = Math.imul(t ^ (t >>> 15), 1 | t);
-    value ^= value + Math.imul(value ^ (value >>> 7), 61 | value);
-    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-function stringToSeed(input) {
-  let hash = 2166136261;
-  for (let i = 0; i < input.length; i += 1) {
-    hash ^= input.charCodeAt(i);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
 
 function pickRandom(list, randomFn) {
   return list[Math.floor(randomFn() * list.length)];
@@ -94,13 +79,13 @@ export class WhacGame {
     this.mode = options.mode || "normal";
     this.modeName = options.modeName || "普通模式";
     if (options.seed) {
-      this.randomFn = mulberry32(stringToSeed(String(options.seed)));
+      this.randomFn = mulberry32(hashSeed(String(options.seed)));
     }
     this.timeLeft = config.durationSec;
     this.isRunning = true;
 
     this.emit();
-    this.tickTimer = setInterval(() => {
+    this.tickTimer = setGameInterval(() => {
       if (!this.isRunning) {
         return;
       }
@@ -113,7 +98,7 @@ export class WhacGame {
       this.emit();
     }, 1000);
 
-    this.spawnTimer = setInterval(() => {
+    this.spawnTimer = setGameInterval(() => {
       if (!this.isRunning || this.isFrozen) {
         return;
       }
@@ -123,11 +108,11 @@ export class WhacGame {
 
   stopTimers() {
     if (this.tickTimer) {
-      clearInterval(this.tickTimer);
+      clearGameInterval(this.tickTimer);
       this.tickTimer = null;
     }
     if (this.spawnTimer) {
-      clearInterval(this.spawnTimer);
+      clearGameInterval(this.spawnTimer);
       this.spawnTimer = null;
     }
   }
@@ -272,7 +257,7 @@ export class WhacGame {
     const key = `${BEST_KEY}:${this.config.id}`;
     const prev = Number(localStorage.getItem(key) || 0);
     if (this.score > prev) {
-      localStorage.setItem(key, String(this.score));
+      writeValue(key, this.score);
     }
   }
 

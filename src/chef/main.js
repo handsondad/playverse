@@ -1,20 +1,16 @@
 import { ChefGame } from "./chefGame.js";
 import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
+import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
+import { bindSoftTap } from "../shared/tap.js";
+import { todayString } from "../shared/random.js";
+import { readNumber, writeJson, writeValue } from "../shared/storage.js";
+import { loadGameConfig, showConfigError } from "../shared/config.js";
+import { setHtml } from "../shared/dom.js";
 
 const SETTINGS_KEY = "chef-settings";
-const GLOBAL_SETTINGS_KEY = "kids-global-settings";
 const STATS_KEY = "chef-stats";
 const BEST_KEY = "chef-best-score";
-
-const FALLBACK_DATA = {
-  levels: [
-    { id: "easy", name: "慢慢配", timeLimitSec: 95, targetOrders: 3, menuPool: ["fruit-bowl", "happy-breakfast", "veggie-plate"] },
-    { id: "normal", name: "刚刚好", timeLimitSec: 85, targetOrders: 5, menuPool: ["fruit-bowl", "happy-breakfast", "veggie-plate", "sunny-sandwich"] },
-    { id: "hard", name: "忙碌厨房", timeLimitSec: 76, targetOrders: 7, menuPool: ["fruit-bowl", "happy-breakfast", "veggie-plate", "sunny-sandwich", "party-snack"] },
-  ],
-  ingredients: [],
-  recipes: [],
-};
 
 const startBtn = document.querySelector("#startBtn");
 const retryBtn = document.querySelector("#retryBtn");
@@ -49,72 +45,17 @@ const resultEl = document.querySelector("#result");
 const resultTitle = document.querySelector("#resultTitle");
 const resultText = document.querySelector("#resultText");
 
-const CARE_MODES = ["standard", "soft", "quiet"];
-const settingsState = { voiceOn: true, careMode: "standard", narrationLevel: "key" };
+const settingsState = loadSettings(SETTINGS_KEY);
+const speak = createSpeaker(settingsState, SPEECH_PRESETS.standard);
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
 const stats = { plays: 0, completedOrders: 0, wins: 0, bestCombo: 0 };
 
 let latestState = null;
-let levelsData = FALLBACK_DATA;
+let levelsData = null;
 let currentLevelId = "easy";
 let currentThemeId = "breakfast";
 let draggingIngredientId = "";
 let draggingTrayIndex = -1;
-
-function careModeLabel(mode) {
-  if (mode === "soft") {
-    return "柔和";
-  }
-  if (mode === "quiet") {
-    return "安静";
-  }
-  return "标准";
-}
-
-function nextCareMode(current) {
-  const index = CARE_MODES.indexOf(current);
-  return index === -1 ? "standard" : CARE_MODES[(index + 1) % CARE_MODES.length];
-}
-
-function speak(text, detailOnly = false) {
-  if (!settingsState.voiceOn || !window.speechSynthesis || settingsState.careMode === "quiet") {
-    return;
-  }
-  if (detailOnly && settingsState.narrationLevel !== "detailed") {
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "zh-CN";
-  utterance.rate = settingsState.careMode === "standard" ? 1 : 0.92;
-  window.speechSynthesis.speak(utterance);
-}
-
-function loadSettings() {
-  try {
-    const globalParsed = JSON.parse(localStorage.getItem(GLOBAL_SETTINGS_KEY) || "{}");
-    const localParsed = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    const merged = { ...localParsed, ...globalParsed };
-    settingsState.voiceOn = merged.voiceOn !== false;
-    settingsState.careMode = CARE_MODES.includes(merged.careMode) ? merged.careMode : "standard";
-    settingsState.narrationLevel = merged.narrationLevel === "detailed" ? "detailed" : "key";
-  } catch {
-    settingsState.voiceOn = true;
-    settingsState.careMode = "standard";
-    settingsState.narrationLevel = "key";
-  }
-}
-
-function saveSettings() {
-  const payload = {
-    voiceOn: settingsState.voiceOn,
-    careMode: settingsState.careMode,
-    narrationLevel: settingsState.narrationLevel,
-    parentMode: settingsState.careMode !== "standard",
-  };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
-  localStorage.setItem(GLOBAL_SETTINGS_KEY, JSON.stringify(payload));
-}
 
 function applySettingsUi() {
   voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
@@ -138,19 +79,7 @@ function loadStats() {
 }
 
 function saveStats() {
-  localStorage.setItem(STATS_KEY, JSON.stringify(stats));
-}
-
-function loadBestScore() {
-  try {
-    return Number(localStorage.getItem(BEST_KEY) || 0);
-  } catch {
-    return 0;
-  }
-}
-
-function saveBestScore(score) {
-  localStorage.setItem(BEST_KEY, String(score));
+  writeJson(STATS_KEY, stats);
 }
 
 function getLevelById(levelId) {
@@ -196,13 +125,13 @@ function renderTray(state) {
     const ingredient = getIngredient(ingredientId);
     return `<button class="tray-slot filled" draggable="true" type="button" data-tray-index="${index}"><span class="slot-icon">${ingredient?.icon || "🍽️"}</span><strong>${ingredient?.name || ingredientId}</strong></button>`;
   });
-  traySlots.innerHTML = slots.join("");
+  setHtml(traySlots, slots.join(""));
 }
 
 function renderIngredients(state) {
-  ingredientsGrid.innerHTML = state.ingredients.map((item) => {
+  setHtml(ingredientsGrid, state.ingredients.map((item) => {
     return `<button class="ingredient-btn" draggable="true" type="button" data-ingredient-id="${item.id}" style="background:${item.color};"><span class="icon">${item.icon}</span><span class="name">${item.name}</span><span class="count">点一下或拖拽到餐盘</span></button>`;
-  }).join("");
+  }).join(""));
 }
 
 function renderCustomerMood(state) {
@@ -271,25 +200,9 @@ function showResult(payload) {
   stats.bestCombo = Math.max(stats.bestCombo, payload.bestCombo);
   saveStats();
 
-  if (payload.score > loadBestScore()) {
-    saveBestScore(payload.score);
+  if (payload.score > readNumber(BEST_KEY)) {
+    writeValue(BEST_KEY, payload.score);
   }
-}
-
-function todayString() {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-}
-
-function bindSoftTap(button, handler) {
-  button.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    if (button.disabled) {
-      return;
-    }
-    handler();
-  });
-  button.addEventListener("click", (event) => event.preventDefault());
 }
 
 const game = new ChefGame({
@@ -297,7 +210,7 @@ const game = new ChefGame({
   onResult: showResult,
   onToast: (text) => {
     feedbackText.textContent = text;
-    speak(text, true);
+    speak(text, { detailOnly: true });
   },
 });
 
@@ -319,19 +232,19 @@ bindSoftTap(submitBtn, () => game.submitTray());
 
 bindSoftTap(voiceBtn, () => {
   settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(narrationBtn, () => {
   settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(parentModeBtn, () => {
   settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
@@ -459,28 +372,12 @@ traySlots.addEventListener("dragend", () => {
 
 async function bootstrap() {
   try {
-    const response = await fetch("../../configs/levels/chef-plating.levels.json");
-    if (!response.ok) {
-      throw new Error(`Failed to load levels: ${response.status}`);
-    }
-    levelsData = await response.json();
-  } catch {
-    levelsData = FALLBACK_DATA;
-    selectorHint.textContent = "菜单配置加载失败，已使用内置数据。";
+    levelsData = await loadGameConfig("../../configs/levels/chef-plating.levels.json", ["levels", "themes", "ingredients", "recipes"]);
+  } catch (error) {
+    showConfigError(error);
+    return;
   }
 
-  levelsData.levels = Array.isArray(levelsData.levels) && levelsData.levels.length > 0 ? levelsData.levels : FALLBACK_DATA.levels;
-  levelsData.themes = Array.isArray(levelsData.themes) && levelsData.themes.length > 0
-    ? levelsData.themes
-    : [
-        { id: "breakfast", name: "早餐厨房", emoji: "🍳", description: "面包和鸡蛋主题，节奏轻快。" },
-        { id: "picnic", name: "野餐时光", emoji: "🧺", description: "水果和轻食主题，适合休闲配餐。" },
-        { id: "festival", name: "节日派对", emoji: "🎉", description: "点心和拼盘主题，组合更丰富。" },
-      ];
-  levelsData.ingredients = Array.isArray(levelsData.ingredients) ? levelsData.ingredients : [];
-  levelsData.recipes = Array.isArray(levelsData.recipes) ? levelsData.recipes : [];
-
-  loadSettings();
   loadStats();
   applySettingsUi();
 
@@ -488,7 +385,7 @@ async function bootstrap() {
   currentThemeId = levelsData.themes[0]?.id || "breakfast";
   renderLevelButtons();
   renderThemeButtons();
-  game.init(levelsData, loadBestScore());
+  game.init(levelsData, readNumber(BEST_KEY));
 }
 
 bootstrap();

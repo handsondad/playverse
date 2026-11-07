@@ -1,44 +1,15 @@
 import { FruitGame } from "./fruitGame.js";
 import { createGameAudio } from "../shared/audio.js";
+import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
+import { bindDelegatedTap, bindSoftTap } from "../shared/tap.js";
+import { todayString } from "../shared/random.js";
+import { readNumber, writeValue } from "../shared/storage.js";
+import { loadGameConfig, showConfigError } from "../shared/config.js";
+import { setHtml } from "../shared/dom.js";
 
 const SETTINGS_KEY = "fruit-settings";
-const GLOBAL_SETTINGS_KEY = "kids-global-settings";
 const BEST_KEY = "fruit-best-score";
-
-const FALLBACK_DATA = {
-  levels: [
-    { id: "easy", name: "晨间采摘", timeLimitSec: 85, targetDeliveries: 16, spawnMs: 1500, lives: 4, weatherCycleMs: 9200, perishableChance: 0.12, goldenChance: 0.08, spoilLimitMs: 2700, basketIds: ["red", "yellow", "green"] },
-    { id: "normal", name: "午后分拣", timeLimitSec: 80, targetDeliveries: 22, spawnMs: 1250, lives: 4, weatherCycleMs: 8600, perishableChance: 0.15, goldenChance: 0.1, spoilLimitMs: 2400, basketIds: ["red", "yellow", "green", "purple"] },
-    { id: "hard", name: "傍晚冲刺", timeLimitSec: 75, targetDeliveries: 28, spawnMs: 1050, lives: 3, weatherCycleMs: 7800, perishableChance: 0.18, goldenChance: 0.12, spoilLimitMs: 2100, basketIds: ["red", "yellow", "green", "purple", "blue"] },
-  ],
-  baskets: [
-    { id: "red", name: "红果篮", emoji: "🍎", color: "#e56f67", freq: 520 },
-    { id: "yellow", name: "黄果篮", emoji: "🍋", color: "#e2bc55", freq: 590 },
-    { id: "green", name: "青果篮", emoji: "🥝", color: "#68bd7a", freq: 650 },
-    { id: "purple", name: "紫果篮", emoji: "🍇", color: "#8d77dc", freq: 720 },
-    { id: "blue", name: "蓝果篮", emoji: "🫐", color: "#6297e8", freq: 790 },
-  ],
-  themes: [
-    {
-      id: "sunrise",
-      name: "晨曦果园",
-      palette: { brand: "#d47b48", bg: "#fff4e6", panel: "rgba(255, 255, 255, 0.95)" },
-      weatherPool: [{ id: "sunny", name: "晴天" }, { id: "cloudy", name: "晨云" }, { id: "windy", name: "微风" }],
-    },
-    {
-      id: "valley",
-      name: "山谷果园",
-      palette: { brand: "#4f8b62", bg: "#eef8ec", panel: "rgba(255, 255, 255, 0.95)" },
-      weatherPool: [{ id: "sunny", name: "晴天" }, { id: "rainy", name: "细雨" }, { id: "cloudy", name: "薄云" }],
-    },
-    {
-      id: "harvest",
-      name: "丰收果园",
-      palette: { brand: "#b45d3c", bg: "#fff0e5", panel: "rgba(255, 255, 255, 0.95)" },
-      weatherPool: [{ id: "sunny", name: "晴天" }, { id: "aurora", name: "晚霞" }, { id: "windy", name: "秋风" }],
-    },
-  ],
-};
 
 const startBtn = document.querySelector("#startBtn");
 const retryBtn = document.querySelector("#retryBtn");
@@ -74,85 +45,18 @@ const resultEl = document.querySelector("#result");
 const resultTitle = document.querySelector("#resultTitle");
 const resultText = document.querySelector("#resultText");
 
-const CARE_MODES = ["standard", "soft", "quiet"];
-const settingsState = { voiceOn: true, careMode: "standard", narrationLevel: "key" };
+const settingsState = loadSettings(SETTINGS_KEY);
+const speak = createSpeaker(settingsState, SPEECH_PRESETS.standard);
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
 
-let data = FALLBACK_DATA;
+let data = null;
 let currentLevelId = "easy";
 let currentThemeId = "sunrise";
-
-function careModeLabel(mode) {
-  if (mode === "soft") {
-    return "柔和";
-  }
-  if (mode === "quiet") {
-    return "安静";
-  }
-  return "标准";
-}
-
-function nextCareMode(current) {
-  const index = CARE_MODES.indexOf(current);
-  return index === -1 ? "standard" : CARE_MODES[(index + 1) % CARE_MODES.length];
-}
-
-function loadSettings() {
-  try {
-    const globalParsed = JSON.parse(localStorage.getItem(GLOBAL_SETTINGS_KEY) || "{}");
-    const localParsed = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
-    const merged = { ...localParsed, ...globalParsed };
-    settingsState.voiceOn = merged.voiceOn !== false;
-    settingsState.careMode = CARE_MODES.includes(merged.careMode) ? merged.careMode : "standard";
-    settingsState.narrationLevel = merged.narrationLevel === "detailed" ? "detailed" : "key";
-  } catch {
-    settingsState.voiceOn = true;
-    settingsState.careMode = "standard";
-    settingsState.narrationLevel = "key";
-  }
-}
-
-function saveSettings() {
-  const payload = {
-    voiceOn: settingsState.voiceOn,
-    careMode: settingsState.careMode,
-    narrationLevel: settingsState.narrationLevel,
-    parentMode: settingsState.careMode !== "standard",
-  };
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(payload));
-  localStorage.setItem(GLOBAL_SETTINGS_KEY, JSON.stringify(payload));
-}
 
 function applySettingsUi() {
   voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
   narrationBtn.textContent = `播报模式：${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}`;
   parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
-}
-
-function speak(text, detailOnly = false) {
-  if (!settingsState.voiceOn || !window.speechSynthesis || settingsState.careMode === "quiet") {
-    return;
-  }
-  if (detailOnly && settingsState.narrationLevel !== "detailed") {
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "zh-CN";
-  utterance.rate = settingsState.careMode === "standard" ? 1 : 0.92;
-  window.speechSynthesis.speak(utterance);
-}
-
-function loadBestScore() {
-  try {
-    return Number(localStorage.getItem(BEST_KEY) || 0);
-  } catch {
-    return 0;
-  }
-}
-
-function saveBestScore(score) {
-  localStorage.setItem(BEST_KEY, String(score));
 }
 
 function getLevelById(id) {
@@ -164,7 +68,7 @@ function getBasketById(id) {
 }
 
 function getThemes() {
-  return Array.isArray(data.themes) && data.themes.length > 0 ? data.themes : FALLBACK_DATA.themes;
+  return data.themes;
 }
 
 function getThemeById(id) {
@@ -217,14 +121,14 @@ function applyWeatherLook(weatherId) {
 
 function renderBasketButtons(state) {
   const pool = Array.isArray(state?.basketPool) ? state.basketPool : [];
-  basketButtonsEl.innerHTML = pool.map((basket) => {
+  setHtml(basketButtonsEl, pool.map((basket) => {
     const classes = ["basket-btn"];
     if (state.activeFruit?.basketId === basket.id) {
       classes.push("is-active");
     }
     const disabled = !state.isRunning || !state.activeFruit;
     return `<button class="${classes.join(" ")}" data-basket-id="${basket.id}" style="background:${basket.color};" type="button" ${disabled ? "disabled" : ""}><span class="emoji">${basket.emoji}</span><span class="name">${basket.name}</span></button>`;
-  }).join("");
+  }).join(""));
 }
 
 function renderQueue(state) {
@@ -232,7 +136,7 @@ function renderQueue(state) {
   while (queue.length < 5) {
     queue.push(null);
   }
-  queueList.innerHTML = queue.map((fruit) => {
+  setHtml(queueList, queue.map((fruit) => {
     if (!fruit) {
       return "<div class=\"queue-item empty\">·</div>";
     }
@@ -246,7 +150,7 @@ function renderQueue(state) {
     }
     const tag = fruit.type === "perishable" ? "⏱" : (fruit.type === "golden" ? "✨" : "");
     return `<div class="${cls.join(" ")}" title="${basket?.name || fruit.basketId}">${basket?.emoji || "🍎"}${tag}</div>`;
-  }).join("");
+  }).join(""));
 }
 
 function updateUi(state) {
@@ -309,17 +213,9 @@ function showResult(payload) {
   resultEl.hidden = false;
   resultTitle.textContent = payload.isWin ? "分拣成功 ⭐" : "分拣结束，再试一次";
   resultText.textContent = `难度：${payload.levelName} | 分拣：${payload.delivered}/${payload.targetDeliveries} | 分数：${payload.score} | 生命：${payload.lives} | 剩余时间：${payload.remainTime} 秒`;
-  if (payload.bestScore > loadBestScore()) {
-    saveBestScore(payload.bestScore);
+  if (payload.bestScore > readNumber(BEST_KEY)) {
+    writeValue(BEST_KEY, payload.bestScore);
   }
-}
-
-function todayString() {
-  const date = new Date();
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
 }
 
 function startGame(seed = "") {
@@ -333,54 +229,12 @@ function startGame(seed = "") {
   });
 }
 
-function bindSoftTap(button, handler) {
-  button.addEventListener("pointerup", (event) => {
-    event.preventDefault();
-    if (button.disabled) {
-      return;
-    }
-    handler();
-  });
-  button.addEventListener("click", (event) => event.preventDefault());
-}
-
-function bindDelegatedTap(container, selector, handler) {
-  if (!container) {
-    return;
-  }
-
-  let lastPointerUpAt = 0;
-
-  container.addEventListener("pointerup", (event) => {
-    const button = event.target.closest(selector);
-    if (!button) {
-      return;
-    }
-    event.preventDefault();
-    lastPointerUpAt = Date.now();
-    handler(button);
-  });
-
-  container.addEventListener("click", (event) => {
-    const button = event.target.closest(selector);
-    if (!button) {
-      return;
-    }
-    event.preventDefault();
-    // Ignore the synthetic click that often follows pointerup.
-    if (Date.now() - lastPointerUpAt < 350) {
-      return;
-    }
-    handler(button);
-  });
-}
-
 const game = new FruitGame({
   onStateChange: updateUi,
   onResult: showResult,
   onToast: (text) => {
     feedbackText.textContent = text;
-    speak(text, true);
+    speak(text, { detailOnly: true });
   },
 });
 
@@ -390,19 +244,19 @@ bindSoftTap(dailyBtn, () => startGame(`${todayString()}|${currentLevelId}|${curr
 
 bindSoftTap(voiceBtn, () => {
   settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(narrationBtn, () => {
   settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
 bindSoftTap(parentModeBtn, () => {
   settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings();
+  saveSettings(SETTINGS_KEY, settingsState);
   applySettingsUi();
 });
 
@@ -431,19 +285,12 @@ bindDelegatedTap(basketButtonsEl, "[data-basket-id]", (button) => {
 
 async function loadData() {
   try {
-    const response = await fetch("../../configs/levels/fruit-sorter.levels.json");
-    if (!response.ok) {
-      throw new Error(`Failed to load level data: ${response.status}`);
-    }
-    data = await response.json();
-  } catch {
-    data = FALLBACK_DATA;
-    feedbackText.textContent = "关卡配置加载失败，已切换默认配置。";
+    data = await loadGameConfig("../../configs/levels/fruit-sorter.levels.json", ["levels", "baskets", "themes"]);
+  } catch (error) {
+    showConfigError(error);
+    return false;
   }
 
-  data.levels = Array.isArray(data.levels) && data.levels.length > 0 ? data.levels : FALLBACK_DATA.levels;
-  data.baskets = Array.isArray(data.baskets) && data.baskets.length > 0 ? data.baskets : FALLBACK_DATA.baskets;
-  data.themes = Array.isArray(data.themes) && data.themes.length > 0 ? data.themes : FALLBACK_DATA.themes;
   data.levels = data.levels.map((level) => ({
     weatherCycleMs: 8500,
     perishableChance: 0.12,
@@ -456,17 +303,19 @@ async function loadData() {
   currentThemeId = data.themes[0].id;
   renderLevelButtons();
   renderThemeButtons();
-  game.init(data, loadBestScore());
+  game.init(data, readNumber(BEST_KEY));
+  return true;
 }
 
 async function bootstrap() {
-  loadSettings();
   applySettingsUi();
-  await loadData();
+  if (!(await loadData())) {
+    return;
+  }
   const level = getLevelById(currentLevelId);
   const theme = getThemeById(currentThemeId);
   selectorHint.textContent = `已选择：${level.name} + ${theme.name}，目标分拣 ${level.targetDeliveries} 篮水果。`;
-  speak("欢迎来到果园分拣员，准备开始。", true);
+  speak("欢迎来到果园分拣员，准备开始。", { detailOnly: true });
 }
 
 bootstrap();
