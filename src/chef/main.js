@@ -1,10 +1,11 @@
 import { ChefGame } from "./chefGame.js";
 import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
-import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { loadSettings } from "../shared/settings.js";
+import { mountSettingsButtons } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { bindSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
-import { readJson, readNumber, writeJson, writeValue } from "../shared/storage.js";
+import { readNumber, readNumbers, writeJson, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { setHtml, setText } from "../shared/dom.js";
 
@@ -17,9 +18,6 @@ const retryBtn = document.querySelector("#retryBtn");
 const dailyBtn = document.querySelector("#dailyBtn");
 const clearTrayBtn = document.querySelector("#clearTrayBtn");
 const submitBtn = document.querySelector("#submitBtn");
-const voiceBtn = document.querySelector("#voiceBtn");
-const narrationBtn = document.querySelector("#narrationBtn");
-const parentModeBtn = document.querySelector("#parentModeBtn");
 
 const levelButtonsEl = document.querySelector("#levelButtons");
 const themeButtonsEl = document.querySelector("#themeButtons");
@@ -48,7 +46,7 @@ const resultText = document.querySelector("#resultText");
 const settingsState = loadSettings(SETTINGS_KEY);
 const speak = createSpeaker(settingsState, SPEECH_PRESETS.standard);
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
-const stats = { plays: 0, completedOrders: 0, wins: 0, bestCombo: 0 };
+const stats = readNumbers(STATS_KEY, { plays: 0, completedOrders: 0, wins: 0, bestCombo: 0 });
 
 let latestState = null;
 let levelsData = null;
@@ -56,20 +54,6 @@ let currentLevelId = "easy";
 let currentThemeId = "breakfast";
 let draggingIngredientId = "";
 let draggingTrayIndex = -1;
-
-function applySettingsUi() {
-  voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
-  narrationBtn.textContent = `播报模式：${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}`;
-  parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
-}
-
-function loadStats() {
-  const parsed = readJson(STATS_KEY);
-  stats.plays = Number(parsed.plays || 0);
-  stats.completedOrders = Number(parsed.completedOrders || 0);
-  stats.wins = Number(parsed.wins || 0);
-  stats.bestCombo = Number(parsed.bestCombo || 0);
-}
 
 function saveStats() {
   writeJson(STATS_KEY, stats);
@@ -223,22 +207,10 @@ bindSoftTap(dailyBtn, () => startGame(`${todayString()}|${currentLevelId}|chef`)
 bindSoftTap(clearTrayBtn, () => game.clearTray());
 bindSoftTap(submitBtn, () => game.submitTray());
 
-bindSoftTap(voiceBtn, () => {
-  settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-});
-
-bindSoftTap(narrationBtn, () => {
-  settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-});
-
-bindSoftTap(parentModeBtn, () => {
-  settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
+mountSettingsButtons({
+  storageKey: SETTINGS_KEY,
+  settings: settingsState,
+  bindTap: bindSoftTap,
 });
 
 levelButtonsEl.addEventListener("pointerup", (event) => {
@@ -370,9 +342,6 @@ async function bootstrap() {
     showConfigError(error);
     return;
   }
-
-  loadStats();
-  applySettingsUi();
 
   currentLevelId = levelsData.levels[0].id;
   currentThemeId = levelsData.themes[0]?.id || "breakfast";

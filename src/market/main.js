@@ -1,8 +1,9 @@
 import { MarketGame } from "./marketGame.js";
 import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
-import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { loadSettings } from "../shared/settings.js";
+import { mountSettingsButtons } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
-import { readJson, writeJson } from "../shared/storage.js";
+import { readNumbers, writeJson } from "../shared/storage.js";
 import { setText } from "../shared/dom.js";
 
 const PROGRESS_KEY = "market-game-progress";
@@ -21,28 +22,15 @@ const feedbackEl = document.querySelector("#feedback");
 const nextOrderBtn = document.querySelector("#nextOrderBtn");
 const submitBtn = document.querySelector("#submitBtn");
 const clearCartBtn = document.querySelector("#clearCartBtn");
-const voiceBtn = document.querySelector("#voiceBtn");
 const resetBtn = document.querySelector("#resetBtn");
-const parentModeBtn = document.querySelector("#parentModeBtn");
 
 const settingsState = loadSettings(SETTINGS_KEY);
 const speak = createSpeaker(settingsState, SPEECH_PRESETS.toddler);
-const progressState = { bestScore: 0, bestOrders: 0 };
+const progressState = readNumbers(PROGRESS_KEY, { bestScore: 0, bestOrders: 0 });
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
-
-function loadProgress() {
-  const parsed = readJson(PROGRESS_KEY);
-  progressState.bestScore = Number(parsed.bestScore || 0);
-  progressState.bestOrders = Number(parsed.bestOrders || 0);
-}
 
 function saveProgress() {
   writeJson(PROGRESS_KEY, progressState);
-}
-
-function renderSettingsUi() {
-  voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
-  parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
 }
 
 function renderShoppingList(snapshot) {
@@ -177,20 +165,7 @@ resetBtn.addEventListener("click", () => {
   gameAudio.uiTap();
 });
 
-voiceBtn.addEventListener("click", () => {
-  settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings(SETTINGS_KEY, settingsState);
-  renderSettingsUi();
-});
-
-parentModeBtn.addEventListener("click", () => {
-  settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings(SETTINGS_KEY, settingsState);
-  renderSettingsUi();
-});
-
-loadProgress();
-renderSettingsUi();
+mountSettingsButtons({ storageKey: SETTINGS_KEY, settings: settingsState });
 bindUiTapSounds(document.body, gameAudio);
 render(game.getSnapshot());
 

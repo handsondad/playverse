@@ -1,5 +1,6 @@
 import { bindUiTapSounds, createGameAudio } from "./audio.js";
-import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "./settings.js";
+import { loadSettings } from "./settings.js";
+import { mountSettingsButtons } from "./settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "./speech.js";
 import { readJson, writeJson } from "./storage.js";
 
@@ -94,8 +95,6 @@ export function mountFindGame(config) {
   const nextBtn = document.querySelector("#nextBtn");
   const resetBtn = document.querySelector("#resetBtn");
   const statsToggleBtn = document.querySelector("#statsToggleBtn");
-  const voiceBtn = document.querySelector("#voiceBtn");
-  const parentModeBtn = document.querySelector("#parentModeBtn");
 
   const settingsState = loadSettings(settingsKey);
   const speak = createSpeaker(settingsState, SPEECH_PRESETS.toddler);
@@ -104,12 +103,10 @@ export function mountFindGame(config) {
   const uiState = { statsOpen: false };
   let celebrationTimer = 0;
 
-  function renderSettingsUi() {
+  function renderStatsToggle() {
     if (statsToggleBtn) {
       statsToggleBtn.textContent = uiState.statsOpen ? "收起数据" : "家长查看";
     }
-    voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
-    parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
   }
 
   function showCelebration(text) {
@@ -193,26 +190,21 @@ export function mountFindGame(config) {
 
   statsToggleBtn?.addEventListener("click", () => {
     uiState.statsOpen = !uiState.statsOpen;
-    renderSettingsUi();
+    renderStatsToggle();
     document.body.classList.toggle("stats-open", uiState.statsOpen);
   });
 
-  voiceBtn.addEventListener("click", () => {
-    settingsState.voiceOn = !settingsState.voiceOn;
-    saveSettings(settingsKey, settingsState);
-    renderSettingsUi();
-    if (settingsState.voiceOn) {
-      speak(game.getSnapshot().feedback, { force: true });
-    }
+  mountSettingsButtons({
+    storageKey: settingsKey,
+    settings: settingsState,
+    announce: (kind) => {
+      if (kind === "voice" && settingsState.voiceOn) {
+        speak(game.getSnapshot().feedback, { force: true });
+      }
+    },
   });
 
-  parentModeBtn.addEventListener("click", () => {
-    settingsState.careMode = nextCareMode(settingsState.careMode);
-    saveSettings(settingsKey, settingsState);
-    renderSettingsUi();
-  });
-
-  renderSettingsUi();
+  renderStatsToggle();
   bindUiTapSounds(document.body, gameAudio);
   refresh();
   speak(`找${game.getSnapshot().target.name}。`, { force: true });

@@ -1,6 +1,7 @@
 import { DoodleGame } from "./doodleGame.js";
 import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
-import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { loadSettings } from "../shared/settings.js";
+import { mountSettingsButtons } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { bindSoftTap } from "../shared/tap.js";
 import { readJson, writeJson } from "../shared/storage.js";
@@ -38,10 +39,6 @@ const guideText = document.querySelector("#guideText");
 const drawCanvas = document.querySelector("#drawCanvas");
 const previewCanvas = document.querySelector("#previewCanvas");
 
-const voiceBtn = document.querySelector("#voiceBtn");
-const narrationBtn = document.querySelector("#narrationBtn");
-const parentModeBtn = document.querySelector("#parentModeBtn");
-
 const settingsState = loadSettings(SETTINGS_KEY);
 const speak = createSpeaker(settingsState, SPEECH_PRESETS.standard);
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
@@ -61,12 +58,6 @@ let recordStartedAt = 0;
 let autoStopTimer = 0;
 let works = [];
 let isExportingClip = false;
-
-function applySettingsUi() {
-  voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
-  narrationBtn.textContent = `播报模式：${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}`;
-  parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
-}
 
 function formatDateTime(timeText) {
   const date = new Date(timeText);
@@ -664,7 +655,6 @@ async function bootstrap() {
   const templates = templatesData.templates;
 
   loadWorks();
-  applySettingsUi();
   game.init(templates);
   renderWorks();
   updateRecordButtons();
@@ -797,22 +787,10 @@ drawCanvas.addEventListener("pointerup", endPointer);
 drawCanvas.addEventListener("pointercancel", endPointer);
 drawCanvas.addEventListener("pointerleave", endPointer);
 
-bindSoftTap(voiceBtn, () => {
-  settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-});
-
-bindSoftTap(narrationBtn, () => {
-  settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-});
-
-bindSoftTap(parentModeBtn, () => {
-  settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
+mountSettingsButtons({
+  storageKey: SETTINGS_KEY,
+  settings: settingsState,
+  bindTap: bindSoftTap,
 });
 
 window.addEventListener("beforeunload", () => {

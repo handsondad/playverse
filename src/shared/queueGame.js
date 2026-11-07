@@ -1,7 +1,8 @@
 import { createSeededRandom, todayString } from "./random.js";
 import { clearGameInterval, setGameInterval } from "./timers.js";
 import { createGameAudio } from "./audio.js";
-import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "./settings.js";
+import { loadSettings } from "./settings.js";
+import { mountSettingsButtons } from "./settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "./speech.js";
 import { bindDelegatedTap, bindSoftTap } from "./tap.js";
 import { readNumber, writeValue } from "./storage.js";
@@ -321,9 +322,6 @@ export function mountQueueGame(rules, ui) {
   const startBtn = $("#startBtn");
   const retryBtn = $("#retryBtn");
   const dailyBtn = $("#dailyBtn");
-  const voiceBtn = $("#voiceBtn");
-  const narrationBtn = $("#narrationBtn");
-  const parentModeBtn = $("#parentModeBtn");
 
   const levelButtonsEl = $("#levelButtons");
   const themeButtonsEl = $("#themeButtons");
@@ -360,12 +358,6 @@ export function mountQueueGame(rules, ui) {
   let currentLevelId = "";
   let currentThemeId = "";
   let latestState = null;
-
-  function applySettingsUi() {
-    voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
-    narrationBtn.textContent = `播报模式：${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}`;
-    parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
-  }
 
   function getLevelById(id) {
     return data.levels.find((item) => item.id === id) || data.levels[0];
@@ -547,23 +539,7 @@ export function mountQueueGame(rules, ui) {
   bindSoftTap(retryBtn, () => startGame());
   bindSoftTap(dailyBtn, () => startGame(`${todayString()}|${currentLevelId}|${currentThemeId}|${rules.seedTag}`));
 
-  bindSoftTap(voiceBtn, () => {
-    settingsState.voiceOn = !settingsState.voiceOn;
-    saveSettings(SETTINGS_KEY, settingsState);
-    applySettingsUi();
-  });
-
-  bindSoftTap(narrationBtn, () => {
-    settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-    saveSettings(SETTINGS_KEY, settingsState);
-    applySettingsUi();
-  });
-
-  bindSoftTap(parentModeBtn, () => {
-    settingsState.careMode = nextCareMode(settingsState.careMode);
-    saveSettings(SETTINGS_KEY, settingsState);
-    applySettingsUi();
-  });
+  mountSettingsButtons({ storageKey: SETTINGS_KEY, settings: settingsState, bindTap: bindSoftTap });
 
   bindDelegatedTap(levelButtonsEl, "[data-level-id]", (button) => {
     currentLevelId = button.dataset.levelId;
@@ -588,7 +564,6 @@ export function mountQueueGame(rules, ui) {
   });
 
   async function bootstrap() {
-    applySettingsUi();
     try {
       data = await loadGameConfig(ui.configUrl, ui.requiredKeys);
     } catch (error) {

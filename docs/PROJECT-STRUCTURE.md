@@ -17,10 +17,12 @@ src/
     base.css                # 所有页面先于自身 styles.css 引入：box-sizing、键盘焦点环
     audio.js                # Web Audio 音效
     settings.js             # 全局/本地设置合并（护眼、语音、播报粒度）
+    settingsButtons.js      # 语音/播报/护眼三个按钮：文案、切换、保存、跨标签页同步
+    restReminder.js         # 连续游玩休息提醒（#restReminder 面板，各游戏共用计时）
     speech.js               # 语音播报预设
     tap.js                  # 触屏/键盘点按去重
-    storage.js              # 安全读写 localStorage
-    random.js               # 种子随机（每日挑战）
+    storage.js              # 安全读写 localStorage；readNumbers 读统计，readUnlocks 读难度解锁
+    random.js               # 种子随机；hashText 选每日挑战（不能换成 hashSeed）
     timers.js               # 页面隐藏时暂停的 setInterval
     config.js               # 关卡 JSON 加载与失败遮罩
     dom.js                  # setHtml：相同 markup 跳过重绘；setText：播报区域文字不变时不重写；
@@ -48,7 +50,7 @@ configs/
   game-manifest.json
   levels/                   # 各游戏关卡 JSON（无内置 fallback）
 tests/
-  shared.test.js            # 随机数、设置、定时器、FindGame、setHtml
+  shared.test.js            # 随机数、设置与设置按钮、存储记录、定时器、FindGame、dom 工具
   configs.test.js           # manifest 覆盖全部页面；loadGameConfig 键完整
   queue-game.test.js        # 队列分拣引擎：种子可复现 + 计分规则
 ```
@@ -73,7 +75,7 @@ scripts/
 1. 在 `src/<game>/` 建 `index.html`、`main.js`、`styles.css`，以及可选的 `*Game.js`；`index.html` 里先引入 `../shared/base.css` 再引入 `./styles.css`。焦点环颜色可用 `--focus-ring` 覆盖，不要写 `outline: none`。
 2. 需要关卡时在 `configs/levels/` 增加 JSON，用 `loadGameConfig` 加载；失败时用 `showConfigError`，不要再塞内置 fallback。
 3. 在 `configs/game-manifest.json` 增加卡片，填好 `group`（`toddler` / `cognition` / `life` / `action`）和 `theme`。
-4. 复用 `src/shared/`：设置、语音、点按、存储、随机数、计时器；低龄「找卡片」类可直接用 `mountFindGame`，「队列分拣」类可直接用 `mountQueueGame`。
+4. 复用 `src/shared/`：设置、语音、点按、存储、随机数、计时器；低龄「找卡片」类可直接用 `mountFindGame`，「队列分拣」类可直接用 `mountQueueGame`。设置按钮用 `mountSettingsButtons`，游戏自己的时长提示等放进 `onChange`；统计/最高分用 `readNumbers(key, 默认值)`。
 5. 需要计时循环时用 `setGameInterval`，需要频繁重绘按钮区时用 `setHtml`。
 6. 反馈文字放在一个 `role="status"` 元素里并用 `setText` 写入；统计面板（时间、分数等每秒变化的区域）不要加 `aria-live`。
 

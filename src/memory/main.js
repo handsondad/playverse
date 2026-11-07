@@ -1,12 +1,13 @@
 import { MemoryGame } from "./memoryGame.js";
 import { createGameAudio } from "../shared/audio.js";
-import { GLOBAL_SETTINGS_KEY, careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { loadSettings } from "../shared/settings.js";
+import { mountSettingsButtons, speakSettingChanges } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { createSoftTap } from "../shared/tap.js";
-import { todayString } from "../shared/random.js";
-import { readJson, writeJson } from "../shared/storage.js";
+import { hashText, todayString } from "../shared/random.js";
+import { readJson, readNumbers, readUnlocks, writeJson } from "../shared/storage.js";
+import { mountRestReminder } from "../shared/restReminder.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setGameInterval } from "../shared/timers.js";
 import { setText } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 80, onTap: () => soundFx.tap() });
@@ -15,10 +16,12 @@ const STORAGE_PROGRESS_KEY = "memory-match-progress";
 const STORAGE_STATS_KEY = "memory-match-stats";
 const DAILY_BOARD_KEY_PREFIX = "memory-match-daily-board";
 const SETTINGS_KEY = "memory-match-settings";
-const PLAYTIME_KEY = "kids-playtime-tracker";
-const PLAYTIME_TICK_MS = 15000;
-const PLAYTIME_BREAK_GAP_MS = 5 * 60 * 1000;
-const PLAYTIME_GRACE_MS = 5 * 60 * 1000;
+
+const DURATION_HINTS = {
+  standard: "标准模式：建议每次游玩 8-10 分钟，注意休息眼睛。",
+  soft: "柔和模式：降低动画和音量，建议每次游玩 6-8 分钟。",
+  quiet: "安静模式：关闭音效并尽量减少播报，建议每次游玩 5-6 分钟。",
+};
 
 const THEME_DISPLAY_NAMES = {
   animals: "小动物乐园",
@@ -31,9 +34,6 @@ const previewBtn = document.querySelector("#previewBtn");
 const hintBtn = document.querySelector("#hintBtn");
 const shieldBtn = document.querySelector("#shieldBtn");
 const dailyBtn = document.querySelector("#dailyBtn");
-const voiceBtn = document.querySelector("#voiceBtn");
-const narrationBtn = document.querySelector("#narrationBtn");
-const parentModeBtn = document.querySelector("#parentModeBtn");
 const retryBtn = document.querySelector("#retryBtn");
 
 const chapterEasyBtn = document.querySelector("#chapterEasyBtn");
@@ -69,10 +69,6 @@ const boardEl = document.querySelector("#board");
 const resultEl = document.querySelector("#result");
 const resultTitle = document.querySelector("#resultTitle");
 const resultText = document.querySelector("#resultText");
-const restReminder = document.querySelector("#restReminder");
-const restReminderText = document.querySelector("#restReminderText");
-const restNowBtn = document.querySelector("#restNowBtn");
-const restContinueBtn = document.querySelector("#restContinueBtn");
 
 const chapterButtons = [chapterEasyBtn, chapterNormalBtn, chapterHardBtn];
 
@@ -82,137 +78,19 @@ let previousState = null;
 let lastCountdownSound = null;
 let pendingStartOptions = null;
 let currentDailyDay = null;
-let playtimeTimer = null;
 let currentLevelId = "easy";
 let currentThemeKey = "animals";
 
-function getThresholdMs() {
-  if (settingsState.careMode === "quiet") {
-    return 6 * 60 * 1000;
-  }
-  if (settingsState.careMode === "soft") {
-    return 8 * 60 * 1000;
-  }
-  return 10 * 60 * 1000;
-}
+const progressState = readUnlocks(STORAGE_PROGRESS_KEY);
 
-function loadPlaytime() {
-  const parsed = readJson(PLAYTIME_KEY);
-  return {
-    continuousMs: Number(parsed.continuousMs || 0),
-    lastTick: Number(parsed.lastTick || Date.now()),
-    snoozeUntil: Number(parsed.snoozeUntil || 0),
-    remindStage: Number(parsed.remindStage || 0),
-  };
-}
-
-function savePlaytime(state) {
-  writeJson(PLAYTIME_KEY, state);
-}
-
-function hideRestReminder() {
-  restReminder.hidden = true;
-}
-
-function showRestReminder(message) {
-  restReminderText.textContent = message;
-  restReminder.hidden = false;
-}
-
-function checkPlaytimeReminder(now, state) {
-  if (document.hidden) {
-    return state;
-  }
-  if (!latestState?.isRunning) {
-    hideRestReminder();
-    return state;
-  }
-  const thresholdMs = getThresholdMs();
-  if (now < state.snoozeUntil) {
-    return state;
-  }
-  if (state.continuousMs >= thresholdMs + PLAYTIME_GRACE_MS && state.remindStage < 2) {
-    showRestReminder("已经连续玩较久啦，建议现在休息和看看远处。需要我先暂停一会吗？");
-    speakGuide("建议现在休息一下眼睛", { force: true });
-    state.remindStage = 2;
-    return state;
-  }
-  if (state.continuousMs >= thresholdMs && state.remindStage < 1) {
-    showRestReminder("连续游玩时间达到建议阈值，休息 2-3 分钟会更舒服。 ");
-    speakGuide("到休息时间啦", { force: true });
-    state.remindStage = 1;
-  }
-  return state;
-}
-
-function tickPlaytime() {
-  const now = Date.now();
-  const state = loadPlaytime();
-  const gap = now - state.lastTick;
-
-  if (gap > PLAYTIME_BREAK_GAP_MS) {
-    state.continuousMs = 0;
-    state.remindStage = 0;
-  }
-
-  if (!document.hidden) {
-    if (latestState?.isRunning) {
-      const addMs = Math.max(0, Math.min(gap, PLAYTIME_TICK_MS * 2));
-      state.continuousMs += addMs;
-    }
-  }
-
-  state.lastTick = now;
-  const updated = checkPlaytimeReminder(now, state);
-  savePlaytime(updated);
-}
-
-function startPlaytimeTracker() {
-  if (playtimeTimer) {
-    return;
-  }
-  tickPlaytime();
-  playtimeTimer = setGameInterval(tickPlaytime, PLAYTIME_TICK_MS);
-}
-
-function wireRestReminderActions() {
-  bindSoftTap(restNowBtn, () => {
-    hideRestReminder();
-    const state = loadPlaytime();
-    state.continuousMs = 0;
-    state.snoozeUntil = Date.now() + 10 * 60 * 1000;
-    state.remindStage = 0;
-    state.lastTick = Date.now();
-    savePlaytime(state);
-    speakGuide("好的，我们先休息一会儿", { force: true });
-  });
-
-  bindSoftTap(restContinueBtn, () => {
-    hideRestReminder();
-    const state = loadPlaytime();
-    state.snoozeUntil = Date.now() + PLAYTIME_GRACE_MS;
-    state.lastTick = Date.now();
-    savePlaytime(state);
-    speakGuide("再玩五分钟后我会继续提醒你", { force: true });
-  });
-}
-
-const progressState = {
-  unlocked: {
-    easy: true,
-    normal: false,
-    hard: false,
-  },
-};
-
-const statsState = {
+const statsState = readNumbers(STORAGE_STATS_KEY, {
   plays: 0,
   wins: 0,
   totalUsedSec: 0,
   totalMistakes: 0,
   currentStreak: 0,
   bestStreak: 0,
-};
+});
 
 const settingsState = loadSettings(SETTINGS_KEY);
 const speakGuide = createSpeaker(settingsState, SPEECH_PRESETS.calmGuide);
@@ -245,23 +123,6 @@ const soundFx = (() => {
   };
 })();
 
-function applySettingsUi() {
-  document.body.classList.toggle("mode-soft", settingsState.careMode === "soft");
-  document.body.classList.toggle("mode-quiet", settingsState.careMode === "quiet");
-  voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
-  narrationBtn.textContent = `播报模式：${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}`;
-  parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
-  if (settingsState.careMode === "quiet") {
-    playDurationHint.textContent = "安静模式：关闭音效并尽量减少播报，建议每次游玩 5-6 分钟。";
-    return;
-  }
-  if (settingsState.careMode === "soft") {
-    playDurationHint.textContent = "柔和模式：降低动画和音量，建议每次游玩 6-8 分钟。";
-    return;
-  }
-  playDurationHint.textContent = "标准模式：建议每次游玩 8-10 分钟，注意休息眼睛。";
-}
-
 function starsToText(stars) {
   if (stars <= 0) {
     return "-";
@@ -269,39 +130,8 @@ function starsToText(stars) {
   return "★".repeat(stars) + "☆".repeat(3 - stars);
 }
 
-function hashText(input) {
-  let hash = 0;
-  for (let i = 0; i < input.length; i += 1) {
-    hash = (hash << 5) - hash + input.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash);
-}
-
-function loadProgress() {
-  const parsed = readJson(STORAGE_PROGRESS_KEY);
-  if (parsed.unlocked) {
-    progressState.unlocked.easy = true;
-    progressState.unlocked.normal = Boolean(parsed.unlocked.normal);
-    progressState.unlocked.hard = Boolean(parsed.unlocked.hard);
-  }
-
-  // Keep easy mode always available to avoid an empty difficulty selector.
-  progressState.unlocked.easy = true;
-}
-
 function saveProgress() {
   writeJson(STORAGE_PROGRESS_KEY, progressState);
-}
-
-function loadStats() {
-  const parsed = readJson(STORAGE_STATS_KEY);
-  statsState.plays = Number(parsed.plays || 0);
-  statsState.wins = Number(parsed.wins || 0);
-  statsState.totalUsedSec = Number(parsed.totalUsedSec || 0);
-  statsState.totalMistakes = Number(parsed.totalMistakes || 0);
-  statsState.currentStreak = Number(parsed.currentStreak || 0);
-  statsState.bestStreak = Number(parsed.bestStreak || 0);
 }
 
 function saveStats() {
@@ -643,12 +473,9 @@ async function bootstrap() {
   const safeLevels = levelsData.levels;
   currentLevelId = safeLevels[0]?.id || "easy";
 
-  loadProgress();
-  loadStats();
   renderStats();
   applyThemeUnlocks();
   updateChapterUi();
-  applySettingsUi();
 
   currentDailyDay = todayString();
   renderDailyBoard(currentDailyDay);
@@ -656,50 +483,27 @@ async function bootstrap() {
   hintBtn.disabled = true;
   shieldBtn.disabled = true;
   renderBoard({ level: null });
-  hideRestReminder();
-  wireRestReminderActions();
-  startPlaytimeTracker();
-
-  window.addEventListener("storage", (event) => {
-    if (event.key !== GLOBAL_SETTINGS_KEY) {
-      return;
-    }
-    loadSettings(SETTINGS_KEY, settingsState);
-    applySettingsUi();
-  });
-
-  window.addEventListener("storage", (event) => {
-    if (event.key === PLAYTIME_KEY) {
-      const state = loadPlaytime();
-      if (Date.now() < state.snoozeUntil) {
-        hideRestReminder();
-      }
-    }
+  mountRestReminder({
+    settings: settingsState,
+    isPlaying: () => Boolean(latestState?.isRunning),
+    speak: speakGuide,
+    bindTap: bindSoftTap,
   });
 }
 
 bindSoftTap(startBtn, () => startGame());
 bindSoftTap(retryBtn, () => startGame());
 bindSoftTap(previewBtn, () => game.previewAll(1000));
-bindSoftTap(voiceBtn, () => {
-  settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-  if (settingsState.voiceOn) {
-    speakGuide(guideText.textContent);
-  }
-});
-bindSoftTap(narrationBtn, () => {
-  settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-  speakGuide(`已切换到${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}播报`);
-});
-bindSoftTap(parentModeBtn, () => {
-  settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-  speakGuide(`已切换到${careModeLabel(settingsState.careMode)}模式`, { force: true });
+mountSettingsButtons({
+  storageKey: SETTINGS_KEY,
+  settings: settingsState,
+  bindTap: bindSoftTap,
+  onChange: () => {
+    document.body.classList.toggle("mode-soft", settingsState.careMode === "soft");
+    document.body.classList.toggle("mode-quiet", settingsState.careMode === "quiet");
+    playDurationHint.textContent = DURATION_HINTS[settingsState.careMode];
+  },
+  announce: speakSettingChanges(speakGuide, guideText),
 });
 
 bindSoftTap(dailyBtn, () => {

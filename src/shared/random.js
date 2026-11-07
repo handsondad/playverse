@@ -7,6 +7,17 @@ export function hashSeed(seedText) {
   return hash >>> 0;
 }
 
+// Picks today's daily-challenge level/song/theme. Not interchangeable with
+// hashSeed: switching would change every game's daily pick.
+export function hashText(input) {
+  let hash = 0;
+  for (let i = 0; i < input.length; i += 1) {
+    hash = (hash << 5) - hash + input.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
 export function mulberry32(seed) {
   let state = seed >>> 0;
   return () => {

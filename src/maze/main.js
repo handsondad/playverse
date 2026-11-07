@@ -1,10 +1,11 @@
 import { MazeGame } from "./mazeGame.js";
 import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
-import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { loadSettings } from "../shared/settings.js";
+import { mountSettingsButtons } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { createSoftTap } from "../shared/tap.js";
-import { todayString } from "../shared/random.js";
-import { readJson, writeJson } from "../shared/storage.js";
+import { hashText, todayString } from "../shared/random.js";
+import { readNumbers, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { clearGameInterval, setGameInterval } from "../shared/timers.js";
 import { setText } from "../shared/dom.js";
@@ -22,9 +23,6 @@ const moveLeftBtn = document.querySelector("#moveLeftBtn");
 const moveDownBtn = document.querySelector("#moveDownBtn");
 const moveRightBtn = document.querySelector("#moveRightBtn");
 const hintBtn = document.querySelector("#hintBtn");
-const voiceBtn = document.querySelector("#voiceBtn");
-const narrationBtn = document.querySelector("#narrationBtn");
-const parentModeBtn = document.querySelector("#parentModeBtn");
 
 const levelButtonsEl = document.querySelector("#levelButtons");
 const selectorHint = document.querySelector("#selectorHint");
@@ -42,7 +40,7 @@ const resultEl = document.querySelector("#result");
 const resultTitle = document.querySelector("#resultTitle");
 const resultText = document.querySelector("#resultText");
 
-const stats = { plays: 0, wins: 0 };
+const stats = readNumbers(STATS_KEY, { plays: 0, wins: 0 });
 const settingsState = loadSettings(SETTINGS_KEY);
 const speak = createSpeaker(settingsState, SPEECH_PRESETS.standard);
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
@@ -55,18 +53,6 @@ let runStart = 0;
 
 function saveStats() {
   writeJson(STATS_KEY, stats);
-}
-
-function loadStats() {
-  const parsed = readJson(STATS_KEY);
-  stats.plays = Number(parsed.plays || 0);
-  stats.wins = Number(parsed.wins || 0);
-}
-
-function applySettingsUi() {
-  voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
-  narrationBtn.textContent = `播报模式：${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}`;
-  parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
 }
 
 function renderLevelButtons() {
@@ -229,15 +215,6 @@ function showResult(payload) {
   saveStats();
 }
 
-function hashText(input) {
-  let hash = 0;
-  for (let i = 0; i < input.length; i += 1) {
-    hash = (hash << 5) - hash + input.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash);
-}
-
 function start(levelId = currentLevelId) {
   resultEl.hidden = true;
   game.start(levelId);
@@ -281,8 +258,6 @@ async function bootstrap() {
   }
 
   currentLevelId = levelsData.levels[0].id;
-  loadStats();
-  applySettingsUi();
   renderLevelButtons();
   renderLevelMeta();
   game.init(levelsData.levels);
@@ -306,22 +281,10 @@ bindSoftTap(moveDownBtn, () => movePlayer(0, 1));
 bindSoftTap(moveRightBtn, () => movePlayer(1, 0));
 bindSoftTap(hintBtn, () => requestHint());
 
-bindSoftTap(voiceBtn, () => {
-  settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-});
-
-bindSoftTap(narrationBtn, () => {
-  settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-});
-
-bindSoftTap(parentModeBtn, () => {
-  settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
+mountSettingsButtons({
+  storageKey: SETTINGS_KEY,
+  settings: settingsState,
+  bindTap: bindSoftTap,
 });
 
 levelButtonsEl.addEventListener("pointerup", (event) => {

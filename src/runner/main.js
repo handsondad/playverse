@@ -1,10 +1,11 @@
 import { RunnerGame } from "./runnerGame.js";
 import { createGameAudio } from "../shared/audio.js";
-import { GLOBAL_SETTINGS_KEY, careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { loadSettings } from "../shared/settings.js";
+import { mountSettingsButtons, speakSettingChanges } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { createSoftTap } from "../shared/tap.js";
-import { todayString } from "../shared/random.js";
-import { readJson, writeJson } from "../shared/storage.js";
+import { hashText, todayString } from "../shared/random.js";
+import { readNumbers, readUnlocks, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { setClass, setStyle, setText, syncKeyed } from "../shared/dom.js";
 
@@ -14,13 +15,16 @@ const PROGRESS_KEY = "runner-progress";
 const STATS_KEY = "runner-stats";
 const SETTINGS_KEY = "runner-settings";
 
+const DURATION_HINTS = {
+  standard: "标准模式：建议每次游玩 8-10 分钟，结束后休息眼睛。",
+  soft: "柔和模式：降低动画和音量，建议每次游玩 6-8 分钟。",
+  quiet: "安静模式：关闭音效并尽量减少播报，建议每次游玩 5-6 分钟。",
+};
+
 const startBtn = document.querySelector("#startBtn");
 const jumpBtn = document.querySelector("#jumpBtn");
 const shieldBtn = document.querySelector("#shieldBtn");
 const dailyBtn = document.querySelector("#dailyBtn");
-const voiceBtn = document.querySelector("#voiceBtn");
-const narrationBtn = document.querySelector("#narrationBtn");
-const parentModeBtn = document.querySelector("#parentModeBtn");
 const retryBtn = document.querySelector("#retryBtn");
 
 const chapterEasyBtn = document.querySelector("#chapterEasyBtn");
@@ -57,15 +61,9 @@ let latestState = null;
 let prevState = null;
 let pendingOptions = null;
 
-const progress = {
-  unlocked: {
-    easy: true,
-    normal: false,
-    hard: false,
-  },
-};
+const progress = readUnlocks(PROGRESS_KEY);
 
-const stats = {
+const stats = readNumbers(STATS_KEY, {
   plays: 0,
   wins: 0,
   totalDistance: 0,
@@ -73,7 +71,7 @@ const stats = {
   totalCollisions: 0,
   currentStreak: 0,
   bestStreak: 0,
-};
+});
 
 const settingsState = loadSettings(SETTINGS_KEY);
 const speakGuide = createSpeaker(settingsState, SPEECH_PRESETS.calmGuide);
@@ -109,49 +107,12 @@ const soundFx = (() => {
   };
 })();
 
-function loadProgress() {
-  const parsed = readJson(PROGRESS_KEY);
-  if (parsed.unlocked) {
-    progress.unlocked.easy = true;
-    progress.unlocked.normal = Boolean(parsed.unlocked.normal);
-    progress.unlocked.hard = Boolean(parsed.unlocked.hard);
-  }
-  progress.unlocked.easy = true;
-}
-
 function saveProgress() {
   writeJson(PROGRESS_KEY, progress);
 }
 
-function loadStats() {
-  const parsed = readJson(STATS_KEY);
-  stats.plays = Number(parsed.plays || 0);
-  stats.wins = Number(parsed.wins || 0);
-  stats.totalDistance = Number(parsed.totalDistance || 0);
-  stats.totalCoins = Number(parsed.totalCoins || 0);
-  stats.totalCollisions = Number(parsed.totalCollisions || 0);
-  stats.currentStreak = Number(parsed.currentStreak || 0);
-  stats.bestStreak = Number(parsed.bestStreak || 0);
-}
-
 function saveStats() {
   writeJson(STATS_KEY, stats);
-}
-
-function applySettingsUi() {
-  voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
-  narrationBtn.textContent = `播报模式：${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}`;
-  parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
-
-  if (settingsState.careMode === "quiet") {
-    playDurationHint.textContent = "安静模式：关闭音效并尽量减少播报，建议每次游玩 5-6 分钟。";
-    return;
-  }
-  if (settingsState.careMode === "soft") {
-    playDurationHint.textContent = "柔和模式：降低动画和音量，建议每次游玩 6-8 分钟。";
-    return;
-  }
-  playDurationHint.textContent = "标准模式：建议每次游玩 8-10 分钟，结束后休息眼睛。";
 }
 
 function renderMeta() {
@@ -364,15 +325,6 @@ function getLevel() {
   return levelsData.levels.find((item) => item.id === currentLevelId);
 }
 
-function hashText(input) {
-  let hash = 0;
-  for (let i = 0; i < input.length; i += 1) {
-    hash = (hash << 5) - hash + input.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash);
-}
-
 function pickDailySetup() {
   const day = todayString();
   const available = levelsData.levels.filter((item) => {
@@ -442,24 +394,13 @@ async function bootstrap() {
   const safeLevels = levelsData.levels;
   currentLevelId = safeLevels[0]?.id || "easy";
 
-  loadProgress();
-  loadStats();
   renderMeta();
   updateChapterUi();
-  applySettingsUi();
 
   shieldBtn.disabled = true;
   jumpBtn.disabled = true;
   retryBtn.disabled = true;
   renderTrack({ level: null });
-
-  window.addEventListener("storage", (event) => {
-    if (event.key !== GLOBAL_SETTINGS_KEY) {
-      return;
-    }
-    loadSettings(SETTINGS_KEY, settingsState);
-    applySettingsUi();
-  });
 }
 
 bindSoftTap(startBtn, () => start());
@@ -467,27 +408,14 @@ bindSoftTap(retryBtn, () => start());
 bindSoftTap(jumpBtn, () => game.jump());
 bindSoftTap(shieldBtn, () => game.useShield());
 
-bindSoftTap(voiceBtn, () => {
-  settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-  if (settingsState.voiceOn) {
-    speakGuide(guideText.textContent);
-  }
-});
-
-bindSoftTap(narrationBtn, () => {
-  settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-  speakGuide(`已切换到${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}播报`);
-});
-
-bindSoftTap(parentModeBtn, () => {
-  settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-  speakGuide(`已切换到${careModeLabel(settingsState.careMode)}模式`, { force: true });
+mountSettingsButtons({
+  storageKey: SETTINGS_KEY,
+  settings: settingsState,
+  bindTap: bindSoftTap,
+  onChange: () => {
+    playDurationHint.textContent = DURATION_HINTS[settingsState.careMode];
+  },
+  announce: speakSettingChanges(speakGuide, guideText),
 });
 
 bindSoftTap(dailyBtn, () => {

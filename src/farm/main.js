@@ -1,10 +1,11 @@
-﻿import { FarmGame } from "./farmGame.js";
+import { FarmGame } from "./farmGame.js";
 import { createGameAudio } from "../shared/audio.js";
-import { GLOBAL_SETTINGS_KEY, careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { loadSettings } from "../shared/settings.js";
+import { mountSettingsButtons, speakSettingChanges } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { createSoftTap } from "../shared/tap.js";
-import { todayString } from "../shared/random.js";
-import { readJson, writeJson } from "../shared/storage.js";
+import { hashText, todayString } from "../shared/random.js";
+import { readNumbers, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { setHtml, setText } from "../shared/dom.js";
 
@@ -13,15 +14,18 @@ const bindSoftTap = createSoftTap({ flashMs: 70, onTap: () => soundFx.tap() });
 const STATS_KEY = "farm-stats";
 const SETTINGS_KEY = "farm-settings";
 
+const DURATION_HINTS = {
+  standard: "标准模式：建议每次经营 6-12 分钟，保持轻松节奏。",
+  soft: "柔和模式：降低动画和音量，建议每次经营 6-10 分钟。",
+  quiet: "安静模式：关闭音效并减少播报，建议每次经营 5-8 分钟。",
+};
+
 const startBtn = document.querySelector("#startBtn");
 const retryBtn = document.querySelector("#retryBtn");
 const harvestAllBtn = document.querySelector("#harvestAllBtn");
 const deliverBtn = document.querySelector("#deliverBtn");
 const fertilizeBtn = document.querySelector("#fertilizeBtn");
 const dailyBtn = document.querySelector("#dailyBtn");
-const voiceBtn = document.querySelector("#voiceBtn");
-const narrationBtn = document.querySelector("#narrationBtn");
-const parentModeBtn = document.querySelector("#parentModeBtn");
 
 const seedButtonsEl = document.querySelector("#seedButtons");
 const seedHint = document.querySelector("#seedHint");
@@ -59,13 +63,13 @@ let levelsData = null;
 let latestState = null;
 let lastToastTimer = null;
 
-const stats = {
+const stats = readNumbers(STATS_KEY, {
   totalDays: 0,
   totalHarvests: 0,
   totalOrders: 0,
   topLevel: 1,
   totalCoins: 0,
-};
+});
 
 const settingsState = loadSettings(SETTINGS_KEY);
 const speakGuide = createSpeaker(settingsState, SPEECH_PRESETS.guide);
@@ -95,15 +99,6 @@ const soundFx = (() => {
   };
 })();
 
-function loadStats() {
-  const parsed = readJson(STATS_KEY);
-  stats.totalDays = Number(parsed.totalDays || 0);
-  stats.totalHarvests = Number(parsed.totalHarvests || 0);
-  stats.totalOrders = Number(parsed.totalOrders || 0);
-  stats.topLevel = Number(parsed.topLevel || 1);
-  stats.totalCoins = Number(parsed.totalCoins || 0);
-}
-
 function saveStats() {
   writeJson(STATS_KEY, stats);
 }
@@ -114,22 +109,6 @@ function renderMeta() {
   metaOrders.textContent = String(stats.totalOrders);
   metaTopLevel.textContent = String(stats.topLevel);
   metaCoins.textContent = String(stats.totalCoins);
-}
-
-function applySettingsUi() {
-  voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
-  narrationBtn.textContent = `播报模式：${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}`;
-  parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
-
-  if (settingsState.careMode === "quiet") {
-    playDurationHint.textContent = "安静模式：关闭音效并减少播报，建议每次经营 5-8 分钟。";
-    return;
-  }
-  if (settingsState.careMode === "soft") {
-    playDurationHint.textContent = "柔和模式：降低动画和音量，建议每次经营 6-10 分钟。";
-    return;
-  }
-  playDurationHint.textContent = "标准模式：建议每次经营 6-12 分钟，保持轻松节奏。";
 }
 
 function renderSeedButtons(state) {
@@ -342,15 +321,6 @@ function updateStatsFromDay(state) {
   renderMeta();
 }
 
-function hashText(input) {
-  let hash = 0;
-  for (let i = 0; i < input.length; i += 1) {
-    hash = (hash << 5) - hash + input.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash);
-}
-
 function dailySeed() {
   const day = todayString();
   const hash = hashText(`${day}|farm`);
@@ -389,20 +359,10 @@ async function bootstrap() {
     return;
   }
 
-  loadStats();
   renderMeta();
-  applySettingsUi();
 
   game.init(levelsData);
   retryBtn.disabled = true;
-
-  window.addEventListener("storage", (event) => {
-    if (event.key !== GLOBAL_SETTINGS_KEY) {
-      return;
-    }
-    loadSettings(SETTINGS_KEY, settingsState);
-    applySettingsUi();
-  });
 }
 
 bindSoftTap(startBtn, () => {
@@ -451,27 +411,14 @@ bindSoftTap(dailyBtn, () => {
   showToast("已进入每日挑战：订单数量会更多");
 });
 
-bindSoftTap(voiceBtn, () => {
-  settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-  if (settingsState.voiceOn) {
-    speakGuide(guideText.textContent);
-  }
-});
-
-bindSoftTap(narrationBtn, () => {
-  settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-  speakGuide(`已切换到${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}播报`);
-});
-
-bindSoftTap(parentModeBtn, () => {
-  settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-  speakGuide(`已切换到${careModeLabel(settingsState.careMode)}模式`, { force: true });
+mountSettingsButtons({
+  storageKey: SETTINGS_KEY,
+  settings: settingsState,
+  bindTap: bindSoftTap,
+  onChange: () => {
+    playDurationHint.textContent = DURATION_HINTS[settingsState.careMode];
+  },
+  announce: speakSettingChanges(speakGuide, guideText),
 });
 
 seedButtonsEl.addEventListener("pointerup", (event) => {

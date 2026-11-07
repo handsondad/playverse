@@ -1,10 +1,11 @@
 import { BubbleGame } from "./bubbleGame.js";
 import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
-import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { loadSettings } from "../shared/settings.js";
+import { mountSettingsButtons } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { bindSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
-import { readJson, readNumber, writeJson, writeValue } from "../shared/storage.js";
+import { readNumber, readNumbers, writeJson, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { setHtml, setText } from "../shared/dom.js";
 
@@ -16,9 +17,6 @@ const startBtn = document.querySelector("#startBtn");
 const retryBtn = document.querySelector("#retryBtn");
 const dailyBtn = document.querySelector("#dailyBtn");
 const hintBtn = document.querySelector("#hintBtn");
-const voiceBtn = document.querySelector("#voiceBtn");
-const narrationBtn = document.querySelector("#narrationBtn");
-const parentModeBtn = document.querySelector("#parentModeBtn");
 
 const levelButtonsEl = document.querySelector("#levelButtons");
 const selectorHint = document.querySelector("#selectorHint");
@@ -41,7 +39,7 @@ const resultText = document.querySelector("#resultText");
 const settingsState = loadSettings(SETTINGS_KEY);
 const speak = createSpeaker(settingsState, SPEECH_PRESETS.standard);
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
-const stats = { plays: 0, wins: 0, totalScore: 0, bestCombo: 0 };
+const stats = readNumbers(STATS_KEY, { plays: 0, wins: 0, totalScore: 0, bestCombo: 0 });
 
 let levelsData = null;
 let currentLevelId = "easy";
@@ -49,20 +47,6 @@ let latestState = null;
 let pointerActive = false;
 let lastClearEffectId = 0;
 let effectClearTimer = 0;
-
-function applySettingsUi() {
-  voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
-  narrationBtn.textContent = `播报模式：${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}`;
-  parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
-}
-
-function loadStats() {
-  const parsed = readJson(STATS_KEY);
-  stats.plays = Number(parsed.plays || 0);
-  stats.wins = Number(parsed.wins || 0);
-  stats.totalScore = Number(parsed.totalScore || 0);
-  stats.bestCombo = Number(parsed.bestCombo || 0);
-}
 
 function saveStats() {
   writeJson(STATS_KEY, stats);
@@ -270,22 +254,10 @@ bindSoftTap(hintBtn, () => {
   }
 });
 
-bindSoftTap(voiceBtn, () => {
-  settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-});
-
-bindSoftTap(narrationBtn, () => {
-  settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-});
-
-bindSoftTap(parentModeBtn, () => {
-  settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
+mountSettingsButtons({
+  storageKey: SETTINGS_KEY,
+  settings: settingsState,
+  bindTap: bindSoftTap,
 });
 
 levelButtonsEl.addEventListener("pointerup", (event) => {
@@ -359,10 +331,6 @@ async function bootstrap() {
     showConfigError(error);
     return;
   }
-
-
-  loadStats();
-  applySettingsUi();
 
   currentLevelId = levelsData.levels[0].id;
   renderLevelButtons();

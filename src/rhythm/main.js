@@ -1,10 +1,11 @@
 import { RhythmGame } from "./rhythmGame.js";
 import { createGameAudio } from "../shared/audio.js";
-import { GLOBAL_SETTINGS_KEY, careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
+import { loadSettings } from "../shared/settings.js";
+import { mountSettingsButtons, speakSettingChanges } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { createSoftTap } from "../shared/tap.js";
-import { todayString } from "../shared/random.js";
-import { readJson, writeJson } from "../shared/storage.js";
+import { hashText, todayString } from "../shared/random.js";
+import { readJson, readNumbers, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { clearGameInterval, setGameInterval } from "../shared/timers.js";
 import { setClass, setStyle, setText, syncKeyed } from "../shared/dom.js";
@@ -13,14 +14,17 @@ const bindSoftTap = createSoftTap({ flashMs: 70, onTap: () => soundFx.tap() });
 
 const STATS_KEY = "rhythm-stats";
 const SETTINGS_KEY = "rhythm-settings";
+
+const DURATION_HINTS = {
+  standard: "标准模式：建议每次游玩 5-8 分钟，跟着节奏轻松点击。",
+  soft: "柔和模式：降低音量与闪动强度，建议轻松拍一两首。",
+  quiet: "安静模式：关闭音效并减少播报，建议每次游玩 5 分钟左右。",
+};
 const CALIBRATION_KEY = "rhythm-calibration";
 
 const startBtn = document.querySelector("#startBtn");
 const retryBtn = document.querySelector("#retryBtn");
 const dailyBtn = document.querySelector("#dailyBtn");
-const voiceBtn = document.querySelector("#voiceBtn");
-const narrationBtn = document.querySelector("#narrationBtn");
-const parentModeBtn = document.querySelector("#parentModeBtn");
 const calibrateBtn = document.querySelector("#calibrateBtn");
 const calibrateTapBtn = document.querySelector("#calibrateTapBtn");
 const calibrateCloseBtn = document.querySelector("#calibrateCloseBtn");
@@ -76,13 +80,13 @@ const calibrationState = {
   offsetAdjustMs: 0,
 };
 
-const stats = {
+const stats = readNumbers(STATS_KEY, {
   plays: 0,
   wins: 0,
   totalScore: 0,
   totalAccuracy: 0,
   bestCombo: 0,
-};
+});
 
 const settingsState = loadSettings(SETTINGS_KEY);
 const speakGuide = createSpeaker(settingsState, SPEECH_PRESETS.guide);
@@ -116,15 +120,6 @@ const soundFx = (() => {
   };
 })();
 
-function loadStats() {
-  const parsed = readJson(STATS_KEY);
-  stats.plays = Number(parsed.plays || 0);
-  stats.wins = Number(parsed.wins || 0);
-  stats.totalScore = Number(parsed.totalScore || 0);
-  stats.totalAccuracy = Number(parsed.totalAccuracy || 0);
-  stats.bestCombo = Number(parsed.bestCombo || 0);
-}
-
 function saveStats() {
   writeJson(STATS_KEY, stats);
 }
@@ -142,22 +137,6 @@ function saveCalibration() {
   writeJson(CALIBRATION_KEY, {
     offsetAdjustMs: calibrationState.offsetAdjustMs,
   });
-}
-
-function applySettingsUi() {
-  voiceBtn.textContent = `语音引导：${settingsState.voiceOn ? "开" : "关"}`;
-  narrationBtn.textContent = `播报模式：${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}`;
-  parentModeBtn.textContent = `护眼模式：${careModeLabel(settingsState.careMode)}`;
-
-  if (settingsState.careMode === "quiet") {
-    playDurationHint.textContent = "安静模式：关闭音效并减少播报，建议每次游玩 5 分钟左右。";
-    return;
-  }
-  if (settingsState.careMode === "soft") {
-    playDurationHint.textContent = "柔和模式：降低音量与闪动强度，建议轻松拍一两首。";
-    return;
-  }
-  playDurationHint.textContent = "标准模式：建议每次游玩 5-8 分钟，跟着节奏轻松点击。";
 }
 
 function stopCalibrationSession() {
@@ -437,15 +416,6 @@ function showResult(payload) {
   updateStats(payload);
 }
 
-function hashText(input) {
-  let hash = 0;
-  for (let i = 0; i < input.length; i += 1) {
-    hash = (hash << 5) - hash + input.charCodeAt(i);
-    hash |= 0;
-  }
-  return Math.abs(hash);
-}
-
 function pickDailySetup() {
   const day = todayString();
   const hash = hashText(`${day}|rhythm`);
@@ -556,24 +526,13 @@ async function bootstrap() {
     return;
   }
 
-
   currentSongId = levelsData.songs[0].id;
-  loadStats();
   loadCalibration();
   renderMeta();
   updateSelectorsUi();
-  applySettingsUi();
   selectorHint.textContent = `先选歌曲和难度，再开始游戏。当前校准偏移 ${calibrationState.offsetAdjustMs >= 0 ? "+" : ""}${calibrationState.offsetAdjustMs}ms`;
   retryBtn.disabled = true;
   renderLanes({ song: null });
-
-  window.addEventListener("storage", (event) => {
-    if (event.key !== GLOBAL_SETTINGS_KEY) {
-      return;
-    }
-    loadSettings(SETTINGS_KEY, settingsState);
-    applySettingsUi();
-  });
 }
 
 bindSoftTap(startBtn, () => start());
@@ -589,27 +548,14 @@ bindSoftTap(dailyBtn, () => {
   start();
 });
 
-bindSoftTap(voiceBtn, () => {
-  settingsState.voiceOn = !settingsState.voiceOn;
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-  if (settingsState.voiceOn) {
-    speakGuide(guideText.textContent);
-  }
-});
-
-bindSoftTap(narrationBtn, () => {
-  settingsState.narrationLevel = settingsState.narrationLevel === "detailed" ? "key" : "detailed";
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-  speakGuide(`已切换到${settingsState.narrationLevel === "detailed" ? "详细" : "关键"}播报`);
-});
-
-bindSoftTap(parentModeBtn, () => {
-  settingsState.careMode = nextCareMode(settingsState.careMode);
-  saveSettings(SETTINGS_KEY, settingsState);
-  applySettingsUi();
-  speakGuide(`已切换到${careModeLabel(settingsState.careMode)}模式`, { force: true });
+mountSettingsButtons({
+  storageKey: SETTINGS_KEY,
+  settings: settingsState,
+  bindTap: bindSoftTap,
+  onChange: () => {
+    playDurationHint.textContent = DURATION_HINTS[settingsState.careMode];
+  },
+  announce: speakSettingChanges(speakGuide, guideText),
 });
 
 bindSoftTap(calibrateBtn, () => {
