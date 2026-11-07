@@ -2,7 +2,7 @@ import { MarketGame } from "./marketGame.js";
 import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
 import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
-import { writeJson } from "../shared/storage.js";
+import { readJson, writeJson } from "../shared/storage.js";
 
 const PROGRESS_KEY = "market-game-progress";
 const SETTINGS_KEY = "market-game-settings";
@@ -30,14 +30,9 @@ const progressState = { bestScore: 0, bestOrders: 0 };
 const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode });
 
 function loadProgress() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(PROGRESS_KEY) || "{}");
-    progressState.bestScore = Number(parsed.bestScore || 0);
-    progressState.bestOrders = Number(parsed.bestOrders || 0);
-  } catch {
-    progressState.bestScore = 0;
-    progressState.bestOrders = 0;
-  }
+  const parsed = readJson(PROGRESS_KEY);
+  progressState.bestScore = Number(parsed.bestScore || 0);
+  progressState.bestOrders = Number(parsed.bestOrders || 0);
 }
 
 function saveProgress() {

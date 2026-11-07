@@ -1,5 +1,5 @@
 import { hashSeed, mulberry32 } from "../shared/random.js";
-import { writeValue } from "../shared/storage.js";
+import { readNumber, writeValue } from "../shared/storage.js";
 import { clearGameInterval, setGameInterval } from "../shared/timers.js";
 
 const BEST_KEY = "whac-best-score";
@@ -255,7 +255,7 @@ export class WhacGame {
 
   saveBestScore() {
     const key = `${BEST_KEY}:${this.config.id}`;
-    const prev = Number(localStorage.getItem(key) || 0);
+    const prev = readNumber(key);
     if (this.score > prev) {
       writeValue(key, this.score);
     }
@@ -266,7 +266,7 @@ export class WhacGame {
       return 0;
     }
     const key = `${BEST_KEY}:${this.config.id}`;
-    return Number(localStorage.getItem(key) || 0);
+    return readNumber(key);
   }
 
   emit() {

@@ -46,3 +46,10 @@ test("every config a game loads exists and has its required keys", () => {
     }
   }
 });
+
+test("only shared/storage.js touches localStorage", () => {
+  const offenders = fs.readdirSync(path.join(root, "src"), { recursive: true })
+    .filter((file) => file.endsWith(".js") && path.normalize(file) !== path.join("shared", "storage.js"))
+    .filter((file) => fs.readFileSync(path.join(root, "src", file), "utf8").includes("localStorage"));
+  assert.deepEqual(offenders, []);
+});

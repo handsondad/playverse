@@ -4,7 +4,7 @@ import { GLOBAL_SETTINGS_KEY, careModeLabel, loadSettings, nextCareMode, saveSet
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { createSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
-import { writeJson } from "../shared/storage.js";
+import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { setGameInterval } from "../shared/timers.js";
 import { setHtml } from "../shared/dom.js";
@@ -77,22 +77,13 @@ function getThresholdMs() {
 }
 
 function loadPlaytime() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(PLAYTIME_KEY) || "{}");
-    return {
-      continuousMs: Number(parsed.continuousMs || 0),
-      lastTick: Number(parsed.lastTick || Date.now()),
-      snoozeUntil: Number(parsed.snoozeUntil || 0),
-      remindStage: Number(parsed.remindStage || 0),
-    };
-  } catch {
-    return {
-      continuousMs: 0,
-      lastTick: Date.now(),
-      snoozeUntil: 0,
-      remindStage: 0,
-    };
-  }
+  const parsed = readJson(PLAYTIME_KEY);
+  return {
+    continuousMs: Number(parsed.continuousMs || 0),
+    lastTick: Number(parsed.lastTick || Date.now()),
+    snoozeUntil: Number(parsed.snoozeUntil || 0),
+    remindStage: Number(parsed.remindStage || 0),
+  };
 }
 
 function savePlaytime(state) {
@@ -264,15 +255,11 @@ function hashText(input) {
 }
 
 function loadProgress() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(PROGRESS_KEY) || "{}");
-    if (parsed.unlocked) {
-      progress.unlocked.easy = true;
-      progress.unlocked.normal = Boolean(parsed.unlocked.normal);
-      progress.unlocked.hard = Boolean(parsed.unlocked.hard);
-    }
-  } catch {
+  const parsed = readJson(PROGRESS_KEY);
+  if (parsed.unlocked) {
     progress.unlocked.easy = true;
+    progress.unlocked.normal = Boolean(parsed.unlocked.normal);
+    progress.unlocked.hard = Boolean(parsed.unlocked.hard);
   }
 
   progress.unlocked.easy = true;
@@ -283,16 +270,12 @@ function saveProgress() {
 }
 
 function loadStats() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(STATS_KEY) || "{}");
-    stats.plays = Number(parsed.plays || 0);
-    stats.wins = Number(parsed.wins || 0);
-    stats.totalHits = Number(parsed.totalHits || 0);
-    stats.totalMisses = Number(parsed.totalMisses || 0);
-    stats.bestCombo = Number(parsed.bestCombo || 0);
-  } catch {
-    stats.plays = 0;
-  }
+  const parsed = readJson(STATS_KEY);
+  stats.plays = Number(parsed.plays || 0);
+  stats.wins = Number(parsed.wins || 0);
+  stats.totalHits = Number(parsed.totalHits || 0);
+  stats.totalMisses = Number(parsed.totalMisses || 0);
+  stats.bestCombo = Number(parsed.bestCombo || 0);
 }
 
 function saveStats() {

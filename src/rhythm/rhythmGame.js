@@ -1,4 +1,4 @@
-import { writeValue } from "../shared/storage.js";
+import { readNumber, writeValue } from "../shared/storage.js";
 
 const STORAGE_KEY = "rhythm-best-score";
 // requestAnimationFrame stops while the tab is hidden; a longer gap is a pause, not elapsed song time.
@@ -48,11 +48,7 @@ export class RhythmGame {
   }
 
   loadBestScore() {
-    try {
-      return Number(localStorage.getItem(STORAGE_KEY) || 0);
-    } catch {
-      return 0;
-    }
+    return readNumber(STORAGE_KEY);
   }
 
   saveBestScore(score) {

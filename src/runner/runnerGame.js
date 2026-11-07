@@ -1,5 +1,5 @@
 import { createSeededRandom } from "../shared/random.js";
-import { writeValue } from "../shared/storage.js";
+import { readNumber, writeValue } from "../shared/storage.js";
 
 const STORAGE_KEY = "runner-best-score";
 
@@ -50,11 +50,7 @@ export class RunnerGame {
   }
 
   loadBestScore() {
-    try {
-      return Number(localStorage.getItem(STORAGE_KEY) || 0);
-    } catch {
-      return 0;
-    }
+    return readNumber(STORAGE_KEY);
   }
 
   saveBestScore(score) {

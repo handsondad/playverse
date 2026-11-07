@@ -4,7 +4,7 @@ import { GLOBAL_SETTINGS_KEY, careModeLabel, loadSettings, nextCareMode, saveSet
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { createSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
-import { writeJson } from "../shared/storage.js";
+import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { clearGameInterval, setGameInterval } from "../shared/timers.js";
 
@@ -116,16 +116,12 @@ const soundFx = (() => {
 })();
 
 function loadStats() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(STATS_KEY) || "{}");
-    stats.plays = Number(parsed.plays || 0);
-    stats.wins = Number(parsed.wins || 0);
-    stats.totalScore = Number(parsed.totalScore || 0);
-    stats.totalAccuracy = Number(parsed.totalAccuracy || 0);
-    stats.bestCombo = Number(parsed.bestCombo || 0);
-  } catch {
-    stats.plays = 0;
-  }
+  const parsed = readJson(STATS_KEY);
+  stats.plays = Number(parsed.plays || 0);
+  stats.wins = Number(parsed.wins || 0);
+  stats.totalScore = Number(parsed.totalScore || 0);
+  stats.totalAccuracy = Number(parsed.totalAccuracy || 0);
+  stats.bestCombo = Number(parsed.bestCombo || 0);
 }
 
 function saveStats() {
@@ -137,12 +133,8 @@ function clamp(value, min, max) {
 }
 
 function loadCalibration() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(CALIBRATION_KEY) || "{}");
-    calibrationState.offsetAdjustMs = clamp(Number(parsed.offsetAdjustMs || 0), -70, 120);
-  } catch {
-    calibrationState.offsetAdjustMs = 0;
-  }
+  const parsed = readJson(CALIBRATION_KEY);
+  calibrationState.offsetAdjustMs = clamp(Number(parsed.offsetAdjustMs || 0), -70, 120);
 }
 
 function saveCalibration() {

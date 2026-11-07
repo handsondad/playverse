@@ -4,7 +4,7 @@ import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shar
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { bindSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
-import { writeValue } from "../shared/storage.js";
+import { readNumber, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { setHtml } from "../shared/dom.js";
 
@@ -60,11 +60,7 @@ function applySettingsUi() {
 }
 
 function loadBestStreak() {
-  try {
-    return Number(localStorage.getItem(BEST_KEY) || 0);
-  } catch {
-    return 0;
-  }
+  return readNumber(BEST_KEY);
 }
 
 function saveBestStreak(streak) {

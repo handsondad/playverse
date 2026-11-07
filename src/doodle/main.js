@@ -3,7 +3,7 @@ import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
 import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { bindSoftTap } from "../shared/tap.js";
-import { writeJson } from "../shared/storage.js";
+import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 
 const SETTINGS_KEY = "doodle-settings";
@@ -76,12 +76,8 @@ function formatDateTime(timeText) {
 }
 
 function loadWorks() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(WORKS_KEY) || "[]");
-    works = Array.isArray(parsed) ? parsed : [];
-  } catch {
-    works = [];
-  }
+  const parsed = readJson(WORKS_KEY, []);
+  works = Array.isArray(parsed) ? parsed : [];
 }
 
 function saveWorks() {

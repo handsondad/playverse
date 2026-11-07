@@ -4,7 +4,7 @@ import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shar
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { createSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
-import { writeJson } from "../shared/storage.js";
+import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 70, waitForFlash: false });
@@ -61,14 +61,9 @@ function saveStats() {
 }
 
 function loadStats() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(STATS_KEY) || "{}");
-    stats.plays = Number(parsed.plays || 0);
-    stats.solvedTotal = Number(parsed.solvedTotal || 0);
-  } catch {
-    stats.plays = 0;
-    stats.solvedTotal = 0;
-  }
+  const parsed = readJson(STATS_KEY);
+  stats.plays = Number(parsed.plays || 0);
+  stats.solvedTotal = Number(parsed.solvedTotal || 0);
 }
 
 function speakSequence(parts) {

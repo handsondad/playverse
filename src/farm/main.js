@@ -4,7 +4,7 @@ import { GLOBAL_SETTINGS_KEY, careModeLabel, loadSettings, nextCareMode, saveSet
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { createSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
-import { writeJson } from "../shared/storage.js";
+import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { setHtml } from "../shared/dom.js";
 
@@ -96,16 +96,12 @@ const soundFx = (() => {
 })();
 
 function loadStats() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(STATS_KEY) || "{}");
-    stats.totalDays = Number(parsed.totalDays || 0);
-    stats.totalHarvests = Number(parsed.totalHarvests || 0);
-    stats.totalOrders = Number(parsed.totalOrders || 0);
-    stats.topLevel = Number(parsed.topLevel || 1);
-    stats.totalCoins = Number(parsed.totalCoins || 0);
-  } catch {
-    stats.totalDays = 0;
-  }
+  const parsed = readJson(STATS_KEY);
+  stats.totalDays = Number(parsed.totalDays || 0);
+  stats.totalHarvests = Number(parsed.totalHarvests || 0);
+  stats.totalOrders = Number(parsed.totalOrders || 0);
+  stats.topLevel = Number(parsed.topLevel || 1);
+  stats.totalCoins = Number(parsed.totalCoins || 0);
 }
 
 function saveStats() {

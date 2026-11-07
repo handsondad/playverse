@@ -4,7 +4,7 @@ import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shar
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { createSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
-import { writeJson } from "../shared/storage.js";
+import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 70 });
@@ -58,12 +58,8 @@ function saveStats() {
 }
 
 function loadWrongQuestions() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(WRONG_QUESTIONS_KEY) || "[]");
-    wrongQuestions = Array.isArray(parsed) ? parsed : [];
-  } catch {
-    wrongQuestions = [];
-  }
+  const parsed = readJson(WRONG_QUESTIONS_KEY, []);
+  wrongQuestions = Array.isArray(parsed) ? parsed : [];
 }
 
 function saveWrongQuestions() {
@@ -98,14 +94,9 @@ function clearReviewedQuestions(questions) {
 }
 
 function loadStats() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(STATS_KEY) || "{}");
-    stats.plays = Number(parsed.plays || 0);
-    stats.wins = Number(parsed.wins || 0);
-  } catch {
-    stats.plays = 0;
-    stats.wins = 0;
-  }
+  const parsed = readJson(STATS_KEY);
+  stats.plays = Number(parsed.plays || 0);
+  stats.wins = Number(parsed.wins || 0);
 }
 
 function applySettingsUi() {

@@ -1,5 +1,5 @@
 import { createSeededRandom } from "../shared/random.js";
-import { writeValue } from "../shared/storage.js";
+import { readNumber, writeValue } from "../shared/storage.js";
 import { clearGameInterval, setGameInterval } from "../shared/timers.js";
 
 const STORAGE_KEY = "sort-best-score";
@@ -65,11 +65,7 @@ export class SortGame {
   }
 
   loadBestScore() {
-    try {
-      return Number(localStorage.getItem(STORAGE_KEY) || 0);
-    } catch {
-      return 0;
-    }
+    return readNumber(STORAGE_KEY);
   }
 
   saveBestScore(score) {

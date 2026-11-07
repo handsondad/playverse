@@ -1,5 +1,5 @@
 import { hashSeed, mulberry32 } from "../shared/random.js";
-import { writeValue } from "../shared/storage.js";
+import { readNumber, writeValue } from "../shared/storage.js";
 import { clearGameInterval, setGameInterval } from "../shared/timers.js";
 
 const STORAGE_KEY_PREFIX = "memory-match-best";
@@ -302,7 +302,7 @@ export class MemoryGame {
 
   saveBestScore() {
     const key = `${STORAGE_KEY_PREFIX}:${this.level.id}:${this.theme}`;
-    const previous = Number(localStorage.getItem(key) || 0);
+    const previous = readNumber(key);
     if (this.score > previous) {
       writeValue(key, this.score);
     }
@@ -313,7 +313,7 @@ export class MemoryGame {
       return 0;
     }
     const key = `${STORAGE_KEY_PREFIX}:${this.level.id}:${this.theme}`;
-    return Number(localStorage.getItem(key) || 0);
+    return readNumber(key);
   }
 
   emit() {

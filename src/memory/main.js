@@ -4,7 +4,7 @@ import { GLOBAL_SETTINGS_KEY, careModeLabel, loadSettings, nextCareMode, saveSet
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { createSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
-import { writeJson } from "../shared/storage.js";
+import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { setGameInterval } from "../shared/timers.js";
 
@@ -96,22 +96,13 @@ function getThresholdMs() {
 }
 
 function loadPlaytime() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(PLAYTIME_KEY) || "{}");
-    return {
-      continuousMs: Number(parsed.continuousMs || 0),
-      lastTick: Number(parsed.lastTick || Date.now()),
-      snoozeUntil: Number(parsed.snoozeUntil || 0),
-      remindStage: Number(parsed.remindStage || 0),
-    };
-  } catch {
-    return {
-      continuousMs: 0,
-      lastTick: Date.now(),
-      snoozeUntil: 0,
-      remindStage: 0,
-    };
-  }
+  const parsed = readJson(PLAYTIME_KEY);
+  return {
+    continuousMs: Number(parsed.continuousMs || 0),
+    lastTick: Number(parsed.lastTick || Date.now()),
+    snoozeUntil: Number(parsed.snoozeUntil || 0),
+    remindStage: Number(parsed.remindStage || 0),
+  };
 }
 
 function savePlaytime(state) {
@@ -287,15 +278,11 @@ function hashText(input) {
 }
 
 function loadProgress() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(STORAGE_PROGRESS_KEY) || "{}");
-    if (parsed.unlocked) {
-      progressState.unlocked.easy = true;
-      progressState.unlocked.normal = Boolean(parsed.unlocked.normal);
-      progressState.unlocked.hard = Boolean(parsed.unlocked.hard);
-    }
-  } catch {
+  const parsed = readJson(STORAGE_PROGRESS_KEY);
+  if (parsed.unlocked) {
     progressState.unlocked.easy = true;
+    progressState.unlocked.normal = Boolean(parsed.unlocked.normal);
+    progressState.unlocked.hard = Boolean(parsed.unlocked.hard);
   }
 
   // Keep easy mode always available to avoid an empty difficulty selector.
@@ -307,17 +294,13 @@ function saveProgress() {
 }
 
 function loadStats() {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(STORAGE_STATS_KEY) || "{}");
-    statsState.plays = Number(parsed.plays || 0);
-    statsState.wins = Number(parsed.wins || 0);
-    statsState.totalUsedSec = Number(parsed.totalUsedSec || 0);
-    statsState.totalMistakes = Number(parsed.totalMistakes || 0);
-    statsState.currentStreak = Number(parsed.currentStreak || 0);
-    statsState.bestStreak = Number(parsed.bestStreak || 0);
-  } catch {
-    statsState.plays = 0;
-  }
+  const parsed = readJson(STORAGE_STATS_KEY);
+  statsState.plays = Number(parsed.plays || 0);
+  statsState.wins = Number(parsed.wins || 0);
+  statsState.totalUsedSec = Number(parsed.totalUsedSec || 0);
+  statsState.totalMistakes = Number(parsed.totalMistakes || 0);
+  statsState.currentStreak = Number(parsed.currentStreak || 0);
+  statsState.bestStreak = Number(parsed.bestStreak || 0);
 }
 
 function saveStats() {
@@ -325,12 +308,8 @@ function saveStats() {
 }
 
 function loadDailyBoard(day) {
-  try {
-    const key = `${DAILY_BOARD_KEY_PREFIX}:${day}`;
-    return JSON.parse(localStorage.getItem(key) || "[]");
-  } catch {
-    return [];
-  }
+  const key = `${DAILY_BOARD_KEY_PREFIX}:${day}`;
+  return readJson(key, []);
 }
 
 function saveDailyBoard(day, records) {
