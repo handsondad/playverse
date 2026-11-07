@@ -29,7 +29,9 @@ $contentTypes = @{
   ".webp" = "image/webp"
   ".svg" = "image/svg+xml"
   ".ico" = "image/x-icon"
+  ".webmanifest" = "application/manifest+json; charset=utf-8"
 }
+$rootFull = [System.IO.Path]::GetFullPath($Root).TrimEnd('\', '/') + [System.IO.Path]::DirectorySeparatorChar
 
 function Get-ContentType([string]$path) {
   $extension = [System.IO.Path]::GetExtension($path).ToLowerInvariant()
@@ -44,8 +46,12 @@ function Resolve-RequestPath([string]$rawUrl) {
   if ([string]::IsNullOrWhiteSpace($relative)) {
     $relative = "index.html"
   }
-  $candidate = Join-Path $Root $relative
-  if ((Test-Path $candidate) -and (Get-Item $candidate).PSIsContainer) {
+  $candidate = [System.IO.Path]::GetFullPath((Join-Path $Root $relative))
+  # Reject "..", encoded or not, that would escape the project folder.
+  if (-not $candidate.StartsWith($rootFull, [System.StringComparison]::OrdinalIgnoreCase)) {
+    return $null
+  }
+  if ((Test-Path -LiteralPath $candidate) -and (Get-Item -LiteralPath $candidate).PSIsContainer) {
     $candidate = Join-Path $candidate "index.html"
   }
   return $candidate
@@ -57,7 +63,7 @@ while ($listener.IsListening) {
     $requestPath = Resolve-RequestPath $context.Request.RawUrl
     $response = $context.Response
 
-    if (-not (Test-Path $requestPath) -or (Get-Item $requestPath).PSIsContainer) {
+    if (-not $requestPath -or -not (Test-Path -LiteralPath $requestPath) -or (Get-Item -LiteralPath $requestPath).PSIsContainer) {
       $response.StatusCode = 404
       $buffer = [System.Text.Encoding]::UTF8.GetBytes("404 Not Found")
       $response.ContentType = "text/plain; charset=utf-8"
