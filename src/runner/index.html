@@ -16,7 +16,7 @@
   <main class="runner-shell">
     <header class="hero">
       <h1>亲子跑酷</h1>
-      <p id="guideText">先选难度，再开始，点击屏幕或按钮跳跃躲开障碍。</p>
+      <p id="guideText" role="status">先选难度，再开始，点击屏幕或按钮跳跃躲开障碍。</p>
       <p id="playDurationHint" class="hero-note">建议每次游玩 8-10 分钟，结束后休息眼睛。</p>
       <div class="hero-links">
         <a href="../../index.html">返回首页</a> | <a href="../whac/index.html">打地鼠升级版</a>
@@ -42,7 +42,7 @@
           <button id="shieldBtn">护盾（1）</button>
         </div>
 
-        <section class="stats" aria-live="polite">
+        <section class="stats">
           <div><span>时间</span><strong id="timeValue">0</strong></div>
           <div><span>分数</span><strong id="scoreValue">0</strong></div>
           <div><span>距离</span><strong id="distanceValue">0</strong></div>
@@ -67,7 +67,7 @@
         </div>
       </section>
 
-      <section class="meta-stats muted-panel" aria-live="polite">
+      <section class="meta-stats muted-panel">
         <strong>数据统计</strong>
         <div class="meta-grid">
           <div><span>总局数</span><strong id="metaPlays">0</strong></div>

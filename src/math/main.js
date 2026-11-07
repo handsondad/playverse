@@ -6,6 +6,7 @@ import { createSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
+import { setText } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 70 });
 
@@ -153,15 +154,15 @@ function renderState(state) {
   retryBtn.disabled = state.isRunning || !state.stageId;
 
   if (!state.isRunning) {
-    guideText.textContent = "先选章节，再开始战斗。";
+    setText(guideText, "先选章节，再开始战斗。");
   } else if (state.reviewMode) {
-    guideText.textContent = "这里是错题复习关，答对后会从错题本里移除。";
+    setText(guideText, "这里是错题复习关，答对后会从错题本里移除。");
   } else if (state.lastResult === "correct") {
-    guideText.textContent = "答对了，继续攻击怪物。";
+    setText(guideText, "答对了，继续攻击怪物。");
   } else if (state.lastResult === "wrong") {
-    guideText.textContent = "答错了，怪物反击了一下。";
+    setText(guideText, "答错了，怪物反击了一下。");
   } else {
-    guideText.textContent = "看题后点击正确答案。";
+    setText(guideText, "看题后点击正确答案。");
   }
 
   renderAnswers(state);

@@ -11,3 +11,13 @@ export function setHtml(el, html) {
   el.innerHTML = html;
   return true;
 }
+
+// For live regions (role="status"): rewriting identical text still replaces the
+// text node, and screen readers announce it again on every game tick.
+export function setText(el, text) {
+  if (!el || el.textContent === text) {
+    return false;
+  }
+  el.textContent = text;
+  return true;
+}

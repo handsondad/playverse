@@ -16,7 +16,7 @@
   <main class="app-shell">
     <header class="top-bar">
       <h1>翻牌配对</h1>
-      <p class="subtitle" id="guideText">找出所有相同卡片，挑战你的记忆力。先选难度和主题，再点开始游戏。</p>
+      <p class="subtitle" id="guideText" role="status">找出所有相同卡片，挑战你的记忆力。先选难度和主题，再点开始游戏。</p>
       <p id="playDurationHint" class="subtitle subtitle-soft">建议每次游玩 8-10 分钟，注意休息眼睛。</p>
       <p class="subtitle"><a href="../../index.html">返回首页</a> | <a href="../bubble/index.html">泡泡连线救援</a></p>
     </header>
@@ -53,7 +53,7 @@
           </section>
         </div>
 
-        <section class="status-panel" aria-live="polite">
+        <section class="status-panel">
           <div><span class="label">时间</span><strong id="timeValue">0</strong></div>
           <div><span class="label">步数</span><strong id="movesValue">0</strong></div>
           <div><span class="label">已配对</span><strong id="matchedValue">0</strong></div>
@@ -78,7 +78,7 @@
         </div>
       </section>
 
-      <section class="stats-panel muted-panel" aria-live="polite">
+      <section class="stats-panel muted-panel">
         <strong>数据统计</strong>
         <div class="stats-grid">
           <div><span class="label">总局数</span><strong id="statsPlays">0</strong></div>
@@ -89,7 +89,7 @@
         </div>
       </section>
 
-      <section class="leaderboard-panel muted-panel" aria-live="polite">
+      <section class="leaderboard-panel muted-panel">
         <strong>今日挑战记录</strong>
         <p id="dailyBoardTitle">今日暂无记录</p>
         <ol id="dailyBoardList" class="daily-board-list"></ol>

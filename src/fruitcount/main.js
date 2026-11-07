@@ -3,6 +3,7 @@ import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
 import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { readJson, writeJson } from "../shared/storage.js";
+import { setText } from "../shared/dom.js";
 
 const PROGRESS_KEY = "fruitcount-game-progress";
 const SETTINGS_KEY = "fruitcount-game-settings";
@@ -80,7 +81,7 @@ function render(snapshot) {
   questionText.textContent = `有几个${snapshot.question.fruit.name}？`;
   renderChoices(snapshot);
 
-  feedbackEl.textContent = snapshot.feedback;
+  setText(feedbackEl, snapshot.feedback);
   feedbackEl.className = snapshot.answered
     ? (snapshot.lastCorrect ? "is-correct" : "is-wrong")
     : "";

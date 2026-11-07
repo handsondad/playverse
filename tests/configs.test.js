@@ -47,6 +47,16 @@ test("every config a game loads exists and has its required keys", () => {
   }
 });
 
+test("every game announces feedback, but not its ticking stats panels", () => {
+  for (const dir of gameDirs) {
+    const html = fs.readFileSync(path.join(root, "src", dir, "index.html"), "utf8");
+    assert.match(html, /role="status"|aria-live="polite"/, `${dir}: no live region for feedback`);
+    for (const [tag] of html.matchAll(/<[^>]+aria-live="[^"]+"[^>]*>/g)) {
+      assert.doesNotMatch(tag, /class="[^"]*\b(stats|stats-panel|meta-stats|status-bar|status-panel)\b/, `${dir}: ${tag}`);
+    }
+  }
+});
+
 test("only shared/storage.js touches localStorage", () => {
   const offenders = fs.readdirSync(path.join(root, "src"), { recursive: true })
     .filter((file) => file.endsWith(".js") && path.normalize(file) !== path.join("shared", "storage.js"))

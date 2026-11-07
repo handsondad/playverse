@@ -6,6 +6,7 @@ import { createSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
+import { setText } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 70, waitForFlash: false });
 
@@ -154,11 +155,11 @@ function renderState(state) {
   retryBtn.disabled = state.isRunning || !state.themeId;
 
   if (!state.isRunning) {
-    guideText.textContent = "先选主题，再开始拼读。";
+    setText(guideText, "先选主题，再开始拼读。");
   } else if (state.currentQuestion?.mode === "pinyin") {
-    guideText.textContent = "点拼音卡片填入格子，先拼声母，再拼韵母。";
+    setText(guideText, "点拼音卡片填入格子，先拼声母，再拼韵母。");
   } else {
-    guideText.textContent = "点字母卡片填入格子，填错可点格子撤回。";
+    setText(guideText, "点字母卡片填入格子，填错可点格子撤回。");
   }
 }
 

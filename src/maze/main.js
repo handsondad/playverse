@@ -7,6 +7,7 @@ import { todayString } from "../shared/random.js";
 import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { clearGameInterval, setGameInterval } from "../shared/timers.js";
+import { setText } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 70 });
 
@@ -194,21 +195,21 @@ function renderState(state) {
   hintBtn.disabled = !state.isRunning;
 
   if (!state.isRunning) {
-    guideText.textContent = state.isWin
+    setText(guideText, state.isWin
       ? "通关成功，可以挑战更少步数。"
-      : "先选关卡，再开始出发。收集钥匙后就能打开门。";
+      : "先选关卡，再开始出发。收集钥匙后就能打开门。");
   } else if (state.lastEvent === "踩到陷阱") {
-    guideText.textContent = "踩到陷阱了，记住这个位置，下次绕开它。";
+    setText(guideText, "踩到陷阱了，记住这个位置，下次绕开它。");
   } else if (state.lastEvent === "拿到钥匙") {
-    guideText.textContent = "拿到钥匙后，可以去找上锁的门。";
+    setText(guideText, "拿到钥匙后，可以去找上锁的门。");
   } else if (state.lastEvent === "机关启动") {
-    guideText.textContent = "机关已经启动，原来堵住的路现在可以通过了。";
+    setText(guideText, "机关已经启动，原来堵住的路现在可以通过了。");
   } else if (state.lastEvent === "传送成功") {
-    guideText.textContent = "传送点会把你送到另一端，先看看周围的新路线。";
+    setText(guideText, "传送点会把你送到另一端，先看看周围的新路线。");
   } else if (state.lastEvent === "走上独木桥") {
-    guideText.textContent = "独木桥只能过一次，离开后就会塌掉。";
+    setText(guideText, "独木桥只能过一次，离开后就会塌掉。");
   } else {
-    guideText.textContent = "高亮格可点移动，也可用方向键 / WASD。";
+    setText(guideText, "高亮格可点移动，也可用方向键 / WASD。");
   }
 
   if (!state.isRunning) {

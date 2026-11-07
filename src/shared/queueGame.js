@@ -6,7 +6,7 @@ import { SPEECH_PRESETS, createSpeaker } from "./speech.js";
 import { bindDelegatedTap, bindSoftTap } from "./tap.js";
 import { readNumber, writeValue } from "./storage.js";
 import { loadGameConfig, showConfigError } from "./config.js";
-import { setHtml } from "./dom.js";
+import { setHtml, setText } from "./dom.js";
 
 const QUEUE_SIZE = 5;
 
@@ -477,7 +477,7 @@ export function mountQueueGame(rules, ui) {
     streakValue.textContent = String(state.streak);
     bestValue.textContent = String(state.bestScore);
 
-    feedbackText.textContent = state.lastEvent;
+    setText(feedbackText, state.lastEvent);
     if (weatherText) {
       weatherText.textContent = `${ui.weatherLabel}：${state.weatherName || rules.weather.idle.name}`;
     }
@@ -527,7 +527,7 @@ export function mountQueueGame(rules, ui) {
     onStateChange: updateUi,
     onResult: showResult,
     onToast: (text) => {
-      feedbackText.textContent = text;
+      setText(feedbackText, text);
       speak(text, { detailOnly: true });
     },
   });

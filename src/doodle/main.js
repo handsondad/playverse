@@ -5,6 +5,7 @@ import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { bindSoftTap } from "../shared/tap.js";
 import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
+import { setText } from "../shared/dom.js";
 
 const SETTINGS_KEY = "doodle-settings";
 const WORKS_KEY = "doodle-works";
@@ -311,7 +312,7 @@ async function exportShortClip() {
 
 function saveCurrentWork() {
   if (!latestState || latestState.strokes.length === 0) {
-    guideText.textContent = "先画一些内容再保存作品。";
+    setText(guideText, "先画一些内容再保存作品。");
     return;
   }
 
@@ -331,7 +332,7 @@ function saveCurrentWork() {
   works = [newWork, ...works].slice(0, MAX_WORKS);
   saveWorks();
   renderWorks();
-  guideText.textContent = `已保存作品：${newWork.name}`;
+  setText(guideText, `已保存作品：${newWork.name}`);
 }
 
 function loadWorkById(workId) {
@@ -346,10 +347,10 @@ function loadWorkById(workId) {
 
   const ok = game.loadSnapshot(work.snapshot);
   if (!ok) {
-    guideText.textContent = "作品载入失败，数据格式不正确。";
+    setText(guideText, "作品载入失败，数据格式不正确。");
     return;
   }
-  guideText.textContent = `已载入：${work.name}，可以继续修改。`;
+  setText(guideText, `已载入：${work.name}，可以继续修改。`);
 }
 
 function deleteWorkById(workId) {
@@ -360,7 +361,7 @@ function deleteWorkById(workId) {
   }
   saveWorks();
   renderWorks();
-  guideText.textContent = "作品已删除。";
+  setText(guideText, "作品已删除。");
 }
 
 function stopRecordedAudioPlayback() {
@@ -626,7 +627,7 @@ function updateUi(state) {
 const game = new DoodleGame({
   onStateChange: updateUi,
   onToast: (text) => {
-    guideText.textContent = text;
+    setText(guideText, text);
     if (settingsState.narrationLevel === "detailed") {
       speak(text);
     }
@@ -679,7 +680,7 @@ bindSoftTap(playBtn, () => {
   if (game.startPlay()) {
     gameAudio.success();
     syncPlayVoice();
-    guideText.textContent = "动画开始啦，画好的角色动起来了。";
+    setText(guideText, "动画开始啦，画好的角色动起来了。");
     speak(guideText.textContent);
   }
 });
@@ -688,7 +689,7 @@ bindSoftTap(stopBtn, () => {
   gameAudio.place(280);
   game.stopPlay();
   stopRecordedAudioPlayback();
-  guideText.textContent = "已停止播放，可以继续修改涂鸦。";
+  setText(guideText, "已停止播放，可以继续修改涂鸦。");
 });
 
 bindSoftTap(recordBtn, () => {
@@ -747,7 +748,7 @@ templateButtons.addEventListener("pointerup", (event) => {
   game.setTemplate(button.dataset.templateId);
   const template = latestState?.templates?.find((item) => item.id === button.dataset.templateId);
   if (template) {
-    guideText.textContent = `已切换动作：${template.name}。${template.hint || ""}`;
+    setText(guideText, `已切换动作：${template.name}。${template.hint || ""}`);
   }
 });
 

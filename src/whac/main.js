@@ -7,7 +7,7 @@ import { todayString } from "../shared/random.js";
 import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { setGameInterval } from "../shared/timers.js";
-import { setHtml } from "../shared/dom.js";
+import { setHtml, setText } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 80, onTap: () => soundFx.tap() });
 
@@ -306,34 +306,34 @@ function updateChapterUi() {
 
 function updateGuide(state) {
   if (!state.config) {
-    guideText.textContent = "点击开始游戏，优先点小动物，避开干扰项。";
+    setText(guideText, "点击开始游戏，优先点小动物，避开干扰项。");
     return;
   }
   if (!state.isRunning) {
-    guideText.textContent = "本局结束，可点击再来一局继续挑战。";
+    setText(guideText, "本局结束，可点击再来一局继续挑战。");
     return;
   }
   if (state.mode === "daily") {
-    guideText.textContent = "今日挑战进行中：今天的刷怪序列是固定的。";
+    setText(guideText, "今日挑战进行中：今天的刷怪序列是固定的。");
     return;
   }
   if (state.isFrozen) {
-    guideText.textContent = "冻结生效中：生成节奏暂停 3 秒。";
+    setText(guideText, "冻结生效中：生成节奏暂停 3 秒。");
     return;
   }
   if (state.isDouble) {
-    guideText.textContent = "双倍分生效中：命中得分翻倍。";
+    setText(guideText, "双倍分生效中：命中得分翻倍。");
     return;
   }
   if (state.combo >= 3) {
-    guideText.textContent = `连击 ${state.combo}，当前倍率 x${state.comboMultiplier.toFixed(1)}。`;
+    setText(guideText, `连击 ${state.combo}，当前倍率 x${state.comboMultiplier.toFixed(1)}。`);
     return;
   }
   if (state.misses >= 3) {
-    guideText.textContent = "误点有点多，先看清再点会更稳。";
+    setText(guideText, "误点有点多，先看清再点会更稳。");
     return;
   }
-  guideText.textContent = "干扰项会扣分，优先点绿色边框的小动物。";
+  setText(guideText, "干扰项会扣分，优先点绿色边框的小动物。");
 }
 
 function renderArena(state) {
@@ -489,7 +489,7 @@ function start(options = null) {
     currentLevelId = fallback.id;
     config = fallback;
     updateChapterUi();
-    guideText.textContent = "难度自动回退到可用项。";
+    setText(guideText, "难度自动回退到可用项。");
   }
 
   game.start(config, {
@@ -592,7 +592,7 @@ chapterButtons.forEach((button) => {
     }
     currentLevelId = button.dataset.levelId;
     updateChapterUi();
-    guideText.textContent = `已选择${button.textContent}，点击开始游戏进入。`;
+    setText(guideText, `已选择${button.textContent}，点击开始游戏进入。`);
     speakGuide(guideText.textContent);
   });
 });

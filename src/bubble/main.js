@@ -6,7 +6,7 @@ import { bindSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readJson, readNumber, writeJson, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setHtml } from "../shared/dom.js";
+import { setHtml, setText } from "../shared/dom.js";
 
 const SETTINGS_KEY = "bubble-settings";
 const STATS_KEY = "bubble-stats";
@@ -198,11 +198,11 @@ function updateUi(state) {
   hintBtn.disabled = !state.isRunning;
 
   if (!state.isRunning) {
-    guideText.textContent = state.isWin
+    setText(guideText, state.isWin
       ? "救援成功，试试更高难度吧。"
-      : "按住并划过相邻同色泡泡，松手消除。";
+      : "按住并划过相邻同色泡泡，松手消除。");
   } else if (state.lastEvent) {
-    guideText.textContent = state.lastEvent;
+    setText(guideText, state.lastEvent);
   }
 
   renderBoard(state);

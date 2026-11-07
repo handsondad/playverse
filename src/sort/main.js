@@ -6,7 +6,7 @@ import { createSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setHtml } from "../shared/dom.js";
+import { setHtml, setText } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 80, onTap: () => soundFx.tap() });
 
@@ -247,9 +247,9 @@ function renderState(state) {
   retryBtn.disabled = state.isRunning || !state.level;
   hintBtn.disabled = !state.isRunning;
 
-  guideText.textContent = state.isRunning
+  setText(guideText, state.isRunning
     ? `${state.modeName}进行中：上面选物品，下面选分类盒，也可以直接往下拖。`
-    : "先选模式和难度，再开始。上面是物品，下面是分类盒。";
+    : "先选模式和难度，再开始。上面是物品，下面是分类盒。");
 
   renderBoard(state);
 }
@@ -617,7 +617,7 @@ modeButtons.forEach((button) => {
   bindSoftTap(button, () => {
     currentModeId = button.dataset.modeId;
     updateSelectorsUi();
-    guideText.textContent = `已切换到${button.textContent}。`;
+    setText(guideText, `已切换到${button.textContent}。`);
     speakGuide(guideText.textContent);
   });
 });
@@ -626,7 +626,7 @@ levelButtons.forEach((button) => {
   bindSoftTap(button, () => {
     currentLevelId = button.dataset.levelId;
     updateSelectorsUi();
-    guideText.textContent = `已切换到${button.textContent}。`;
+    setText(guideText, `已切换到${button.textContent}。`);
     speakGuide(guideText.textContent);
   });
 });

@@ -6,7 +6,7 @@ import { bindSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readNumber, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setHtml } from "../shared/dom.js";
+import { setHtml, setText } from "../shared/dom.js";
 
 const SETTINGS_KEY = "choir-settings";
 const BEST_KEY = "choir-best-streak";
@@ -248,7 +248,7 @@ function updateUi(state) {
   retryBtn.disabled = !state.levelId;
   hintBtn.disabled = !state.isRunning || state.phase !== "input";
 
-  feedbackText.textContent = state.lastEvent;
+  setText(feedbackText, state.lastEvent);
   guideText.textContent = state.isRunning
     ? (state.phase === "watch" ? "认真听顺序，等会轮到你跟唱。" : "按相同顺序点动物，完成当前回合。")
     : (state.isWin ? "合唱成功，掌声送给你。" : "先听一遍动物合唱顺序，再按同样顺序点出来。");

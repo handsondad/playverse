@@ -7,6 +7,7 @@ import { todayString } from "../shared/random.js";
 import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { setGameInterval } from "../shared/timers.js";
+import { setText } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 80, onTap: () => soundFx.tap() });
 
@@ -404,34 +405,34 @@ function updateChapterUi() {
 
 function updateGuide(state) {
   if (!state.level) {
-    guideText.textContent = "点击开始游戏，翻开两张卡片试试吧。";
+    setText(guideText, "点击开始游戏，翻开两张卡片试试吧。");
     return;
   }
   if (!state.isRunning) {
-    guideText.textContent = "可点击再来一局，或用今日挑战进入固定牌面。";
+    setText(guideText, "可点击再来一局，或用今日挑战进入固定牌面。");
     return;
   }
   if (state.mode === "daily") {
-    guideText.textContent = "今日挑战进行中：今天的牌面对所有人都相同。";
+    setText(guideText, "今日挑战进行中：今天的牌面对所有人都相同。");
     return;
   }
   if (state.shieldArmed) {
-    guideText.textContent = "保险已生效：下一次翻错会自动配对。";
+    setText(guideText, "保险已生效：下一次翻错会自动配对。");
     return;
   }
   if (state.combo >= 2) {
-    guideText.textContent = `连击 ${state.combo}，继续保持可以冲更高分。`;
+    setText(guideText, `连击 ${state.combo}，继续保持可以冲更高分。`);
     return;
   }
   if (state.moves === 0) {
-    guideText.textContent = "先翻任意两张卡片，记住它们的位置。";
+    setText(guideText, "先翻任意两张卡片，记住它们的位置。");
     return;
   }
   if (state.mistakes >= 3 && state.hintCount > 0) {
-    guideText.textContent = "遇到困难时可以使用提示道具。";
+    setText(guideText, "遇到困难时可以使用提示道具。");
     return;
   }
-  guideText.textContent = "观察翻开的图案，再找它的另一半。";
+  setText(guideText, "观察翻开的图案，再找它的另一半。");
 }
 
 function renderBoard(state) {
@@ -615,7 +616,7 @@ function startGame(customOptions = null) {
     currentLevelId = fallback.id;
     selected = fallback;
     updateChapterUi();
-    guideText.textContent = "难度自动回退到可用项。";
+    setText(guideText, "难度自动回退到可用项。");
   }
   if (options?.forceTheme) {
     currentThemeKey = options.forceTheme;
@@ -736,7 +737,7 @@ themeButtons.forEach((button) => {
   bindSoftTap(button, () => {
     currentThemeKey = button.dataset.themeKey;
     applyThemeUnlocks();
-    guideText.textContent = `已选择${button.textContent}主题，点击开始游戏进入。`;
+    setText(guideText, `已选择${button.textContent}主题，点击开始游戏进入。`);
     speakGuide(guideText.textContent);
   });
 });
@@ -748,7 +749,7 @@ chapterButtons.forEach((button) => {
     }
     currentLevelId = button.dataset.levelId;
     updateChapterUi();
-    guideText.textContent = `已选择${button.textContent}，点击开始游戏进入。`;
+    setText(guideText, `已选择${button.textContent}，点击开始游戏进入。`);
     speakGuide(guideText.textContent);
   });
 });

@@ -6,6 +6,7 @@ import { createSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
+import { setText } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 80, onTap: () => soundFx.tap() });
 
@@ -179,30 +180,30 @@ function updateChapterUi() {
 
 function updateGuide(state) {
   if (!state.level) {
-    guideText.textContent = "先选难度，再开始，点击屏幕或按钮跳跃躲开障碍。";
+    setText(guideText, "先选难度，再开始，点击屏幕或按钮跳跃躲开障碍。");
     return;
   }
   if (!state.isRunning) {
-    guideText.textContent = "本局结束，可以点击再来一局继续跑酷。";
+    setText(guideText, "本局结束，可以点击再来一局继续跑酷。");
     return;
   }
   if (state.mode === "daily") {
-    guideText.textContent = "今日挑战进行中：今天的障碍节奏是固定的。";
+    setText(guideText, "今日挑战进行中：今天的障碍节奏是固定的。");
     return;
   }
   if (state.shieldArmed) {
-    guideText.textContent = "护盾已就绪：下一次碰撞会被保护。";
+    setText(guideText, "护盾已就绪：下一次碰撞会被保护。");
     return;
   }
   if (state.lowGravityTimer > 0.1) {
-    guideText.textContent = "轻羽效果生效中：你会跳得更轻更高。";
+    setText(guideText, "轻羽效果生效中：你会跳得更轻更高。");
     return;
   }
   if (state.timeLeft <= 8) {
-    guideText.textContent = "最后冲刺，保持节奏就能过关。";
+    setText(guideText, "最后冲刺，保持节奏就能过关。");
     return;
   }
-  guideText.textContent = "人物会一直朝右跑，木桩会从右边过来，点击跳跃躲开。";
+  setText(guideText, "人物会一直朝右跑，木桩会从右边过来，点击跳跃躲开。");
 }
 
 function renderTrack(state) {
@@ -488,7 +489,7 @@ chapterButtons.forEach((button) => {
   bindSoftTap(button, () => {
     currentLevelId = button.dataset.levelId;
     updateChapterUi();
-    guideText.textContent = `已选择${button.textContent}，点击开始游戏进入。`;
+    setText(guideText, `已选择${button.textContent}，点击开始游戏进入。`);
     speakGuide(guideText.textContent);
   });
 });

@@ -7,6 +7,7 @@ import { todayString } from "../shared/random.js";
 import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { clearGameInterval, setGameInterval } from "../shared/timers.js";
+import { setText } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 70, onTap: () => soundFx.tap() });
 
@@ -374,13 +375,13 @@ function renderState(state) {
   if (!state.song) {
     songTitle.textContent = "请先开始游戏";
     songSubTitle.textContent = "4 条轨道，等音符下落到判定线再点。";
-    guideText.textContent = "先选歌曲和难度，再开始。等音符掉到判定线时点击对应颜色按钮。";
+    setText(guideText, "先选歌曲和难度，再开始。等音符掉到判定线时点击对应颜色按钮。");
   } else {
     songTitle.textContent = `${state.song.name} · ${state.levelName}`;
     songSubTitle.textContent = `主题：${state.song.theme} | 长按条要按住到尾巴结束。`;
-    guideText.textContent = state.isRunning
+    setText(guideText, state.isRunning
       ? "点击普通音符，遇到长条音符要按住不放，直到尾巴结束。"
-      : "可以再来一局，也可以换一首歌继续拍。";
+      : "可以再来一局，也可以换一首歌继续拍。");
   }
 
   renderLanes(state);
@@ -610,7 +611,7 @@ songButtonsEl.addEventListener("pointerup", (event) => {
   event.preventDefault();
   currentSongId = button.dataset.songId;
   updateSelectorsUi();
-  guideText.textContent = `已选择${button.textContent.trim()}。`;
+  setText(guideText, `已选择${button.textContent.trim()}。`);
   speakGuide(guideText.textContent);
 });
 
@@ -618,7 +619,7 @@ levelButtons.forEach((button) => {
   bindSoftTap(button, () => {
     currentLevelId = button.dataset.levelId;
     updateSelectorsUi();
-    guideText.textContent = `已切换到${button.textContent}。`;
+    setText(guideText, `已切换到${button.textContent}。`);
     speakGuide(guideText.textContent);
   });
 });

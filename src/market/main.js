@@ -3,6 +3,7 @@ import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
 import { careModeLabel, loadSettings, nextCareMode, saveSettings } from "../shared/settings.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { readJson, writeJson } from "../shared/storage.js";
+import { setText } from "../shared/dom.js";
 
 const PROGRESS_KEY = "market-game-progress";
 const SETTINGS_KEY = "market-game-settings";
@@ -107,7 +108,7 @@ function render(snapshot) {
   renderCart(snapshot);
   renderShelf(snapshot);
 
-  feedbackEl.textContent = snapshot.feedback;
+  setText(feedbackEl, snapshot.feedback);
   feedbackEl.className = snapshot.submitted
     ? (snapshot.lastResult ? "is-correct" : "is-wrong")
     : "";

@@ -23,7 +23,7 @@ src/
     random.js               # 种子随机（每日挑战）
     timers.js               # 页面隐藏时暂停的 setInterval
     config.js               # 关卡 JSON 加载与失败遮罩
-    dom.js                  # setHtml：相同 markup 跳过重绘
+    dom.js                  # setHtml：相同 markup 跳过重绘；setText：播报区域文字不变时不重写
     findGame.js             # 低龄「找一找」通用引擎
     queueGame.js            # 「队列分拣」通用引擎 + 页面装配
     pwa.js                  # Service Worker 注册
@@ -74,6 +74,7 @@ scripts/
 3. 在 `configs/game-manifest.json` 增加卡片，填好 `group`（`toddler` / `cognition` / `life` / `action`）和 `theme`。
 4. 复用 `src/shared/`：设置、语音、点按、存储、随机数、计时器；低龄「找卡片」类可直接用 `mountFindGame`，「队列分拣」类可直接用 `mountQueueGame`。
 5. 需要计时循环时用 `setGameInterval`，需要频繁重绘按钮区时用 `setHtml`。
+6. 反馈文字放在一个 `role="status"` 元素里并用 `setText` 写入；统计面板（时间、分数等每秒变化的区域）不要加 `aria-live`。
 
 ## 六、首页维护约定
 

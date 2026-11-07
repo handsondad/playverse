@@ -6,7 +6,7 @@ import { bindSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readNumber, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setHtml } from "../shared/dom.js";
+import { setHtml, setText } from "../shared/dom.js";
 
 const SETTINGS_KEY = "lighthouse-settings";
 const BEST_KEY = "lighthouse-best-score";
@@ -153,7 +153,7 @@ function updateUi(state) {
     weatherText.textContent = `天气：${state.weatherEvent?.name || "晴朗"}`;
   }
 
-  feedbackText.textContent = state.lastEvent;
+  setText(feedbackText, state.lastEvent);
   guideText.textContent = state.isRunning
     ? "切换到与来船相同的灯光，保证每艘船都安全进港。"
     : (state.isWin ? "值守成功，今晚港口很安全。" : "观察来船信号，切换相同灯光，护送船只安全进港。");
@@ -200,7 +200,7 @@ const game = new LighthouseGame({
   onStateChange: updateUi,
   onResult: showResult,
   onToast: (text) => {
-    feedbackText.textContent = text;
+    setText(feedbackText, text);
     speak(text, { detailOnly: true });
   },
 });

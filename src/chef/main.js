@@ -6,7 +6,7 @@ import { bindSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readJson, readNumber, writeJson, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setHtml } from "../shared/dom.js";
+import { setHtml, setText } from "../shared/dom.js";
 
 const SETTINGS_KEY = "chef-settings";
 const STATS_KEY = "chef-stats";
@@ -169,7 +169,7 @@ function updateUi(state) {
   trayHint.textContent = state.tray.length > 0
     ? `当前已放入：${formatIngredientList(state.tray)}`
     : "先从下方食材区点选食材放进餐盘。";
-  feedbackText.textContent = state.lastFeedback;
+  setText(feedbackText, state.lastFeedback);
   guideText.textContent = state.isRunning
     ? `完成 ${state.targetOrders} 单即可通关（当前：${state.currentThemeName || "主题菜单"}）。`
     : (state.isWin ? "营业成功，顾客们都很满意。" : "看清订单后，把需要的食材点到餐盘里，再点击提交。");
@@ -202,7 +202,7 @@ const game = new ChefGame({
   onStateChange: updateUi,
   onResult: showResult,
   onToast: (text) => {
-    feedbackText.textContent = text;
+    setText(feedbackText, text);
     speak(text, { detailOnly: true });
   },
 });

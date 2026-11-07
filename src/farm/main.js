@@ -6,7 +6,7 @@ import { createSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setHtml } from "../shared/dom.js";
+import { setHtml, setText } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 70, onTap: () => soundFx.tap() });
 
@@ -324,11 +324,11 @@ function renderState(state) {
   }
 
   if (!state.isRunning) {
-    guideText.textContent = "点击开始经营，开启今天的农场循环。";
+    setText(guideText, "点击开始经营，开启今天的农场循环。");
   } else if (state.readyCount > 0) {
-    guideText.textContent = `今天是${state.weather.name}，有地块成熟啦，快去收获并交付订单。`;
+    setText(guideText, `今天是${state.weather.name}，有地块成熟啦，快去收获并交付订单。`);
   } else {
-    guideText.textContent = `今天是${state.weather.name}，先种满地块，等成熟后收获，再交付订单。`;
+    setText(guideText, `今天是${state.weather.name}，先种满地块，等成熟后收获，再交付订单。`);
   }
 }
 
