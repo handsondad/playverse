@@ -7,6 +7,7 @@ import { bindSoftTap } from "../shared/tap.js";
 import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { setText } from "../shared/dom.js";
+import { buildShareCard, canRecordClip, downloadUrl, fileStamp, recordClip, wait } from "./share.js";
 
 const SETTINGS_KEY = "doodle-settings";
 const WORKS_KEY = "doodle-works";
@@ -114,92 +115,19 @@ function createThumbnail() {
   return drawCanvas.toDataURL("image/png", 0.9);
 }
 
-function buildShareCardDataUrl() {
-  const canvas = document.createElement("canvas");
-  canvas.width = 1080;
-  canvas.height = 1440;
-  const ctx = canvas.getContext("2d");
-
-  const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-  gradient.addColorStop(0, "#f2f7ff");
-  gradient.addColorStop(1, "#f0fff7");
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  ctx.fillStyle = "#6f82f0";
-  ctx.fillRect(0, 0, canvas.width, 150);
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 52px Microsoft YaHei";
-  ctx.fillText("我的涂鸦互动动画", 58, 92);
-
-  const frameX = 86;
-  const frameY = 214;
-  const frameSize = 908;
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(frameX - 16, frameY - 16, frameSize + 32, frameSize + 32);
-  ctx.strokeStyle = "#d6deff";
-  ctx.lineWidth = 4;
-  ctx.strokeRect(frameX - 16, frameY - 16, frameSize + 32, frameSize + 32);
-  ctx.drawImage(drawCanvas, frameX, frameY, frameSize, frameSize);
-
-  const date = new Date();
-  const dateText = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
-
-  ctx.fillStyle = "#2f3b66";
-  ctx.font = "bold 40px Microsoft YaHei";
-  ctx.fillText(`动作模板：${latestState?.activeTemplate?.name || "未选择"}`, 92, 1188);
-  ctx.font = "32px Microsoft YaHei";
-  ctx.fillStyle = "#51608f";
-  ctx.fillText(`笔画数量：${latestState?.strokes?.length || 0} 条`, 92, 1260);
-  ctx.fillText(`配音状态：${recordedAudioBlob ? "已录制" : "未录制"}`, 92, 1320);
-  ctx.fillText(`生成日期：${dateText}`, 92, 1380);
-
-  return canvas.toDataURL("image/png", 0.92);
-}
-
 function exportShareCard() {
   if (!latestState || latestState.strokes.length === 0) {
     setExportStatus("先画点内容再导出图卡。");
     return;
   }
 
-  const dataUrl = buildShareCardDataUrl();
-  const now = new Date();
-  const stamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}_${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}`;
-  const link = document.createElement("a");
-  link.href = dataUrl;
-  link.download = `doodle-card-${stamp}.png`;
-  document.body.append(link);
-  link.click();
-  link.remove();
-  setExportStatus("图卡已导出为 PNG，已开始下载。");
-}
-
-function wait(ms) {
-  return new Promise((resolve) => {
-    window.setTimeout(resolve, ms);
+  const dataUrl = buildShareCard(drawCanvas, {
+    templateName: latestState.activeTemplate?.name,
+    strokeCount: latestState.strokes.length,
+    hasVoice: Boolean(recordedAudioBlob),
   });
-}
-
-function getSupportedVideoMimeType() {
-  if (typeof MediaRecorder === "undefined") {
-    return "";
-  }
-  const candidates = [
-    "video/webm;codecs=vp9",
-    "video/webm;codecs=vp8",
-    "video/webm",
-  ];
-  for (const mimeType of candidates) {
-    if (MediaRecorder.isTypeSupported(mimeType)) {
-      return mimeType;
-    }
-  }
-  return "";
-}
-
-function canExportShortClip() {
-  return typeof previewCanvas.captureStream === "function" && getSupportedVideoMimeType();
+  downloadUrl(dataUrl, `doodle-card-${fileStamp()}.png`);
+  setExportStatus("图卡已导出为 PNG，已开始下载。");
 }
 
 async function exportShortClip() {
@@ -211,7 +139,7 @@ async function exportShortClip() {
     setExportStatus("录音进行中，请先结束录音再导出短动图。");
     return;
   }
-  if (!canExportShortClip()) {
+  if (!canRecordClip(previewCanvas)) {
     setExportStatus("当前浏览器不支持短动图导出，可先导出 PNG 图卡。");
     return;
   }
@@ -229,8 +157,6 @@ async function exportShortClip() {
   }
   setExportStatus("正在导出短动图，请稍候...");
 
-  let stream = null;
-  let recorder = null;
   let startedByExport = false;
 
   try {
@@ -240,47 +166,15 @@ async function exportShortClip() {
     syncPlayVoice();
     await wait(120);
 
-    stream = previewCanvas.captureStream(30);
-    const mimeType = getSupportedVideoMimeType();
-    recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
-
-    const chunks = [];
-    const stoppedPromise = new Promise((resolve) => {
-      recorder.onstop = resolve;
-    });
-
-    recorder.ondataavailable = (event) => {
-      if (event.data && event.data.size > 0) {
-        chunks.push(event.data);
-      }
-    };
-
-    recorder.start(100);
-
     const templateDuration = latestState?.activeTemplate?.durationMs || 2000;
-    const clipDuration = Math.min(4200, Math.max(1800, templateDuration));
-    await wait(clipDuration);
-
-    if (recorder.state === "recording") {
-      recorder.stop();
-    }
-    await stoppedPromise;
-
-    if (chunks.length === 0) {
+    const blob = await recordClip(previewCanvas, Math.min(4200, Math.max(1800, templateDuration)));
+    if (!blob) {
       setExportStatus("导出失败：没有采集到画面数据，请重试。");
       return;
     }
 
-    const blob = new Blob(chunks, { type: recorder.mimeType || "video/webm" });
     const url = URL.createObjectURL(blob);
-    const now = new Date();
-    const stamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}_${String(now.getHours()).padStart(2, "0")}${String(now.getMinutes()).padStart(2, "0")}`;
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `doodle-clip-${stamp}.webm`;
-    document.body.append(link);
-    link.click();
-    link.remove();
+    downloadUrl(url, `doodle-clip-${fileStamp()}.webm`);
     URL.revokeObjectURL(url);
     setExportStatus("短动图已导出为 WebM，已开始下载。");
 
@@ -291,9 +185,6 @@ async function exportShortClip() {
   } catch {
     setExportStatus("导出短动图失败，请稍后再试或先导出 PNG 图卡。");
   } finally {
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
-    }
     isExportingClip = false;
     if (latestState) {
       updateUi(latestState);
@@ -602,7 +493,7 @@ function updateUi(state) {
     exportCardBtn.disabled = state.strokes.length === 0 || isRecording || isExportingClip;
   }
   if (exportClipBtn) {
-    exportClipBtn.disabled = state.strokes.length === 0 || isRecording || isExportingClip || !canExportShortClip();
+    exportClipBtn.disabled = state.strokes.length === 0 || isRecording || isExportingClip || !canRecordClip(previewCanvas);
   }
   updateRecordButtons();
 
