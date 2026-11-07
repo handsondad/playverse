@@ -329,6 +329,10 @@ button:disabled {
   box-shadow: inset 0 0 0 4px rgba(233, 96, 79, 0.36);
 }
 
+.lane-notes {
+  display: contents;
+}
+
 .judge-line {
   position: absolute;
   left: 12px;

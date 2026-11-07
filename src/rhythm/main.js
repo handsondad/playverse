@@ -7,7 +7,7 @@ import { todayString } from "../shared/random.js";
 import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { clearGameInterval, setGameInterval } from "../shared/timers.js";
-import { setText } from "../shared/dom.js";
+import { setClass, setStyle, setText, syncKeyed } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 70, onTap: () => soundFx.tap() });
 
@@ -307,53 +307,75 @@ function getChart(song, levelId) {
   return song?.charts?.[levelId] || null;
 }
 
+let laneEls = null;
+
+function getLaneEls() {
+  if (!laneEls) {
+    lanesEl.innerHTML = [0, 1, 2, 3].map(() => `
+      <div class="lane">
+        <div class="judge-line"></div>
+        <div class="lane-notes"></div>
+      </div>
+    `).join("");
+    laneEls = [...lanesEl.querySelectorAll(".lane")].map((lane) => ({ lane, notes: lane.querySelector(".lane-notes") }));
+  }
+  return laneEls;
+}
+
+function createNoteEl(note) {
+  const el = document.createElement("div");
+  if (note.type === "hold") {
+    el.innerHTML = '<div class="hold-head"></div>';
+  }
+  return el;
+}
+
+function noteLook(note, state) {
+  const color = LANE_COLORS[note.lane];
+  if (note.type === "hold") {
+    const headProgress = (note.hitTimeMs - state.elapsedMs) / state.noteTravelMs;
+    const tailProgress = (note.endTimeMs - state.elapsedMs) / state.noteTravelMs;
+    const headTop = Math.max(0, Math.min(100, (1 - headProgress) * 100));
+    const tailTop = Math.max(0, Math.min(100, (1 - tailProgress) * 100));
+    const topPercent = Math.min(headTop, tailTop);
+    const heightPercent = Math.max(8, Math.abs(headTop - tailTop));
+    return {
+      className: `hold-note ${color}${note.started ? " hold-active" : ""}`,
+      style: `top:${topPercent}%;height:${heightPercent}%;`,
+    };
+  }
+  const progress = (note.hitTimeMs - state.elapsedMs) / state.noteTravelMs;
+  const topPercent = Math.max(0, Math.min(100, (1 - progress) * 100));
+  return { className: `note ${color}`, style: `top:${topPercent}%;` };
+}
+
 function renderLanes(state) {
   if (!state.song) {
     rhythmBoardEl.classList.remove("is-beat");
+    laneEls = null;
     lanesEl.innerHTML = '<p class="empty-note">开始后这里会出现下落音符。</p>';
     return;
   }
 
   rhythmBoardEl.classList.toggle("is-beat", Boolean(state.beatPulse));
 
-  const laneMarkup = [0, 1, 2, 3].map((laneIndex) => {
-    const laneHasActiveHold = state.notes.some((note) => note.lane === laneIndex && note.type === "hold" && note.started);
-    const notesMarkup = state.notes
-      .filter((note) => note.lane === laneIndex)
-      .map((note) => {
-        if (note.type === "hold") {
-          const headProgress = (note.hitTimeMs - state.elapsedMs) / state.noteTravelMs;
-          const tailProgress = (note.endTimeMs - state.elapsedMs) / state.noteTravelMs;
-          const headTop = Math.max(0, Math.min(100, (1 - headProgress) * 100));
-          const tailTop = Math.max(0, Math.min(100, (1 - tailProgress) * 100));
-          const topPercent = Math.min(headTop, tailTop);
-          const heightPercent = Math.max(8, Math.abs(headTop - tailTop));
-          const activeClass = note.started ? " hold-active" : "";
-          return `
-            <div class="hold-note ${LANE_COLORS[laneIndex]}${activeClass}" style="top:${topPercent}%;height:${heightPercent}%;">
-              <div class="hold-head"></div>
-            </div>
-          `;
-        }
-
-        const progress = (note.hitTimeMs - state.elapsedMs) / state.noteTravelMs;
-        const topPercent = Math.max(0, Math.min(100, (1 - progress) * 100));
-        return `<div class="note ${LANE_COLORS[laneIndex]}" style="top:${topPercent}%;"></div>`;
-      })
-      .join("");
-
+  getLaneEls().forEach(({ lane, notes }, laneIndex) => {
+    const laneNotes = state.notes.filter((note) => note.lane === laneIndex);
+    const laneHasActiveHold = laneNotes.some((note) => note.type === "hold" && note.started);
     const flashClass = state.lastLane === laneIndex ? `lane is-${state.lastJudge}` : "lane";
     const pressedClass = state.lanePressed?.[laneIndex] ? " is-pressed" : "";
     const holdClass = laneHasActiveHold ? " is-hold" : "";
-    return `
-      <div class="${flashClass}${pressedClass}${holdClass}">
-        <div class="judge-line"></div>
-        ${notesMarkup}
-      </div>
-    `;
-  }).join("");
+    setClass(lane, `${flashClass}${pressedClass}${holdClass}`);
 
-  lanesEl.innerHTML = laneMarkup;
+    syncKeyed(notes, laneNotes, {
+      create: createNoteEl,
+      update: (el, note) => {
+        const look = noteLook(note, state);
+        setClass(el, look.className);
+        setStyle(el, look.style);
+      },
+    });
+  });
 }
 
 function renderState(state) {

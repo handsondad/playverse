@@ -267,6 +267,10 @@ button:disabled {
   outline: 5px solid rgba(121, 175, 232, 0.5);
 }
 
+.track-layer {
+  display: contents;
+}
+
 .obstacle {
   position: absolute;
   bottom: 48px;

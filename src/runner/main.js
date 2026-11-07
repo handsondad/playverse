@@ -6,7 +6,7 @@ import { createSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setText } from "../shared/dom.js";
+import { setClass, setStyle, setText, syncKeyed } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 80, onTap: () => soundFx.tap() });
 
@@ -206,40 +206,57 @@ function updateGuide(state) {
   setText(guideText, "人物会一直朝右跑，木桩会从右边过来，点击跳跃躲开。");
 }
 
+let trackLayers = null;
+
+function getTrackLayers() {
+  if (!trackLayers) {
+    trackEl.innerHTML = `
+      <div class="track-ground-line"></div>
+      <div class="track-flow">前进方向 → → →</div>
+      <div class="player">🏃</div>
+      <div class="track-layer" data-layer="pickups"></div>
+      <div class="track-layer" data-layer="obstacles"></div>
+    `;
+    trackLayers = {
+      player: trackEl.querySelector(".player"),
+      pickups: trackEl.querySelector("[data-layer='pickups']"),
+      obstacles: trackEl.querySelector("[data-layer='obstacles']"),
+    };
+  }
+  return trackLayers;
+}
+
 function renderTrack(state) {
   if (!state.level) {
+    trackLayers = null;
     trackEl.innerHTML = "<p>请选择难度并开始游戏。</p>";
     return;
   }
 
-  const playerBottom = state.groundY + state.playerY;
-  const playerClass = state.shieldArmed ? "player shield" : "player";
-  const lowGravityClass = state.lowGravityTimer > 0.1 ? "track is-low-gravity" : "track";
+  const layers = getTrackLayers();
+  trackEl.className = state.lowGravityTimer > 0.1 ? "track is-low-gravity" : "track";
+  setClass(layers.player, state.shieldArmed ? "player shield" : "player");
+  setStyle(layers.player, `bottom:${state.groundY + state.playerY}px;`);
 
-  const obstaclesMarkup = state.obstacles
-    .map((item) => {
-      const style = `left:${item.x}px;width:${item.width}px;height:${item.height}px;`;
-      return `<div class="obstacle" style="${style}"></div>`;
-    })
-    .join("");
+  syncKeyed(layers.pickups, state.pickups || [], {
+    create: () => document.createElement("div"),
+    update: (el, item) => {
+      setClass(el, item.type === "wing" ? "pickup wing" : "pickup coin");
+      setText(el, item.type === "wing" ? "🪽" : "🪙");
+      setStyle(el, `left:${item.x}px;width:${item.width}px;height:${item.height}px;bottom:${state.groundY + item.y}px;`);
+    },
+  });
 
-  const pickupsMarkup = (state.pickups || [])
-    .map((item) => {
-      const style = `left:${item.x}px;width:${item.width}px;height:${item.height}px;bottom:${state.groundY + item.y}px;`;
-      const content = item.type === "wing" ? "🪽" : "🪙";
-      const cls = item.type === "wing" ? "pickup wing" : "pickup coin";
-      return `<div class="${cls}" style="${style}">${content}</div>`;
-    })
-    .join("");
-
-  trackEl.className = lowGravityClass;
-  trackEl.innerHTML = `
-    <div class="track-ground-line"></div>
-    <div class="track-flow">前进方向 → → →</div>
-    <div class="${playerClass}" style="bottom:${playerBottom}px;">🏃</div>
-    ${pickupsMarkup}
-    ${obstaclesMarkup}
-  `;
+  syncKeyed(layers.obstacles, state.obstacles, {
+    create: () => {
+      const el = document.createElement("div");
+      el.className = "obstacle";
+      return el;
+    },
+    update: (el, item) => {
+      setStyle(el, `left:${item.x}px;width:${item.width}px;height:${item.height}px;`);
+    },
+  });
 }
 
 function renderState(state) {

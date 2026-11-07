@@ -3,7 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createSeededRandom, hashSeed } from "../src/shared/random.js";
 import { GLOBAL_SETTINGS_KEY, loadSettings, nextCareMode, saveSettings } from "../src/shared/settings.js";
-import { setHtml } from "../src/shared/dom.js";
+import { setHtml, syncKeyed } from "../src/shared/dom.js";
 import { clearGameInterval, setGameInterval } from "../src/shared/timers.js";
 import { FindGame } from "../src/shared/findGame.js";
 
@@ -60,6 +60,30 @@ test("setHtml skips identical markup", () => {
   assert.equal(setHtml(el, "<b>2</b>"), true);
   assert.equal(writes, 2);
   assert.equal(el.value, "<b>2</b>");
+});
+
+test("syncKeyed reuses one element per id and removes the ones that left", () => {
+  const container = {
+    children: [],
+    appendChild(el) {
+      el.remove = () => { container.children = container.children.filter((child) => child !== el); };
+      container.children.push(el);
+    },
+  };
+  let created = 0;
+  const render = (items) => syncKeyed(container, items, {
+    create: () => { created += 1; return { x: null }; },
+    update: (el, item) => { el.x = item.x; },
+  });
+
+  render([{ id: "a", x: 1 }, { id: "b", x: 2 }]);
+  const [a] = container.children;
+  render([{ id: "a", x: 5 }, { id: "c", x: 3 }]);
+  assert.equal(created, 3);
+  assert.equal(container.children[0], a, "a is moved in place, not rebuilt");
+  assert.deepEqual(container.children.map((el) => el.x), [5, 3]);
+  render([]);
+  assert.equal(container.children.length, 0);
 });
 
 test("game intervals pause while the page is hidden", () => {

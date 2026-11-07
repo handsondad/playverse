@@ -23,7 +23,8 @@ src/
     random.js               # 种子随机（每日挑战）
     timers.js               # 页面隐藏时暂停的 setInterval
     config.js               # 关卡 JSON 加载与失败遮罩
-    dom.js                  # setHtml：相同 markup 跳过重绘；setText：播报区域文字不变时不重写
+    dom.js                  # setHtml：相同 markup 跳过重绘；setText：播报区域文字不变时不重写；
+                            #   syncKeyed/setClass/setStyle：每帧渲染按 id 复用节点（跑酷、节奏）
     findGame.js             # 低龄「找一找」通用引擎
     queueGame.js            # 「队列分拣」通用引擎 + 页面装配
     pwa.js                  # Service Worker 注册
