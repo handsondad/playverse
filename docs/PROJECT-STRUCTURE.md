@@ -24,15 +24,20 @@ src/
     config.js               # 关卡 JSON 加载与失败遮罩
     dom.js                  # setHtml：相同 markup 跳过重绘
     findGame.js             # 低龄「找一找」通用引擎
+    queueGame.js            # 「队列分拣」通用引擎 + 页面装配
     pwa.js                  # Service Worker 注册
   <game>/
     index.html
     main.js                 # 页面装配（UI、设置、事件）
     styles.css
-    *Game.js                # 核心逻辑（低龄 6 个找一找游戏已合并到 findGame）
+    *Game.js                # 核心逻辑（已合并的游戏没有这个文件）
+    rules.js                # 队列分拣类游戏的规则配置
 ```
 
-当前约 28 个游戏目录；低龄陪玩（`car` / `animal` / `colortap` / `balloon` / `shape` / `numbertap`）的 `main.js` 只传配置给 `mountFindGame`。
+当前约 28 个游戏目录。两类游戏已合并为共享引擎，`main.js` 只传配置：
+
+- 低龄陪玩（`car` / `animal` / `colortap` / `balloon` / `shape` / `numbertap`）用 `mountFindGame`。
+- 队列分拣（`fruit` / `ocean` / `pet` / `forest` / `star` / `postman`）用 `mountQueueGame(rules, ui)`：`rules.js` 放计分、特殊物品、天气和事件文案，`main.js` 放 DOM id、配色、提示文案和音效。`lighthouse` 玩法不同，未合并。
 
 ## 三、配置与测试
 
@@ -43,7 +48,7 @@ configs/
 tests/
   shared.test.js            # 随机数、设置、定时器、FindGame、setHtml
   configs.test.js           # manifest 覆盖全部页面；loadGameConfig 键完整
-  fruit-game.test.js        # 示例：种子可复现 + 规则
+  queue-game.test.js        # 队列分拣引擎：种子可复现 + 计分规则
 ```
 
 开发检查：`npm run lint` / `npm test` / `npm run check`（Node 22+）。
@@ -66,7 +71,7 @@ scripts/
 1. 在 `src/<game>/` 建 `index.html`、`main.js`、`styles.css`，以及可选的 `*Game.js`。
 2. 需要关卡时在 `configs/levels/` 增加 JSON，用 `loadGameConfig` 加载；失败时用 `showConfigError`，不要再塞内置 fallback。
 3. 在 `configs/game-manifest.json` 增加卡片，填好 `group`（`toddler` / `cognition` / `life` / `action`）和 `theme`。
-4. 复用 `src/shared/`：设置、语音、点按、存储、随机数、计时器；低龄「找卡片」类可直接用 `mountFindGame`。
+4. 复用 `src/shared/`：设置、语音、点按、存储、随机数、计时器；低龄「找卡片」类可直接用 `mountFindGame`，「队列分拣」类可直接用 `mountQueueGame`。
 5. 需要计时循环时用 `setGameInterval`，需要频繁重绘按钮区时用 `setHtml`。
 
 ## 六、首页维护约定

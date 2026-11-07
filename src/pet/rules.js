@@ -1,0 +1,28 @@
+export const PET_RULES = {
+  seedTag: "pet",
+  targetsKey: "rooms",
+  levelTargetIdsKey: "roomIds",
+  levelGoalKey: "targetTreatments",
+  defaultGoal: 18,
+  timed: { type: "emergency", chanceKey: "emergencyChance", limitKey: "emergencyLimitMs", defaultLimitMs: 2400, timeBonusSec: 0.8 },
+  bonus: { type: "vip", chanceKey: "vipChance" },
+  milestoneEvery: 6,
+  weather: {
+    idle: { id: "sunny", name: "晴天" },
+    defaultPool: [{ id: "sunny", name: "晴天" }, { id: "cloudy", name: "多云" }, { id: "windy", name: "微风" }],
+  },
+  text: {
+    idle: "等待接诊",
+    start: "接诊开始，按症状安排到对应诊室",
+    timedExpired: "急诊等待过久，损失 1 点耐心",
+    timedToast: "急诊病例要优先处理。",
+    weatherEvent: "天气切换",
+    weatherToast: "天气变化",
+    correctEvent: "安排正确",
+    correctToast: "分诊正确，继续接诊。",
+    typeText: { timed: "（急诊）", bonus: "（VIP）" },
+    wrongEvent: "安排错误",
+    wrongToast: "分诊错误，请再看清症状。",
+    lifeName: "耐心",
+  },
+};

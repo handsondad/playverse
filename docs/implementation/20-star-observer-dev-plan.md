@@ -4,7 +4,7 @@
 
 - 阶段：P2 增强版
 - 页面：src/star/index.html
-- 核心逻辑：src/star/starGame.js
+- 核心逻辑：src/shared/queueGame.js（共享引擎），规则配置 src/star/rules.js
 
 ## 已实现能力
 

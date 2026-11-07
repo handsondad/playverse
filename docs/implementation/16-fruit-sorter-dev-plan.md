@@ -4,7 +4,7 @@
 
 - 阶段：P2 完整版（特殊水果 + 主题天气）
 - 页面：src/fruit/index.html
-- 核心逻辑：src/fruit/fruitGame.js
+- 核心逻辑：src/shared/queueGame.js（共享引擎），规则配置 src/fruit/rules.js
 
 ## 已实现能力
 

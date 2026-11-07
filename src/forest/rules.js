@@ -1,0 +1,28 @@
+export const FOREST_RULES = {
+  seedTag: "forest",
+  targetsKey: "stations",
+  levelTargetIdsKey: "stationIds",
+  levelGoalKey: "targetFindings",
+  defaultGoal: 18,
+  timed: { type: "urgent", chanceKey: "urgentChance", limitKey: "urgentLimitMs", defaultLimitMs: 2400, timeBonusSec: 0.8 },
+  bonus: { type: "rare", chanceKey: "rareChance" },
+  milestoneEvery: 6,
+  weather: {
+    idle: { id: "sunny", name: "晴光" },
+    defaultPool: [{ id: "sunny", name: "晴光" }, { id: "cloudy", name: "薄云" }, { id: "windy", name: "林风" }],
+  },
+  text: {
+    idle: "等待巡护",
+    start: "巡护开始，按线索送到对应观察站",
+    timedExpired: "紧急线索等待过久，损失 1 点体力",
+    timedToast: "紧急线索需要优先处理。",
+    weatherEvent: "天气切换",
+    weatherToast: "天气变化",
+    correctEvent: "识别正确",
+    correctToast: "判断正确，继续巡护。",
+    typeText: { timed: "（紧急）", bonus: "（稀有）" },
+    wrongEvent: "识别错误",
+    wrongToast: "识别错误，请再看清线索。",
+    lifeName: "体力",
+  },
+};

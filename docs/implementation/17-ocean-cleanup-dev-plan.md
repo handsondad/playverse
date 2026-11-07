@@ -4,7 +4,7 @@
 
 - 阶段：P2 完整版（特殊漂浮物 + 主题海域）
 - 页面：src/ocean/index.html
-- 核心逻辑：src/ocean/oceanGame.js
+- 核心逻辑：src/shared/queueGame.js（共享引擎），规则配置 src/ocean/rules.js
 
 ## 已实现能力
 

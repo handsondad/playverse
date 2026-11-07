@@ -4,7 +4,7 @@
 
 - 阶段：P2 完整版（特殊信件 + 主题天气）
 - 页面：src/postman/index.html
-- 核心逻辑：src/postman/postmanGame.js
+- 核心逻辑：src/shared/queueGame.js（共享引擎），规则配置 src/postman/rules.js
 
 ## 已实现能力
 

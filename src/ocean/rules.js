@@ -1,0 +1,28 @@
+export const OCEAN_RULES = {
+  seedTag: "ocean",
+  targetsKey: "nets",
+  levelTargetIdsKey: "netIds",
+  levelGoalKey: "targetCleanups",
+  defaultGoal: 18,
+  timed: { type: "hazard", chanceKey: "hazardChance", limitKey: "hazardLimitMs", defaultLimitMs: 2400, timeBonusSec: 0.8 },
+  bonus: { type: "treasure", chanceKey: "treasureChance" },
+  milestoneEvery: 6,
+  weather: {
+    idle: { id: "sunny", name: "晴海" },
+    defaultPool: [{ id: "sunny", name: "晴海" }, { id: "cloudy", name: "薄云" }, { id: "windy", name: "海风" }],
+  },
+  text: {
+    idle: "等待清理",
+    start: "清理开始，按类型拖入对应回收网",
+    timedExpired: "危险漂浮物扩散，损失 1 点生命",
+    timedToast: "危险漂浮物要优先清理。",
+    weatherEvent: "海况切换",
+    weatherToast: "海况变化",
+    correctEvent: "清理成功",
+    correctToast: "分类正确，继续清理。",
+    typeText: { timed: "（危险品）", bonus: "（宝藏件）" },
+    wrongEvent: "分类错误",
+    wrongToast: "分类错误，请再看清类型。",
+    lifeName: "生命",
+  },
+};

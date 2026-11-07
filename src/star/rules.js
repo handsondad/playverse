@@ -1,0 +1,28 @@
+export const STAR_RULES = {
+  seedTag: "star",
+  targetsKey: "stations",
+  levelTargetIdsKey: "stationIds",
+  levelGoalKey: "targetSignals",
+  defaultGoal: 18,
+  timed: { type: "urgent", chanceKey: "urgentChance", limitKey: "urgentLimitMs", defaultLimitMs: 2400, timeBonusSec: 0.8 },
+  bonus: { type: "rare", chanceKey: "rareChance" },
+  milestoneEvery: 6,
+  weather: {
+    idle: { id: "clear", name: "晴夜" },
+    defaultPool: [{ id: "clear", name: "晴夜" }, { id: "cloudy", name: "薄云" }, { id: "aurora", name: "极光" }],
+  },
+  text: {
+    idle: "等待观测",
+    start: "观测开始，按星图线索送到对应观测台",
+    timedExpired: "限时信号等待过久，损失 1 点精力",
+    timedToast: "限时信号需要优先记录。",
+    weatherEvent: "天空变化",
+    weatherToast: "天空变化",
+    correctEvent: "观测正确",
+    correctToast: "记录正确，继续观测。",
+    typeText: { timed: "（限时）", bonus: "（稀有）" },
+    wrongEvent: "观测错误",
+    wrongToast: "观测错误，请再看清星图线索。",
+    lifeName: "精力",
+  },
+};

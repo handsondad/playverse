@@ -1,0 +1,28 @@
+export const POSTMAN_RULES = {
+  seedTag: "postman",
+  targetsKey: "mailboxes",
+  levelTargetIdsKey: "mailboxIds",
+  levelGoalKey: "targetDeliveries",
+  defaultGoal: 16,
+  timed: { type: "express", chanceKey: "expressChance", limitKey: "expressLimitMs", defaultLimitMs: 2300, timeBonusSec: 1.2 },
+  bonus: { type: "registered", chanceKey: "registeredChance", extraCount: 2, extraPoints: 10 },
+  milestoneEvery: 0,
+  weather: {
+    idle: { id: "sunny", name: "晴天" },
+    defaultPool: [{ id: "sunny", name: "晴天" }, { id: "cloudy", name: "多云" }, { id: "rainy", name: "小雨" }],
+  },
+  text: {
+    idle: "等待送信",
+    start: "送信开始，按颜色投递",
+    timedExpired: "加急件超时，损失 1 点生命",
+    timedToast: "加急件超时啦，注意优先处理。",
+    weatherEvent: "天气切换",
+    weatherToast: "天气变化",
+    correctEvent: "投递成功",
+    correctToast: "投递成功，继续。",
+    typeText: { timed: "（加急）", bonus: "（挂号）" },
+    wrongEvent: "投错信箱",
+    wrongToast: "投错了，请看清颜色。",
+    lifeName: "生命",
+  },
+};

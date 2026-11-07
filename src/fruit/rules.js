@@ -1,0 +1,28 @@
+export const FRUIT_RULES = {
+  seedTag: "fruit",
+  targetsKey: "baskets",
+  levelTargetIdsKey: "basketIds",
+  levelGoalKey: "targetDeliveries",
+  defaultGoal: 18,
+  timed: { type: "perishable", chanceKey: "perishableChance", limitKey: "spoilLimitMs", defaultLimitMs: 2400, timeBonusSec: 0.8 },
+  bonus: { type: "golden", chanceKey: "goldenChance" },
+  milestoneEvery: 6,
+  weather: {
+    idle: { id: "sunny", name: "晴天" },
+    defaultPool: [{ id: "sunny", name: "晴天" }, { id: "cloudy", name: "多云" }, { id: "windy", name: "微风" }],
+  },
+  text: {
+    idle: "等待分拣",
+    start: "分拣开始，按颜色点对应果篮",
+    timedExpired: "易坏果变软了，损失 1 点生命",
+    timedToast: "易坏果要优先分拣。",
+    weatherEvent: "天气切换",
+    weatherToast: "天气变化",
+    correctEvent: "分拣成功",
+    correctToast: "分拣正确，继续。",
+    typeText: { timed: "（易坏果）", bonus: "（双倍果）" },
+    wrongEvent: "分拣错误",
+    wrongToast: "分拣错误，请再看清颜色。",
+    lifeName: "生命",
+  },
+};

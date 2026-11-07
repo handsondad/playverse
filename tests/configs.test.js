@@ -29,7 +29,8 @@ test("every config a game loads exists and has its required keys", () => {
   const calls = [];
   for (const dir of gameDirs) {
     const source = fs.readFileSync(path.join(root, "src", dir, "main.js"), "utf8");
-    for (const match of source.matchAll(/loadGameConfig\(\s*"([^"]+)",\s*\[([^\]]*)\]/g)) {
+    const patterns = [/loadGameConfig\(\s*"([^"]+)",\s*\[([^\]]*)\]/g, /configUrl:\s*"([^"]+)",\s*requiredKeys:\s*\[([^\]]*)\]/g];
+    for (const match of patterns.flatMap((pattern) => [...source.matchAll(pattern)])) {
       const keys = [...match[2].matchAll(/"([^"]+)"/g)].map((key) => key[1]);
       calls.push({ dir, url: match[1], keys });
     }
