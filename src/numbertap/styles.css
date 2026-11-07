@@ -7,8 +7,6 @@
   --shadow: rgba(48, 72, 120, 0.14);
 }
 
-* { box-sizing: border-box; }
-
 html,
 body {
   margin: 0;

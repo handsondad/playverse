@@ -12,6 +12,7 @@ const SHELL = [
   "./icons/icon-192.png",
   "./src/home/main.js",
   "./src/home/styles.css",
+  "./src/shared/base.css",
   "./src/shared/pwa.js",
   "./configs/game-manifest.json",
 ];

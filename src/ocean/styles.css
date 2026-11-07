@@ -6,8 +6,6 @@
   --shadow: rgba(80, 110, 148, 0.18);
 }
 
-* { box-sizing: border-box; }
-
 html,
 body {
   margin: 0;
@@ -112,7 +110,6 @@ button { font: inherit; }
 .theme-btn:focus-visible {
   transform: translateY(-1px);
   box-shadow: 0 6px 14px rgba(28, 42, 70, 0.12);
-  outline: none;
 }
 
 .theme-btn.is-active {

@@ -10,10 +10,6 @@
   --shadow: rgba(92, 78, 59, 0.14);
 }
 
-* {
-  box-sizing: border-box;
-}
-
 html,
 body {
   touch-action: manipulation;

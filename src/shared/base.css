@@ -1,0 +1,10 @@
+/* Shared by every page; loaded before the page's own styles.css. */
+
+* { box-sizing: border-box; }
+
+/* !important: many games mark selected buttons with their own outline, which
+   would otherwise hide where keyboard focus is. */
+:focus-visible {
+  outline: 3px solid var(--focus-ring, #2459c9) !important;
+  outline-offset: 3px;
+}

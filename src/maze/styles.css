@@ -12,8 +12,6 @@
   --exit: #78c66d;
 }
 
-* { box-sizing: border-box; }
-
 html,
 body {
   margin: 0;

@@ -10,8 +10,6 @@
   --ink-soft: #6e6154;
 }
 
-* { box-sizing: border-box; }
-
 html {
   scroll-behavior: smooth;
 }

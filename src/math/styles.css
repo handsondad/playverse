@@ -5,8 +5,6 @@
   --line: #d9c8ad;
 }
 
-* { box-sizing: border-box; }
-
 body {
   margin: 0;
   font-family: "Microsoft YaHei", "PingFang SC", sans-serif;

@@ -14,6 +14,7 @@ src/
     main.js                 # 按 group 渲染菜单；加载失败时提示刷新
     styles.css
   shared/                   # 跨游戏复用，新游戏优先用这里的模块
+    base.css                # 所有页面先于自身 styles.css 引入：box-sizing、键盘焦点环
     audio.js                # Web Audio 音效
     settings.js             # 全局/本地设置合并（护眼、语音、播报粒度）
     speech.js               # 语音播报预设
@@ -68,7 +69,7 @@ scripts/
 
 ## 五、新增游戏约定
 
-1. 在 `src/<game>/` 建 `index.html`、`main.js`、`styles.css`，以及可选的 `*Game.js`。
+1. 在 `src/<game>/` 建 `index.html`、`main.js`、`styles.css`，以及可选的 `*Game.js`；`index.html` 里先引入 `../shared/base.css` 再引入 `./styles.css`。焦点环颜色可用 `--focus-ring` 覆盖，不要写 `outline: none`。
 2. 需要关卡时在 `configs/levels/` 增加 JSON，用 `loadGameConfig` 加载；失败时用 `showConfigError`，不要再塞内置 fallback。
 3. 在 `configs/game-manifest.json` 增加卡片，填好 `group`（`toddler` / `cognition` / `life` / `action`）和 `theme`。
 4. 复用 `src/shared/`：设置、语音、点按、存储、随机数、计时器；低龄「找卡片」类可直接用 `mountFindGame`，「队列分拣」类可直接用 `mountQueueGame`。
