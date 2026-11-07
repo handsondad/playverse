@@ -1,4 +1,4 @@
-# Lint + test on every push and pull request; deploy to GitHub Pages from main.
+# Lint, unit tests and a page smoke test on every push and pull request; deploy to GitHub Pages from main.
 name: Check and deploy to Pages
 
 on:
@@ -25,6 +25,8 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm test
+      - name: Smoke test every page in headless Chrome
+        run: npm run smoke
 
   deploy:
     needs: check

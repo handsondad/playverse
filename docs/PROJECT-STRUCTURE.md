@@ -57,6 +57,8 @@ tests/
 
 开发检查：`npm run lint` / `npm test` / `npm run check`（Node 22+）。
 
+页面冒烟：`npm run smoke` 用无头 Chrome/Edge 打开首页和全部游戏页，出现未捕获异常、`console.error`、资源 404 或配置错误遮罩即失败；游戏页还会切换一次语音按钮并点「开始」。找不到浏览器时用 `CHROME_PATH` 指定。全程约 1.5 分钟。
+
 ## 四、文档与脚本
 
 ```text
@@ -66,8 +68,9 @@ docs/
   PROJECT-STRUCTURE.md
 scripts/
   serve.ps1                 # 本地静态服务（禁止路径穿越；支持 .webmanifest）
+  smoke.mjs                 # 页面冒烟测试（npm run smoke），无额外依赖
 .github/workflows/static.yml
-  # PR/push：lint + test；main：打包 _site（仅站点文件）部署 Pages
+  # PR/push：lint + test + smoke；main：打包 _site（仅站点文件）部署 Pages
 ```
 
 ## 五、新增游戏约定

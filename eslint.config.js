@@ -17,7 +17,7 @@ export default [
     languageOptions: { globals: globals.serviceworker },
   },
   {
-    files: ["tests/**/*.js", "eslint.config.js"],
+    files: ["tests/**/*.js", "scripts/**/*.mjs", "eslint.config.js"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
