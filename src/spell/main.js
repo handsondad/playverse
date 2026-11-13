@@ -53,38 +53,13 @@ const gameAudio = createGameAudio({ getCareMode: () => settingsState.careMode })
 let levelsData = null;
 let currentThemeId = "";
 let latestState = null;
-let speechQueueToken = 0;
 
 function saveStats() {
   writeJson(STATS_KEY, stats);
 }
 
 function speakSequence(parts) {
-  if (!settingsState.voiceOn || !window.speechSynthesis || settingsState.careMode === "quiet") {
-    return;
-  }
-
-  const queue = parts.filter(Boolean);
-  if (queue.length === 0) {
-    return;
-  }
-
-  speechQueueToken += 1;
-  const token = speechQueueToken;
-  window.speechSynthesis.cancel();
-
-  const run = (index) => {
-    if (token !== speechQueueToken || index >= queue.length) {
-      return;
-    }
-    const utterance = new SpeechSynthesisUtterance(queue[index]);
-    utterance.lang = /^[a-z]/i.test(queue[index]) ? "en-US" : "zh-CN";
-    utterance.rate = settingsState.careMode === "standard" ? 0.92 : 0.84;
-    utterance.onend = () => run(index + 1);
-    window.speechSynthesis.speak(utterance);
-  };
-
-  run(0);
+  speak.sequence(parts, { preset: SPEECH_PRESETS.phonics });
 }
 
 function getQuestionSpeechParts(question) {

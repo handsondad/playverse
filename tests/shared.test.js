@@ -3,6 +3,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createSeededRandom, hashSeed, hashText } from "../src/shared/random.js";
 import { GLOBAL_SETTINGS_KEY, loadSettings, nextCareMode, saveSettings } from "../src/shared/settings.js";
+import { SPEECH_PRESETS, createSpeaker } from "../src/shared/speech.js";
 import { mountSettingsButtons } from "../src/shared/settingsButtons.js";
 import { readNumbers, readUnlocks } from "../src/shared/storage.js";
 import { setHtml, syncKeyed } from "../src/shared/dom.js";
@@ -183,6 +184,42 @@ test("bindDelegatedTap handles pointerup and keyboard click without double-firin
   listeners.pointerup({ target: disabledBtn, preventDefault() {} });
   listeners.click({ target: disabledBtn, detail: 0, preventDefault() {} });
   assert.deepEqual(tapped, ["key", "ptr"]);
+});
+
+test("createSpeaker queues phonics sequences and cancels stale callbacks", () => {
+  const spoken = [];
+  globalThis.SpeechSynthesisUtterance = class {
+    constructor(text) {
+      this.text = text;
+    }
+  };
+  globalThis.speechSynthesis = {
+    cancel() {},
+    speak(utterance) {
+      spoken.push(utterance);
+    },
+  };
+  try {
+    const settings = { voiceOn: true, careMode: "soft", narrationLevel: "key" };
+    const speak = createSpeaker(settings, SPEECH_PRESETS.standard);
+    speak.sequence(["c", "at", "小猫"], { preset: SPEECH_PRESETS.phonics });
+    assert.equal(spoken.length, 1);
+    assert.equal(spoken[0].lang, "en-US");
+    assert.equal(spoken[0].rate, 0.84);
+
+    spoken[0].onend();
+    assert.equal(spoken.length, 2);
+    assert.equal(spoken[1].text, "at");
+
+    // Interrupting with single speak invalidates the remaining sequence callback.
+    speak("已选择主题");
+    spoken[1].onend();
+    assert.deepEqual(spoken.map((u) => u.text), ["c", "at", "已选择主题"]);
+    assert.equal(spoken[2].lang, "zh-CN");
+  } finally {
+    delete globalThis.SpeechSynthesisUtterance;
+    delete globalThis.speechSynthesis;
+  }
 });
 
 test("game intervals pause while the page is hidden", () => {
