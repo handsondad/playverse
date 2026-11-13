@@ -328,6 +328,9 @@ function dailySeed() {
 }
 
 function startDay(options = {}) {
+  if (!levelsData) {
+    return;
+  }
   soundFx.unlock();
 
   if (latestState?.isRunning) {
@@ -366,6 +369,9 @@ async function bootstrap() {
 }
 
 bindSoftTap(startBtn, () => {
+  if (!levelsData) {
+    return;
+  }
   retryBtn.disabled = false;
   startDay({ mode: "normal", modeName: "普通经营" });
 });
@@ -401,6 +407,9 @@ bindSoftTap(deliverBtn, () => {
 });
 
 bindSoftTap(dailyBtn, () => {
+  if (!levelsData) {
+    return;
+  }
   retryBtn.disabled = false;
   startDay({
     mode: "daily",

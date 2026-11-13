@@ -216,6 +216,9 @@ function showResult(payload) {
 }
 
 function start(levelId = currentLevelId) {
+  if (!levelsData) {
+    return;
+  }
   resultEl.hidden = true;
   game.start(levelId);
   startTimer();
@@ -266,6 +269,9 @@ async function bootstrap() {
 bindSoftTap(startBtn, () => start());
 bindSoftTap(retryBtn, () => start());
 bindSoftTap(dailyBtn, () => {
+  if (!levelsData) {
+    return;
+  }
   const day = todayString();
   const hash = hashText(`${day}|maze`);
   const level = levelsData.levels[hash % levelsData.levels.length];

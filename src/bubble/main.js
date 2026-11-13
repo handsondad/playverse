@@ -223,6 +223,9 @@ function showResult(payload) {
 }
 
 function startGame(seed = "") {
+  if (!levelsData) {
+    return;
+  }
   resultEl.hidden = true;
   const level = getLevelById(currentLevelId);
   game.start(level.id, seed ? { seed } : {});

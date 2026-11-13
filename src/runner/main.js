@@ -351,6 +351,9 @@ function pickDailySetup() {
 }
 
 function start(options = null) {
+  if (!levelsData) {
+    return;
+  }
   soundFx.unlock();
   prevState = null;
   resultEl.hidden = true;
@@ -419,6 +422,9 @@ mountSettingsButtons({
 });
 
 bindSoftTap(dailyBtn, () => {
+  if (!levelsData) {
+    return;
+  }
   const setup = pickDailySetup();
   pendingOptions = {
     forceLevelId: setup.level.id,

@@ -284,6 +284,9 @@ const game = new ChoirGame({
 });
 
 function startGame(seed = "") {
+  if (!levelsData) {
+    return;
+  }
   resultEl.hidden = true;
   lastWatchRound = 0;
   const level = getLevelById(currentLevelId);

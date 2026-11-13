@@ -194,6 +194,9 @@ const game = new ChefGame({
 bindUiTapSounds(document.body, gameAudio);
 
 function startGame(seed = "") {
+  if (!levelsData) {
+    return;
+  }
   resultEl.hidden = true;
   const level = getLevelById(currentLevelId);
   const theme = getThemeById(currentThemeId);

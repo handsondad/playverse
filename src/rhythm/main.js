@@ -264,6 +264,9 @@ function renderMeta() {
 }
 
 function renderSongButtons() {
+  if (!levelsData) {
+    return;
+  }
   songButtonsEl.innerHTML = levelsData.songs.map((song) => {
     const activeClass = song.id === currentSongId ? "song-button is-active" : "song-button";
     return `<button class="${activeClass}" data-song-id="${song.id}"><span>${song.name}</span><small>${song.theme}</small></button>`;
@@ -431,6 +434,9 @@ function pickDailySetup() {
 }
 
 function start(options = null) {
+  if (!levelsData) {
+    return;
+  }
   soundFx.unlock();
   resultEl.hidden = true;
   retryBtn.disabled = true;
@@ -538,6 +544,9 @@ async function bootstrap() {
 bindSoftTap(startBtn, () => start());
 bindSoftTap(retryBtn, () => start());
 bindSoftTap(dailyBtn, () => {
+  if (!levelsData) {
+    return;
+  }
   const setup = pickDailySetup();
   pendingOptions = {
     forceSongId: setup.song.id,

@@ -198,6 +198,9 @@ const game = new LighthouseGame({
 });
 
 function startGame(seed = "") {
+  if (!data) {
+    return;
+  }
   resultEl.hidden = true;
   const level = getLevelById(currentLevelId);
   selectorHint.textContent = `已开始：${level.name}，目标护送 ${level.targetBoats} 艘船。`;

@@ -175,6 +175,9 @@ function showResult(payload) {
 }
 
 function start(options = {}) {
+  if (!levelsData) {
+    return;
+  }
   resultEl.hidden = true;
   const stageId = options.stageId || currentStageId;
   activeReviewQuestions = Array.isArray(options.reviewQuestions) ? options.reviewQuestions.map((item) => ({ ...item })) : [];
@@ -216,6 +219,9 @@ async function bootstrap() {
 bindSoftTap(startBtn, () => start());
 bindSoftTap(retryBtn, () => start());
 bindSoftTap(dailyBtn, () => {
+  if (!levelsData) {
+    return;
+  }
   const day = todayString();
   const hash = hashText(`${day}|math`);
   const stage = levelsData.stages[hash % levelsData.stages.length];
@@ -228,6 +234,9 @@ bindSoftTap(dailyBtn, () => {
   });
 });
 bindSoftTap(reviewBtn, () => {
+  if (!levelsData) {
+    return;
+  }
   if (wrongQuestions.length === 0) {
     selectorHint.textContent = "当前没有错题可复习。";
     return;

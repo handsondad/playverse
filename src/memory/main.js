@@ -421,6 +421,9 @@ function pickDailySetup() {
 }
 
 function startGame(customOptions = null) {
+  if (!levelsData) {
+    return;
+  }
   soundFx.unlock();
   previousState = null;
   lastCountdownSound = null;
@@ -507,6 +510,9 @@ mountSettingsButtons({
 });
 
 bindSoftTap(dailyBtn, () => {
+  if (!levelsData) {
+    return;
+  }
   const setup = pickDailySetup();
   currentDailyDay = setup.day;
   pendingStartOptions = {

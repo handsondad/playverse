@@ -525,6 +525,9 @@ export function mountQueueGame(rules, ui) {
   });
 
   function startGame(seed = "") {
+    if (!data) {
+      return;
+    }
     resultEl.hidden = true;
     const level = getLevelById(currentLevelId);
     const theme = getThemeById(currentThemeId);

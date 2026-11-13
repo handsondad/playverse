@@ -392,6 +392,9 @@ function pickDailySetup() {
 }
 
 function start(options = null) {
+  if (!levelsData) {
+    return;
+  }
   soundFx.unlock();
   resultEl.hidden = true;
   retryBtn.disabled = true;
@@ -521,6 +524,9 @@ bindSoftTap(hintBtn, () => {
 });
 
 bindSoftTap(dailyBtn, () => {
+  if (!levelsData) {
+    return;
+  }
   const setup = pickDailySetup();
   pendingOptions = {
     forceModeId: setup.mode.id,

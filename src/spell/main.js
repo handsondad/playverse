@@ -161,6 +161,9 @@ function showResult(payload) {
 }
 
 function start(options = {}) {
+  if (!levelsData) {
+    return;
+  }
   resultEl.hidden = true;
   const themeId = options.themeId || currentThemeId;
   const modeName = options.modeName || "普通练习";
@@ -201,6 +204,9 @@ async function bootstrap() {
 bindSoftTap(startBtn, () => start());
 bindSoftTap(retryBtn, () => start());
 bindSoftTap(dailyBtn, () => {
+  if (!levelsData) {
+    return;
+  }
   const day = todayString();
   const hash = hashText(`${day}|spell`);
   const theme = levelsData.themes[hash % levelsData.themes.length];
