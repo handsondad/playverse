@@ -38,9 +38,9 @@ src/
     rules.js                # 队列分拣类游戏的规则配置
 ```
 
-当前约 28 个游戏目录。两类游戏已合并为共享引擎，`main.js` 只传配置：
+当前共 37 个游戏目录。两类游戏已合并为共享引擎，`main.js` 只传配置：
 
-- 低龄陪玩（`car` / `animal` / `colortap` / `balloon` / `shape` / `numbertap`）用 `mountFindGame`。
+- 低龄陪玩（`car` / `animal` / `colortap` / `balloon` / `shape` / `numbertap` / `emotion`）用 `mountFindGame`。
 - 队列分拣（`fruit` / `ocean` / `pet` / `forest` / `star` / `postman`）用 `mountQueueGame(rules, ui)`：`rules.js` 放计分、特殊物品、天气和事件文案，`main.js` 放 DOM id、配色、提示文案和音效。`lighthouse` 玩法不同，未合并。
 
 ## 三、配置与测试
@@ -53,6 +53,7 @@ tests/
   shared.test.js            # 随机数、设置与设置按钮、存储记录、语音序列、点按代理、定时器、FindGame、dom 工具
   configs.test.js           # manifest 与分区链接链、loadGameConfig 键完整、无障碍与共享模块规范守护
   queue-game.test.js        # 队列分拣引擎：种子可复现 + 计分规则
+  new-games.test.js         # 规律火车、认时钟、找不同、魔术杯、数独、天气穿搭、天平、记忆圆桌逻辑测试
 ```
 
 开发检查：`npm run lint` / `npm test` / `npm run check`（Node 22+）。

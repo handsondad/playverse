@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>规律小火车 - 儿童小游戏</title>
+  <link rel="stylesheet" href="../shared/base.css" />
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="icon" href="../../icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="../../icons/icon-192.png" />
+  <link rel="manifest" href="../../manifest.webmanifest" />
+  <meta name="theme-color" content="#66a2df" />
+  <script type="module" src="../../src/shared/pwa.js"></script>
+</head>
+<body>
+  <main class="pattern-shell">
+    <header class="hero">
+      <h1>规律小火车</h1>
+      <p id="guideText" role="status">看看车厢是怎么排队的，选出空位该挂哪一节车厢。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../oddone/index.html">火眼找不同</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="selector-panel">
+        <strong>列车难度</strong>
+        <div id="levelButtons" class="level-buttons"></div>
+
+        <strong class="theme-title">专列主题</strong>
+        <div id="themeButtons" class="theme-buttons"></div>
+
+        <strong class="action-title">开始操作</strong>
+        <div class="selector-actions">
+          <button id="startBtn" type="button">开始发车</button>
+          <button id="retryBtn" type="button">重新发车</button>
+          <button id="dailyBtn" type="button">今日专列</button>
+        </div>
+        <p id="selectorHint">先选难度和主题，再点开始发车。</p>
+      </section>
+
+      <section class="game-panel">
+        <div class="stats">
+          <div><span>已发车</span><strong id="trainsValue">0 / 0</strong></div>
+          <div><span>分数</span><strong id="scoreValue">0</strong></div>
+          <div><span>连对</span><strong id="streakValue">0</strong></div>
+          <div><span>提示</span><strong id="hintsValue">0</strong></div>
+          <div><span>最佳</span><strong id="bestValue">0</strong></div>
+        </div>
+
+        <section class="station-stage">
+          <div class="station-head">
+            <strong>彩虹火车站</strong>
+            <button id="hintBtn" type="button">念规律提示</button>
+          </div>
+          <p id="feedbackText" role="status">选好难度和专列主题，点开始发车吧。</p>
+
+          <div id="trainTrack" class="train-track" aria-label="规律火车车厢区"></div>
+
+          <section class="platform-panel">
+            <strong>站台候选车厢（点一节挂上去）</strong>
+            <div id="optionButtons" class="option-buttons" aria-label="候选车厢按钮区"></div>
+          </section>
+        </section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <button id="voiceBtn" type="button">语音引导：开</button>
+      <button id="narrationBtn" type="button">播报模式：关键</button>
+      <button id="parentModeBtn" type="button">护眼模式：标准</button>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

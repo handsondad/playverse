@@ -1,0 +1,62 @@
+{
+  "levels": [
+    {
+      "id": "easy",
+      "name": "水果比多少",
+      "minTarget": 2,
+      "maxTarget": 6,
+      "preRightMax": 0,
+      "maxPanItems": 6,
+      "targetRounds": 6,
+      "hints": 3,
+      "weights": [
+        { "id": "w1", "name": "1号苹果", "icon": "🍎", "weight": 1, "color": "#ec786e" },
+        { "id": "w2", "name": "2号甜梨", "icon": "🍐", "weight": 2, "color": "#74bf78" },
+        { "id": "w3", "name": "3号甜橙", "icon": "🍊", "weight": 3, "color": "#f09e52" }
+      ],
+      "tip": "数一数左边托盘总共有多重，往右盘放上一样重的果子。"
+    },
+    {
+      "id": "normal",
+      "name": "砝码凑一凑",
+      "minTarget": 5,
+      "maxTarget": 12,
+      "preRightMax": 0,
+      "maxPanItems": 5,
+      "targetRounds": 7,
+      "hints": 3,
+      "weights": [
+        { "id": "w1", "name": "1克草莓", "icon": "🍓", "weight": 1, "color": "#ee7c98" },
+        { "id": "w2", "name": "2克香蕉", "icon": "🍌", "weight": 2, "color": "#ecc24e" },
+        { "id": "w3", "name": "3克菠萝", "icon": "🍍", "weight": 3, "color": "#6cb878" },
+        { "id": "w5", "name": "5克西瓜", "icon": "🍉", "weight": 5, "color": "#5ca2df" }
+      ],
+      "tip": "先放大的 5 克西瓜，再用小砝码慢慢补齐更省力哦。"
+    },
+    {
+      "id": "hard",
+      "name": "等式小博士",
+      "minTarget": 8,
+      "maxTarget": 16,
+      "preRightMax": 4,
+      "maxPanItems": 8,
+      "targetRounds": 8,
+      "hints": 2,
+      "weights": [
+        { "id": "w1", "name": "1克积木", "icon": "🟦", "weight": 1, "color": "#64a4e8" },
+        { "id": "w2", "name": "2克积木", "icon": "🟩", "weight": 2, "color": "#65bc82" },
+        { "id": "w4", "name": "4克积木", "icon": "🟨", "weight": 4, "color": "#e8b648" },
+        { "id": "w5", "name": "5克积木", "icon": "🟧", "weight": 5, "color": "#ea8b52" },
+        { "id": "w7", "name": "7克积木", "icon": "🟪", "weight": 7, "color": "#947de0" }
+      ],
+      "tip": "右边托盘已经有初始积木啦，算一算还差几克就能追平左边。"
+    }
+  ],
+  "leftLoads": [
+    { "icon": "🧸", "name": "小熊玩偶" },
+    { "icon": "🎃", "name": "大南瓜" },
+    { "icon": "🎁", "name": "神秘礼盒" },
+    { "icon": "🐶", "name": "小狗伙伴" },
+    { "icon": "🦖", "name": "小恐龙" }
+  ]
+}

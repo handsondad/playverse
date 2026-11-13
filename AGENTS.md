@@ -1,6 +1,6 @@
 # AGENTS.md
 
-给 AI 助手和开发者的项目规范。Playverse 是一组儿童网页小游戏，28 个游戏共用同一套页面骨架、视觉风格和技术底座。改任何东西之前先读这份文件：**新代码要和已有游戏长得一样、用起来一样、写法也一样**。
+给 AI 助手和开发者的项目规范。Playverse 是一组儿童网页小游戏，37 个游戏共用同一套页面骨架、视觉风格和技术底座。改任何东西之前先读这份文件：**新代码要和已有游戏长得一样、用起来一样、写法也一样**。
 
 本文件与其他文档冲突时，以本文件为准（例如 `docs/game-designs/00-README.md` 里的 Phaser、`src/core/` 等是早期设想，没有采用）。目录地图见 `docs/PROJECT-STRUCTURE.md`，布局走查清单见 `docs/implementation/GAMEPLAY-FIRST-UI-GUIDELINE.md`。
 

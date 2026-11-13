@@ -1,0 +1,307 @@
+:root {
+  --bg: #eef9f8;
+  --panel: rgba(255, 255, 255, 0.94);
+  --text: #2c3f44;
+  --brand: #3c989e;
+  --brand2: #e4824e;
+  --shadow: rgba(54, 92, 98, 0.14);
+}
+
+html,
+body {
+  margin: 0;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 12% 14%, rgba(162, 232, 228, 0.38), transparent 30%),
+    radial-gradient(circle at 86% 16%, rgba(255, 214, 162, 0.34), transparent 28%),
+    radial-gradient(circle at 50% 90%, rgba(178, 222, 255, 0.3), transparent 34%),
+    var(--bg);
+}
+
+.weatherwear-shell {
+  width: min(1080px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 18px 14px 34px;
+  display: grid;
+  gap: 14px;
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.support-strip,
+.result {
+  background: var(--panel);
+  border-radius: 24px;
+  box-shadow: 0 10px 20px var(--shadow);
+  border: 2px solid rgba(162, 216, 218, 0.44);
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.result { padding: 16px; }
+
+.hero h1 {
+  margin: 0;
+  color: var(--brand);
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.hero p { margin: 8px 0 0; }
+.hero-links { margin-top: 10px; }
+.hero-links a { color: var(--brand2); font-weight: 700; }
+
+.play-stage {
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.level-buttons,
+.selector-actions,
+.stats,
+.bag-slots,
+.shelf-grid,
+.support-strip {
+  display: grid;
+  gap: 10px;
+}
+
+.level-buttons { margin-top: 10px; }
+.action-title { display: block; margin-top: 12px; }
+
+.level-btn,
+.support-strip button,
+#hintBtn,
+.bag-actions button,
+.bag-slot,
+.garment-btn {
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(56, 94, 98, 0.16);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.level-btn {
+  background: linear-gradient(180deg, #ffffff 0%, #ebf9f9 100%);
+  color: var(--text);
+}
+
+.level-btn.is-active {
+  background: linear-gradient(180deg, #4cb0b6 0%, #359298 100%);
+  color: #fff;
+}
+
+.selector-actions {
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fff8f0 0%, #ffefe0 100%);
+  border: 1px solid rgba(232, 174, 134, 0.45);
+}
+
+.selector-actions button {
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: 0 6px 0 rgba(128, 78, 48, 0.2);
+}
+
+#startBtn { background: linear-gradient(180deg, #ec8452 0%, #d46838 100%); }
+#retryBtn { background: linear-gradient(180deg, #5c9ee4 0%, #4382c8 100%); }
+#dailyBtn { background: linear-gradient(180deg, #62b87c 0%, #489c62 100%); }
+
+button.tap-flash,
+button:active {
+  transform: translateY(2px);
+}
+
+#selectorHint { margin: 10px 0 0; color: #547276; }
+
+.game-panel {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.stats {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.stats div {
+  background: #f2fbfb;
+  border: 1px solid rgba(158, 214, 216, 0.48);
+  border-radius: 16px;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.stats span { display: block; font-size: 13px; color: #58767a; }
+.stats strong { font-size: 20px; }
+
+.wardrobe-stage {
+  background: linear-gradient(180deg, #f9fefe 0%, #ecf8f8 100%);
+  border: 2px solid rgba(158, 214, 216, 0.45);
+  border-radius: 20px;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.window-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #e2f5ff 0%, #fff7e6 100%);
+  border: 2px solid rgba(152, 204, 232, 0.5);
+}
+
+.window-weather {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.weather-icon {
+  font-size: 46px;
+  line-height: 1;
+}
+
+.window-weather strong {
+  font-size: 20px;
+  display: block;
+}
+
+.window-weather p {
+  margin: 4px 0 0;
+  color: #4c6870;
+}
+
+#hintBtn {
+  min-height: 48px;
+  padding: 8px 16px;
+  background: linear-gradient(180deg, #ffd882 0%, #f0b84b 100%);
+  color: #5a3c12;
+}
+
+#feedbackText {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #ffffff;
+  font-weight: 700;
+  color: #355458;
+}
+
+.bag-panel,
+.shelf-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.bag-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.bag-actions {
+  display: flex;
+  gap: 8px;
+}
+
+#clearBtn {
+  min-height: 48px;
+  padding: 8px 14px;
+  background: linear-gradient(180deg, #ffffff 0%, #e8f4f4 100%);
+  color: #365256;
+}
+
+#submitBtn {
+  min-height: 48px;
+  padding: 8px 16px;
+  background: linear-gradient(180deg, #58b874 0%, #3e9c5a 100%);
+  color: #fff;
+}
+
+.bag-slots {
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+}
+
+.bag-slot {
+  min-height: 76px;
+  padding: 8px 10px;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  background: #ffffff;
+  border: 2px dashed rgba(132, 188, 192, 0.7);
+  color: #6b888c;
+}
+
+.bag-slot.is-filled {
+  border-style: solid;
+  border-color: #48a6ac;
+  background: #f2fcfc;
+  color: var(--text);
+}
+
+.bag-slot .emoji { font-size: 30px; line-height: 1; }
+
+.shelf-grid {
+  grid-template-columns: repeat(auto-fit, minmax(116px, 1fr));
+}
+
+.garment-btn {
+  min-height: 88px;
+  padding: 10px 8px;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  color: #fff;
+  border: 3px solid rgba(255, 255, 255, 0.72);
+}
+
+.garment-btn.is-picked {
+  border-color: #2f4246;
+  transform: translateY(-2px);
+}
+
+.garment-btn .emoji { font-size: 34px; line-height: 1; }
+.garment-btn .name { font-size: 14px; }
+
+.support-strip {
+  padding: 12px 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#voiceBtn { background: #5f9fd7; color: #fff; }
+#narrationBtn { background: #7d70d8; color: #fff; }
+#parentModeBtn { background: #6fa871; color: #fff; }
+
+.result h2 { margin: 0; color: var(--brand); }
+.result p { margin: 8px 0 0; }
+
+@media (max-width: 920px) {
+  .play-stage { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .support-strip { grid-template-columns: 1fr; }
+}

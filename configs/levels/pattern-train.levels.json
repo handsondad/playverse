@@ -1,0 +1,84 @@
+{
+  "levels": [
+    {
+      "id": "easy",
+      "name": "双色小火车",
+      "targetTrains": 6,
+      "hints": 3,
+      "templates": [
+        [0, 1, 0, 1, 0],
+        [0, 1, 0, 1, 0, 1],
+        [0, 0, 1, 1, 0, 0]
+      ],
+      "allowMiddleGap": false,
+      "tip": "两种物品交替排，跟着大声念出来就找到啦。"
+    },
+    {
+      "id": "normal",
+      "name": "节奏长列车",
+      "targetTrains": 8,
+      "hints": 3,
+      "templates": [
+        [0, 0, 1, 0, 0, 1],
+        [0, 1, 1, 0, 1, 1],
+        [0, 1, 2, 0, 1, 2]
+      ],
+      "allowMiddleGap": false,
+      "tip": "看看是两个一组还是三个一组在重复。"
+    },
+    {
+      "id": "hard",
+      "name": "小小列车长",
+      "targetTrains": 10,
+      "hints": 2,
+      "templates": [
+        [0, 1, 2, 0, 1, 2, 0],
+        [0, 0, 1, 1, 0, 0, 1],
+        [0, 1, 0, 2, 0, 1, 0, 2]
+      ],
+      "allowMiddleGap": true,
+      "tip": "空车厢可能藏在队伍中间，前后对照看看。"
+    }
+  ],
+  "themes": [
+    {
+      "id": "fruit",
+      "name": "果园专列",
+      "emoji": "🍎",
+      "items": [
+        { "id": "apple", "name": "红苹果", "icon": "🍎", "color": "#ef7b73" },
+        { "id": "banana", "name": "黄香蕉", "icon": "🍌", "color": "#f1c85b" },
+        { "id": "grape", "name": "紫葡萄", "icon": "🍇", "color": "#9b82e3" },
+        { "id": "orange", "name": "甜橙子", "icon": "🍊", "color": "#f29d52" },
+        { "id": "kiwi", "name": "猕猴桃", "icon": "🥝", "color": "#74bf79" },
+        { "id": "peach", "name": "水蜜桃", "icon": "🍑", "color": "#f498b2" }
+      ]
+    },
+    {
+      "id": "animal",
+      "name": "森林专列",
+      "emoji": "🐶",
+      "items": [
+        { "id": "dog", "name": "小狗", "icon": "🐶", "color": "#f09e67" },
+        { "id": "cat", "name": "小猫", "icon": "🐱", "color": "#f2be5c" },
+        { "id": "frog", "name": "小青蛙", "icon": "🐸", "color": "#6ec282" },
+        { "id": "rabbit", "name": "小兔子", "icon": "🐰", "color": "#d596f2" },
+        { "id": "panda", "name": "小熊猫", "icon": "🐼", "color": "#7da9e8" },
+        { "id": "fox", "name": "小狐狸", "icon": "🦊", "color": "#ec8364" }
+      ]
+    },
+    {
+      "id": "sky",
+      "name": "星梦专列",
+      "emoji": "🌟",
+      "items": [
+        { "id": "sun", "name": "小太阳", "icon": "☀️", "color": "#f4b649" },
+        { "id": "moon", "name": "弯月亮", "icon": "🌙", "color": "#7d97e8" },
+        { "id": "star", "name": "亮星星", "icon": "⭐", "color": "#f0c954" },
+        { "id": "rainbow", "name": "七彩虹", "icon": "🌈", "color": "#ec869e" },
+        { "id": "cloud", "name": "白云朵", "icon": "☁️", "color": "#78bce8" },
+        { "id": "rocket", "name": "小火箭", "icon": "🚀", "color": "#9484e8" }
+      ]
+    }
+  ]
+}

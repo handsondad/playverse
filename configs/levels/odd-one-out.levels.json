@@ -1,0 +1,118 @@
+{
+  "modes": [
+    {
+      "id": "visual",
+      "name": "眼力找一找",
+      "emoji": "👀",
+      "description": "好多一样的图案里藏着一个不一样的，快把它找出来。"
+    },
+    {
+      "id": "category",
+      "name": "逻辑挑不同",
+      "emoji": "🧠",
+      "description": "看看谁和大家不是同一类，动动小脑筋挑出来。"
+    }
+  ],
+  "levels": [
+    {
+      "id": "easy",
+      "name": "轻松看",
+      "visualCount": 9,
+      "categoryCount": 4,
+      "targetRounds": 6,
+      "hints": 3
+    },
+    {
+      "id": "normal",
+      "name": "仔细瞧",
+      "visualCount": 12,
+      "categoryCount": 5,
+      "targetRounds": 8,
+      "hints": 3
+    },
+    {
+      "id": "hard",
+      "name": "火眼金睛",
+      "visualCount": 16,
+      "categoryCount": 6,
+      "targetRounds": 10,
+      "hints": 2
+    }
+  ],
+  "visualPairs": [
+    { "common": { "icon": "🐸", "name": "小青蛙" }, "odd": { "icon": "🐢", "name": "小乌龟" } },
+    { "common": { "icon": "🍎", "name": "红苹果" }, "odd": { "icon": "🍅", "name": "红番茄" } },
+    { "common": { "icon": "🐶", "name": "小狗" }, "odd": { "icon": "🦊", "name": "小狐狸" } },
+    { "common": { "icon": "☀️", "name": "小太阳" }, "odd": { "icon": "🌻", "name": "向日葵" } },
+    { "common": { "icon": "🐼", "name": "小熊猫" }, "odd": { "icon": "🐻", "name": "小棕熊" } },
+    { "common": { "icon": "🚗", "name": "红汽车" }, "odd": { "icon": "🚕", "name": "出租车" } },
+    { "common": { "icon": "🍓", "name": "红草莓" }, "odd": { "icon": "🍒", "name": "红樱桃" } },
+    { "common": { "icon": "🐳", "name": "大鲸鱼" }, "odd": { "icon": "🐬", "name": "小海豚" } },
+    { "common": { "icon": "🐝", "name": "小蜜蜂" }, "odd": { "icon": "🦋", "name": "花蝴蝶" } },
+    { "common": { "icon": "🌙", "name": "弯月亮" }, "odd": { "icon": "🍌", "name": "黄香蕉" } },
+    { "common": { "icon": "🍊", "name": "甜橙子" }, "odd": { "icon": "🍑", "name": "水蜜桃" } },
+    { "common": { "icon": "🐱", "name": "小猫咪" }, "odd": { "icon": "🐯", "name": "小老虎" } }
+  ],
+  "categories": [
+    {
+      "id": "fruits",
+      "label": "水果",
+      "items": [
+        { "id": "f1", "icon": "🍎", "name": "苹果" },
+        { "id": "f2", "icon": "🍌", "name": "香蕉" },
+        { "id": "f3", "icon": "🍇", "name": "葡萄" },
+        { "id": "f4", "icon": "🍉", "name": "西瓜" },
+        { "id": "f5", "icon": "🍓", "name": "草莓" },
+        { "id": "f6", "icon": "🍍", "name": "菠萝" }
+      ]
+    },
+    {
+      "id": "animals",
+      "label": "小动物",
+      "items": [
+        { "id": "a1", "icon": "🐶", "name": "小狗" },
+        { "id": "a2", "icon": "🐱", "name": "小猫" },
+        { "id": "a3", "icon": "🐰", "name": "小兔" },
+        { "id": "a4", "icon": "🐼", "name": "熊猫" },
+        { "id": "a5", "icon": "🐘", "name": "大象" },
+        { "id": "a6", "icon": "🦁", "name": "狮子" }
+      ]
+    },
+    {
+      "id": "vehicles",
+      "label": "交通工具",
+      "items": [
+        { "id": "v1", "icon": "🚗", "name": "小汽车" },
+        { "id": "v2", "icon": "🚌", "name": "公交车" },
+        { "id": "v3", "icon": "🚂", "name": "小火车" },
+        { "id": "v4", "icon": "✈️", "name": "飞机" },
+        { "id": "v5", "icon": "🚢", "name": "轮船" },
+        { "id": "v6", "icon": "🚲", "name": "自行车" }
+      ]
+    },
+    {
+      "id": "clothes",
+      "label": "穿戴衣物",
+      "items": [
+        { "id": "c1", "icon": "👕", "name": "T恤衫" },
+        { "id": "c2", "icon": "👖", "name": "长裤" },
+        { "id": "c3", "icon": "🧢", "name": "鸭舌帽" },
+        { "id": "c4", "icon": "🧦", "name": "小袜子" },
+        { "id": "c5", "icon": "🧣", "name": "围巾" },
+        { "id": "c6", "icon": "🧤", "name": "手套" }
+      ]
+    },
+    {
+      "id": "sky",
+      "label": "天空景象",
+      "items": [
+        { "id": "s1", "icon": "☀️", "name": "太阳" },
+        { "id": "s2", "icon": "🌙", "name": "月亮" },
+        { "id": "s3", "icon": "⭐", "name": "星星" },
+        { "id": "s4", "icon": "☁️", "name": "白云" },
+        { "id": "s5", "icon": "🌈", "name": "彩虹" },
+        { "id": "s6", "icon": "❄️", "name": "雪花" }
+      ]
+    }
+  ]
+}

@@ -288,6 +288,15 @@ body {
 .game-card.numbertap { background: linear-gradient(150deg, #5b9be8, #82c4f5); }
 .game-card.fruitcount { background: linear-gradient(150deg, #e87c38, #f0b06a); }
 .game-card.market { background: linear-gradient(150deg, #4aaa60, #62c478); }
+.game-card.emotion { background: linear-gradient(150deg, #f2846b, #f7b086); }
+.game-card.pattern { background: linear-gradient(150deg, #e2784b, #5c9be8); }
+.game-card.oddone { background: linear-gradient(150deg, #4d9e6a, #7bc988); }
+.game-card.sudoku { background: linear-gradient(150deg, #547ad8, #7ca2f0); }
+.game-card.balance { background: linear-gradient(150deg, #d8833b, #62a4e8); }
+.game-card.clock { background: linear-gradient(150deg, #de7a3e, #4e90dc); }
+.game-card.weatherwear { background: linear-gradient(150deg, #3c989e, #66c2b8); }
+.game-card.cups { background: linear-gradient(150deg, #6d65d8, #9b88f0); }
+.game-card.missing { background: linear-gradient(150deg, #d86478, #f09588); }
 
 @keyframes markBob {
   0%, 100% { transform: translateY(0); }

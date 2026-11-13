@@ -1,0 +1,87 @@
+{
+  "levels": [
+    {
+      "id": "easy",
+      "name": "四样慢慢记",
+      "tableCount": 4,
+      "watchMs": 3200,
+      "shuffleAfter": false,
+      "targetRounds": 5,
+      "lives": 4,
+      "hints": 3,
+      "tip": "桌上只有 4 样东西，小声把它们的名字念一遍最好记！"
+    },
+    {
+      "id": "normal",
+      "name": "五样快快记",
+      "tableCount": 5,
+      "watchMs": 3000,
+      "shuffleAfter": true,
+      "targetRounds": 7,
+      "lives": 4,
+      "hints": 2,
+      "tip": "幕布拉开后剩下的物品会换座位，别被它们骗到哦。"
+    },
+    {
+      "id": "hard",
+      "name": "六样超强记忆",
+      "tableCount": 6,
+      "watchMs": 2800,
+      "shuffleAfter": true,
+      "targetRounds": 8,
+      "lives": 3,
+      "hints": 2,
+      "tip": "6 样物品同时登场还会换位置，两个两个分组记更快！"
+    }
+  ],
+  "themes": [
+    {
+      "id": "toys",
+      "name": "玩具宝盒",
+      "emoji": "🧸",
+      "items": [
+        { "id": "bear", "name": "泰迪熊", "icon": "🧸", "color": "#e5965c" },
+        { "id": "yoyo", "name": "溜溜球", "icon": "🪀", "color": "#64a8e8" },
+        { "id": "kite", "name": "小风筝", "icon": "🪁", "color": "#6cc286" },
+        { "id": "drum", "name": "小军鼓", "icon": "🥁", "color": "#ea7668" },
+        { "id": "robot", "name": "机器人", "icon": "🤖", "color": "#7f8ce4" },
+        { "id": "dino", "name": "小恐龙", "icon": "🦖", "color": "#5fb878" },
+        { "id": "ball", "name": "小篮球", "icon": "🏀", "color": "#ec8848" },
+        { "id": "puzzle", "name": "拼图块", "icon": "🧩", "color": "#9b7ee0" },
+        { "id": "train", "name": "玩具车", "icon": "🚂", "color": "#5ca2d8" }
+      ]
+    },
+    {
+      "id": "snacks",
+      "name": "下午茶点",
+      "emoji": "🍰",
+      "items": [
+        { "id": "cake", "name": "小蛋糕", "icon": "🍰", "color": "#f0889e" },
+        { "id": "donut", "name": "甜甜圈", "icon": "🍩", "color": "#df8c56" },
+        { "id": "cookie", "name": "曲奇饼", "icon": "🍪", "color": "#cf9558" },
+        { "id": "icecream", "name": "冰淇淋", "icon": "🍦", "color": "#6cb2e8" },
+        { "id": "pudding", "name": "小布丁", "icon": "🍮", "color": "#eab84e" },
+        { "id": "croissant", "name": "牛角包", "icon": "🥐", "color": "#e29a52" },
+        { "id": "cupcake", "name": "纸杯糕", "icon": "🧁", "color": "#b082e4" },
+        { "id": "pretzel", "name": "蝴蝶酥", "icon": "🥨", "color": "#c98254" },
+        { "id": "berry", "name": "甜草莓", "icon": "🍓", "color": "#ea727e" }
+      ]
+    },
+    {
+      "id": "desk",
+      "name": "小小书桌",
+      "emoji": "🎒",
+      "items": [
+        { "id": "pencil", "name": "小铅笔", "icon": "✏️", "color": "#ebb04c" },
+        { "id": "crayon", "name": "彩蜡笔", "icon": "🖍️", "color": "#ea766a" },
+        { "id": "ruler", "name": "小直尺", "icon": "📏", "color": "#64a6e6" },
+        { "id": "book", "name": "故事书", "icon": "📚", "color": "#66b87e" },
+        { "id": "palette", "name": "调色盘", "icon": "🎨", "color": "#9a80e2" },
+        { "id": "bag", "name": "小书包", "icon": "🎒", "color": "#e68658" },
+        { "id": "lens", "name": "放大镜", "icon": "🔍", "color": "#58b0b8" },
+        { "id": "bell", "name": "小铃铛", "icon": "🔔", "color": "#e6b448" },
+        { "id": "globe", "name": "地球仪", "icon": "🌍", "color": "#589cd8" }
+      ]
+    }
+  ]
+}

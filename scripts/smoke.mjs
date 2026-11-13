@@ -56,6 +56,7 @@ function startServer() {
     res.writeHead(200, { "content-type": TYPES[extname(file)] || "application/octet-stream" });
     res.end(readFileSync(file));
   });
+  server.keepAliveTimeout = 60000;
   return new Promise((ready) => server.listen(0, "127.0.0.1", () => ready(server)));
 }
 
@@ -120,6 +121,9 @@ const PROBE = `(async () => {
     problems.push("config error overlay is showing");
   }
   if (location.pathname.endsWith("/index.html") && !location.pathname.includes("/src/")) {
+    if (navigator.serviceWorker) {
+      await Promise.race([navigator.serviceWorker.ready, wait(5000)]);
+    }
     const cards = document.querySelectorAll(".game-card").length;
     if (cards !== ${CARD_COUNT}) {
       problems.push(\`home shows \${cards} cards, manifest has ${CARD_COUNT}\`);
@@ -200,11 +204,19 @@ async function main() {
       }
     }
   } finally {
+    await cdp.send("Browser.close").catch(() => {});
     cdp.ws.close();
+    const exited = new Promise((done) => browser.once("exit", done));
     browser.kill();
+    server.closeAllConnections();
     server.close();
+    await Promise.race([exited, sleep(3000)]);
     await sleep(300);
-    rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+    try {
+      rmSync(profile, { recursive: true, force: true, maxRetries: 8, retryDelay: 250 });
+    } catch {
+      // Ignore lingering Windows Crashpad lock on temp profile dir.
+    }
   }
   console.log(failures ? `\n${failures} page(s) failed.` : "\nAll pages passed.");
   process.exitCode = failures ? 1 : 0;

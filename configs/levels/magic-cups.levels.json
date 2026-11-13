@@ -1,0 +1,43 @@
+{
+  "levels": [
+    {
+      "id": "easy",
+      "name": "慢慢换",
+      "cupCount": 3,
+      "swapCount": 4,
+      "swapMs": 560,
+      "targetRounds": 5,
+      "lives": 4,
+      "hints": 2,
+      "tip": "3 只魔术杯慢慢交换，眼睛紧紧盯着藏宝物的那一只。"
+    },
+    {
+      "id": "normal",
+      "name": "快快换",
+      "cupCount": 3,
+      "swapCount": 6,
+      "swapMs": 420,
+      "targetRounds": 7,
+      "lives": 4,
+      "hints": 2,
+      "tip": "交换次数变多啦，心里默念它走到左边、中间还是右边。"
+    },
+    {
+      "id": "hard",
+      "name": "大魔术师",
+      "cupCount": 4,
+      "swapCount": 8,
+      "swapMs": 330,
+      "targetRounds": 8,
+      "lives": 3,
+      "hints": 2,
+      "tip": "4 只杯子快速换位，集中注意力跟住目标！"
+    }
+  ],
+  "treasures": [
+    { "id": "star", "name": "小金星", "icon": "🌟" },
+    { "id": "gem", "name": "蓝宝石", "icon": "💎" },
+    { "id": "chick", "name": "小黄鸡", "icon": "🐣" },
+    { "id": "berry", "name": "甜草莓", "icon": "🍓" }
+  ]
+}

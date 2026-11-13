@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>桌上少了谁 - 儿童小游戏</title>
+  <link rel="stylesheet" href="../shared/base.css" />
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="icon" href="../../icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="../../icons/icon-192.png" />
+  <link rel="manifest" href="../../manifest.webmanifest" />
+  <meta name="theme-color" content="#66a2df" />
+  <script type="module" src="../../src/shared/pwa.js"></script>
+</head>
+<body>
+  <main class="missing-shell">
+    <header class="hero">
+      <h1>桌上少了谁</h1>
+      <p id="guideText" role="status">先记住桌上的几样小物品，幕布拉开后点出悄悄躲起来的那一件。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../math/index.html">算术闯关</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="selector-panel">
+        <strong>记忆难度</strong>
+        <div id="levelButtons" class="level-buttons"></div>
+
+        <strong class="theme-title">桌面主题</strong>
+        <div id="themeButtons" class="theme-buttons"></div>
+
+        <strong class="action-title">开始操作</strong>
+        <div class="selector-actions">
+          <button id="startBtn" type="button">开始记忆</button>
+          <button id="retryBtn" type="button">再来一局</button>
+          <button id="dailyBtn" type="button">今日挑战</button>
+        </div>
+        <p id="selectorHint">先选难度和桌面主题，再点开始记忆。</p>
+      </section>
+
+      <section class="game-panel">
+        <div class="stats">
+          <div><span>回合</span><strong id="roundsValue">0 / 0</strong></div>
+          <div><span>机会</span><strong id="livesValue">0</strong></div>
+          <div><span>分数</span><strong id="scoreValue">0</strong></div>
+          <div><span>连对</span><strong id="streakValue">0</strong></div>
+          <div><span>最佳</span><strong id="bestValue">0</strong></div>
+        </div>
+
+        <section class="table-stage">
+          <div class="stage-head">
+            <span id="phaseBadge" class="phase-badge">🪄 记忆小圆桌</span>
+            <div class="tool-actions">
+              <button id="readyNowBtn" type="button">我记好啦</button>
+              <button id="hintBtn" type="button">排除干扰（0）</button>
+            </div>
+          </div>
+          <p id="feedbackText" role="status">选好难度和主题，点开始记住桌上的物品吧。</p>
+
+          <div class="table-wrap">
+            <div id="tableBoard" class="table-board" aria-label="桌面物品展示区"></div>
+            <div id="curtainOverlay" class="curtain-overlay" hidden>
+              <span>🪄 呼啦啦——谁躲起来了呢？</span>
+            </div>
+          </div>
+
+          <section class="choices-panel">
+            <strong>刚才桌上少了哪一件？</strong>
+            <div id="choiceButtons" class="choice-buttons" aria-label="躲藏物品候选按钮区"></div>
+          </section>
+        </section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <button id="voiceBtn" type="button">语音引导：开</button>
+      <button id="narrationBtn" type="button">播报模式：关键</button>
+      <button id="parentModeBtn" type="button">护眼模式：标准</button>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

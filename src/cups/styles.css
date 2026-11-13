@@ -1,0 +1,286 @@
+:root {
+  --bg: #f3f2ff;
+  --panel: rgba(255, 255, 255, 0.94);
+  --text: #342f4a;
+  --brand: #6d65d8;
+  --brand2: #e68252;
+  --shadow: rgba(72, 62, 118, 0.15);
+}
+
+html,
+body {
+  margin: 0;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 14% 14%, rgba(196, 184, 255, 0.38), transparent 30%),
+    radial-gradient(circle at 86% 16%, rgba(255, 206, 162, 0.34), transparent 28%),
+    radial-gradient(circle at 50% 90%, rgba(164, 224, 246, 0.3), transparent 34%),
+    var(--bg);
+}
+
+.cups-shell {
+  width: min(1080px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 18px 14px 34px;
+  display: grid;
+  gap: 14px;
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.support-strip,
+.result {
+  background: var(--panel);
+  border-radius: 24px;
+  box-shadow: 0 10px 20px var(--shadow);
+  border: 2px solid rgba(188, 180, 238, 0.44);
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.result { padding: 16px; }
+
+.hero h1 {
+  margin: 0;
+  color: var(--brand);
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.hero p { margin: 8px 0 0; }
+.hero-links { margin-top: 10px; }
+.hero-links a { color: var(--brand2); font-weight: 700; }
+
+.play-stage {
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.level-buttons,
+.selector-actions,
+.stats,
+.support-strip {
+  display: grid;
+  gap: 10px;
+}
+
+.level-buttons { margin-top: 10px; }
+.action-title { display: block; margin-top: 12px; }
+
+.level-btn,
+.support-strip button,
+#hintBtn {
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(76, 66, 126, 0.16);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.level-btn {
+  background: linear-gradient(180deg, #ffffff 0%, #f1efff 100%);
+  color: var(--text);
+}
+
+.level-btn.is-active {
+  background: linear-gradient(180deg, #7f77e6 0%, #6259ca 100%);
+  color: #fff;
+}
+
+.selector-actions {
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fff8f2 0%, #ffefe2 100%);
+  border: 1px solid rgba(232, 174, 134, 0.45);
+}
+
+.selector-actions button {
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: 0 6px 0 rgba(128, 78, 48, 0.2);
+}
+
+#startBtn { background: linear-gradient(180deg, #ea8452 0%, #d26838 100%); }
+#retryBtn { background: linear-gradient(180deg, #629de4 0%, #4880c6 100%); }
+#dailyBtn { background: linear-gradient(180deg, #64b87c 0%, #4b9c62 100%); }
+
+button.tap-flash,
+button:active {
+  transform: translateY(2px);
+}
+
+#selectorHint { margin: 10px 0 0; color: #645d82; }
+
+.game-panel {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.stats {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.stats div {
+  background: #f6f5ff;
+  border: 1px solid rgba(186, 178, 236, 0.48);
+  border-radius: 16px;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.stats span { display: block; font-size: 13px; color: #686088; }
+.stats strong { font-size: 20px; }
+
+.magic-stage {
+  background: linear-gradient(180deg, #faf9ff 0%, #eeecff 100%);
+  border: 2px solid rgba(184, 176, 238, 0.45);
+  border-radius: 20px;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.stage-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.phase-badge {
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #e9e6ff;
+  font-weight: 800;
+  color: #544bb5;
+}
+
+#hintBtn {
+  min-height: 48px;
+  padding: 8px 16px;
+  background: linear-gradient(180deg, #ffd882 0%, #f0b84b 100%);
+  color: #5a3c12;
+}
+
+#feedbackText {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #ffffff;
+  font-weight: 700;
+  color: #463f68;
+}
+
+.cup-stage {
+  --count: 3;
+  --swap-ms: 480ms;
+  position: relative;
+  min-height: 220px;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, #fffdf9 0%, #f5efe6 76%, #e4d4be 76%, #d8c3a6 100%);
+  border: 2px solid rgba(212, 190, 162, 0.6);
+  overflow: hidden;
+}
+
+.cup-slot {
+  position: absolute;
+  top: 26px;
+  bottom: 24px;
+  width: calc(100% / var(--count));
+  left: calc(var(--slot, 0) * (100% / var(--count)));
+  transition: left var(--swap-ms) ease-in-out;
+  display: grid;
+  place-items: end center;
+  padding: 0 8px;
+}
+
+.treasure-spot {
+  position: absolute;
+  bottom: 14px;
+  font-size: 40px;
+  line-height: 1;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.cup-slot.is-lifted .treasure-spot {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.cup-btn {
+  width: min(118px, 100%);
+  min-height: 118px;
+  border: 0;
+  border-radius: 26px 26px 14px 14px;
+  background: linear-gradient(180deg, #f07b62 0%, #d4553d 84%, #b5402b 100%);
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 0 rgba(112, 48, 36, 0.24);
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.26s ease, filter 0.18s ease;
+}
+
+.cup-slot.is-lifted .cup-btn {
+  transform: translateY(-58px);
+}
+
+.cup-icon {
+  font-size: 38px;
+  line-height: 1;
+}
+
+.cup-label {
+  font-size: 14px;
+}
+
+.empty-stage-note {
+  margin: 0;
+  height: 220px;
+  display: grid;
+  place-items: center;
+  color: #6d648b;
+  font-weight: 700;
+}
+
+.support-strip {
+  padding: 12px 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#voiceBtn { background: #5f9fd7; color: #fff; }
+#narrationBtn { background: #7d70d8; color: #fff; }
+#parentModeBtn { background: #6fa871; color: #fff; }
+
+.result h2 { margin: 0; color: var(--brand); }
+.result p { margin: 8px 0 0; }
+
+@media (max-width: 920px) {
+  .play-stage { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .support-strip { grid-template-columns: 1fr; }
+  .cup-btn { min-height: 98px; }
+}

@@ -1,0 +1,95 @@
+{
+  "levels": [
+    {
+      "id": "easy",
+      "name": "四宫入门",
+      "size": 4,
+      "boxRows": 2,
+      "boxCols": 2,
+      "blanks": 5,
+      "hints": 3,
+      "baseGrid": [
+        [0, 1, 2, 3],
+        [2, 3, 0, 1],
+        [1, 0, 3, 2],
+        [3, 2, 1, 0]
+      ],
+      "tip": "4×4 棋盘里，每一行、每一列和每个四宫格都不能有重复图案。"
+    },
+    {
+      "id": "normal",
+      "name": "四宫推理",
+      "size": 4,
+      "boxRows": 2,
+      "boxCols": 2,
+      "blanks": 8,
+      "hints": 3,
+      "baseGrid": [
+        [0, 1, 2, 3],
+        [2, 3, 0, 1],
+        [1, 0, 3, 2],
+        [3, 2, 1, 0]
+      ],
+      "tip": "先找已经填了 3 个图案的那一行或那一格，最容易推出剩下的是谁。"
+    },
+    {
+      "id": "hard",
+      "name": "六宫挑战",
+      "size": 6,
+      "boxRows": 2,
+      "boxCols": 3,
+      "blanks": 12,
+      "hints": 3,
+      "baseGrid": [
+        [0, 1, 2, 3, 4, 5],
+        [3, 4, 5, 0, 1, 2],
+        [1, 2, 0, 4, 5, 3],
+        [4, 5, 3, 1, 2, 0],
+        [2, 0, 1, 5, 3, 4],
+        [5, 3, 4, 2, 0, 1]
+      ],
+      "tip": "6×6 棋盘分成 6 个 2×3 小宫格，横看竖看都别重样哦。"
+    }
+  ],
+  "themes": [
+    {
+      "id": "animals",
+      "name": "萌宠乐园",
+      "emoji": "🐶",
+      "symbols": [
+        { "id": "dog", "name": "小狗", "icon": "🐶", "color": "#f09c67" },
+        { "id": "cat", "name": "小猫", "icon": "🐱", "color": "#f2be5c" },
+        { "id": "rabbit", "name": "小兔", "icon": "🐰", "color": "#d694f0" },
+        { "id": "panda", "name": "熊猫", "icon": "🐼", "color": "#7caae8" },
+        { "id": "fox", "name": "狐狸", "icon": "🦊", "color": "#ec8364" },
+        { "id": "frog", "name": "青蛙", "icon": "🐸", "color": "#6cc282" }
+      ]
+    },
+    {
+      "id": "fruits",
+      "name": "缤纷果篮",
+      "emoji": "🍎",
+      "symbols": [
+        { "id": "apple", "name": "苹果", "icon": "🍎", "color": "#ee7b73" },
+        { "id": "banana", "name": "香蕉", "icon": "🍌", "color": "#f0c858" },
+        { "id": "grape", "name": "葡萄", "icon": "🍇", "color": "#9b82e3" },
+        { "id": "berry", "name": "草莓", "icon": "🍓", "color": "#ef7e9d" },
+        { "id": "orange", "name": "橙子", "icon": "🍊", "color": "#f29d52" },
+        { "id": "pineapple", "name": "菠萝", "icon": "🍍", "color": "#74bf79" }
+      ]
+    },
+    {
+      "id": "space",
+      "name": "星际漫游",
+      "emoji": "🚀",
+      "symbols": [
+        { "id": "sun", "name": "太阳", "icon": "☀️", "color": "#f4b649" },
+        { "id": "moon", "name": "月亮", "icon": "🌙", "color": "#7d97e8" },
+        { "id": "star", "name": "星星", "icon": "⭐", "color": "#eed055" },
+        { "id": "rocket", "name": "火箭", "icon": "🚀", "color": "#eb7f6b" },
+        { "id": "planet", "name": "行星", "icon": "🪐", "color": "#a282e8" },
+        { "id": "rainbow", "name": "彩虹", "icon": "🌈", "color": "#68be96" }
+      ]
+    }
+  ]
+}

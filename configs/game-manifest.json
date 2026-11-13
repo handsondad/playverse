@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-11-07",
+  "lastUpdated": "2026-11-13",
   "cards": [
     {
       "id": "car-tap",
@@ -66,6 +66,17 @@
       "updated": "2026-07-28",
       "group": "toddler",
       "theme": "numbertap"
+    },
+    {
+      "id": "emotion-tap",
+      "title": "表情认一认",
+      "description": "开心难过，点对小脸说心情",
+      "icon": "😊",
+      "href": "./src/emotion/index.html",
+      "stage": "P1",
+      "updated": "2026-11-13",
+      "group": "toddler",
+      "theme": "emotion"
     },
     {
       "id": "literacy-spell",
@@ -156,6 +167,50 @@
       "theme": "fruitcount"
     },
     {
+      "id": "pattern-train",
+      "title": "规律小火车",
+      "description": "看车厢规律，挂上对的那一节",
+      "icon": "🚂",
+      "href": "./src/pattern/index.html",
+      "stage": "P2",
+      "updated": "2026-11-13",
+      "group": "cognition",
+      "theme": "pattern"
+    },
+    {
+      "id": "odd-one-out",
+      "title": "火眼找不同",
+      "description": "仔细瞧，找出唯一不一样的卡片",
+      "icon": "🔍",
+      "href": "./src/oddone/index.html",
+      "stage": "P2",
+      "updated": "2026-11-13",
+      "group": "cognition",
+      "theme": "oddone"
+    },
+    {
+      "id": "mini-sudoku",
+      "title": "迷你图形数独",
+      "description": "每行每列每宫，图案都不重样",
+      "icon": "🐾",
+      "href": "./src/sudoku/index.html",
+      "stage": "P2",
+      "updated": "2026-11-13",
+      "group": "cognition",
+      "theme": "sudoku"
+    },
+    {
+      "id": "balance-scale",
+      "title": "趣味小天平",
+      "description": "放上砝码，让左右两边一样重",
+      "icon": "⚖️",
+      "href": "./src/balance/index.html",
+      "stage": "P2",
+      "updated": "2026-11-13",
+      "group": "cognition",
+      "theme": "balance"
+    },
+    {
       "id": "chef-plating",
       "title": "小小厨师配餐",
       "description": "按菜单摆盘，让顾客开心",
@@ -244,6 +299,28 @@
       "theme": "market"
     },
     {
+      "id": "clock-time",
+      "title": "滴答认时钟",
+      "description": "看短针长针，认准日常作息时间",
+      "icon": "🕒",
+      "href": "./src/clock/index.html",
+      "stage": "P2",
+      "updated": "2026-11-13",
+      "group": "life",
+      "theme": "clock"
+    },
+    {
+      "id": "weather-wear",
+      "title": "天气穿搭屋",
+      "description": "看窗外晴雨风雪，挑对衣服出门",
+      "icon": "🧥",
+      "href": "./src/weatherwear/index.html",
+      "stage": "P2",
+      "updated": "2026-11-13",
+      "group": "life",
+      "theme": "weatherwear"
+    },
+    {
       "id": "math-adventure",
       "title": "算术闯关",
       "description": "算对题目，闯过一关又一关",
@@ -308,6 +385,28 @@
       "updated": "2026-04-17",
       "group": "action",
       "theme": "lighthouse"
+    },
+    {
+      "id": "magic-cups",
+      "title": "星星藏哪儿",
+      "description": "盯紧交换的魔术杯，找出小星星",
+      "icon": "🎩",
+      "href": "./src/cups/index.html",
+      "stage": "P2",
+      "updated": "2026-11-13",
+      "group": "action",
+      "theme": "cups"
+    },
+    {
+      "id": "whats-missing",
+      "title": "桌上少了谁",
+      "description": "记住桌上物品，找出躲起来的那件",
+      "icon": "🪄",
+      "href": "./src/missing/index.html",
+      "stage": "P2",
+      "updated": "2026-11-13",
+      "group": "action",
+      "theme": "missing"
     }
   ]
 }

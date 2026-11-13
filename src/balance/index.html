@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>趣味小天平 - 儿童小游戏</title>
+  <link rel="stylesheet" href="../shared/base.css" />
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="icon" href="../../icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="../../icons/icon-192.png" />
+  <link rel="manifest" href="../../manifest.webmanifest" />
+  <meta name="theme-color" content="#66a2df" />
+  <script type="module" src="../../src/shared/pwa.js"></script>
+</head>
+<body>
+  <main class="balance-shell">
+    <header class="hero">
+      <h1>趣味小天平</h1>
+      <p id="guideText" role="status">看看左边有多重，往右边托盘放上砝码，让小天平稳稳变平。</p>
+      <div class="hero-links">
+        <a href="../../index.html">返回首页</a> | <a href="../spell/index.html">字母拼读启蒙</a>
+      </div>
+    </header>
+
+    <section class="play-stage">
+      <section class="selector-panel">
+        <strong>天平难度</strong>
+        <div id="levelButtons" class="level-buttons"></div>
+
+        <strong class="action-title">开始操作</strong>
+        <div class="selector-actions">
+          <button id="startBtn" type="button">开始称重</button>
+          <button id="retryBtn" type="button">重新开始</button>
+          <button id="dailyBtn" type="button">今日天平</button>
+        </div>
+        <p id="selectorHint">先选难度，再点开始称重。</p>
+      </section>
+
+      <section class="game-panel">
+        <div class="stats">
+          <div><span>关卡</span><strong id="roundsValue">0 / 0</strong></div>
+          <div><span>左盘重</span><strong id="leftTotalValue">0</strong></div>
+          <div><span>右盘重</span><strong id="rightTotalValue">0</strong></div>
+          <div><span>分数</span><strong id="scoreValue">0</strong></div>
+          <div><span>最佳</span><strong id="bestValue">0</strong></div>
+        </div>
+
+        <section class="scale-stage">
+          <div class="stage-head">
+            <span id="stateBadge" class="state-badge">⚖️ 小小实验室</span>
+            <div class="tool-actions">
+              <button id="clearPanBtn" type="button">清空右盘</button>
+              <button id="hintBtn" type="button">称重提示（0）</button>
+            </div>
+          </div>
+          <p id="feedbackText" role="status">选好难度，点开始往天平上放砝码吧。</p>
+
+          <div class="scale-arena" aria-label="趣味天平展示区">
+            <div id="scaleBeam" class="scale-beam">
+              <div class="pan left-pan">
+                <span class="pan-title">左盘（目标）</span>
+                <div id="leftPanItems" class="pan-items"></div>
+              </div>
+
+              <div class="pan right-pan">
+                <span class="pan-title">右盘（点砝码可取下）</span>
+                <div id="rightPanItems" class="pan-items" aria-label="右盘已放砝码区"></div>
+              </div>
+            </div>
+            <div class="scale-base" aria-hidden="true">▲</div>
+          </div>
+
+          <section class="weights-panel">
+            <strong>点选下方砝码放到右盘</strong>
+            <div id="weightButtons" class="weight-buttons" aria-label="候选砝码按钮区"></div>
+          </section>
+        </section>
+      </section>
+    </section>
+
+    <section class="support-strip">
+      <button id="voiceBtn" type="button">语音引导：开</button>
+      <button id="narrationBtn" type="button">播报模式：关键</button>
+      <button id="parentModeBtn" type="button">护眼模式：标准</button>
+    </section>
+
+    <section class="result" id="result" hidden>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{
+  "levels": [
+    {
+      "id": "easy",
+      "name": "整点入门",
+      "minutesPool": [0],
+      "targetQuestions": 6,
+      "hints": 3,
+      "tip": "长长的分针指着 12，短短的时针指着几就是几点整。"
+    },
+    {
+      "id": "normal",
+      "name": "半点作息",
+      "minutesPool": [0, 30],
+      "targetQuestions": 8,
+      "hints": 3,
+      "tip": "分针走到最下面 6 的位置，就是几点半啦。"
+    },
+    {
+      "id": "hard",
+      "name": "刻度达人",
+      "minutesPool": [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55],
+      "targetQuestions": 10,
+      "hints": 2,
+      "tip": "分针每走一大格是 5 分钟，先看短时针，再数长分针。"
+    }
+  ],
+  "routines": [
+    { "hours": [6, 7], "icon": "🌅", "title": "起床洗漱", "period": "早上" },
+    { "hours": [8], "icon": "🥛", "title": "营养早餐", "period": "早上" },
+    { "hours": [9, 10, 11], "icon": "🎨", "title": "涂鸦与阅读", "period": "上午" },
+    { "hours": [12], "icon": "🍱", "title": "开心吃午饭", "period": "中午" },
+    { "hours": [1, 2], "icon": "😴", "title": "甜甜睡午觉", "period": "下午" },
+    { "hours": [3, 4], "icon": "⚽", "title": "户外跑一跑", "period": "下午" },
+    { "hours": [5, 6], "icon": "🍲", "title": "香喷喷晚饭", "period": "傍晚" },
+    { "hours": [7, 8], "icon": "📖", "title": "睡前讲故事", "period": "晚上" },
+    { "hours": [9, 10, 11], "icon": "🌙", "title": "晚安好梦", "period": "夜晚" }
+  ]
+}

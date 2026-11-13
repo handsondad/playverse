@@ -1,0 +1,94 @@
+{
+  "levels": [
+    {
+      "id": "easy",
+      "name": "两件出门",
+      "needCount": 2,
+      "shelfCount": 5,
+      "targetRounds": 5,
+      "hints": 3,
+      "tip": "看看窗外是什么天气，选 2 件最合适的穿戴就能出门啦。"
+    },
+    {
+      "id": "normal",
+      "name": "三件搭好",
+      "needCount": 3,
+      "shelfCount": 6,
+      "targetRounds": 6,
+      "hints": 3,
+      "tip": "注意看温度和天气图标，把衣服和出门装备都配齐。"
+    },
+    {
+      "id": "hard",
+      "name": "四季小管家",
+      "needCount": 4,
+      "shelfCount": 8,
+      "targetRounds": 7,
+      "hints": 2,
+      "tip": "一共要选 4 件装备，别把反季节的衣物混进去哦。"
+    }
+  ],
+  "items": [
+    { "id": "sunhat", "name": "遮阳帽", "icon": "👒", "color": "#f2bc57" },
+    { "id": "tshirt", "name": "短袖衫", "icon": "👕", "color": "#63aee8" },
+    { "id": "shorts", "name": "凉爽短裤", "icon": "🩳", "color": "#6cc29a" },
+    { "id": "sunglasses", "name": "太阳镜", "icon": "🕶️", "color": "#7f8ce0" },
+    { "id": "kettle", "name": "小水壶", "icon": "🧃", "color": "#f2965c" },
+    { "id": "raincoat", "name": "小雨衣", "icon": "🦺", "color": "#f0c24b" },
+    { "id": "umbrella", "name": "小雨伞", "icon": "☂️", "color": "#6a96e8" },
+    { "id": "rainboots", "name": "防滑雨靴", "icon": "🥾", "color": "#5ab584" },
+    { "id": "coat", "name": "厚棉服", "icon": "🧥", "color": "#d97c54" },
+    { "id": "scarf", "name": "暖围巾", "icon": "🧣", "color": "#e86e68" },
+    { "id": "gloves", "name": "棉手套", "icon": "🧤", "color": "#78a2e6" },
+    { "id": "crownhat", "name": "护耳绒帽", "icon": "🧢", "color": "#9b82e3" },
+    { "id": "windbreaker", "name": "防风夹克", "icon": "🥼", "color": "#65b0b5" },
+    { "id": "pants", "name": "运动长裤", "icon": "👖", "color": "#5c88cc" }
+  ],
+  "scenes": [
+    {
+      "id": "sunny-park",
+      "weather": "晴空万里",
+      "temp": "32°C",
+      "icon": "☀️",
+      "activity": "去公园草地玩耍",
+      "goodIds": ["sunhat", "tshirt", "shorts", "sunglasses", "kettle"],
+      "badIds": ["coat", "scarf", "gloves", "rainboots", "umbrella"]
+    },
+    {
+      "id": "rainy-walk",
+      "weather": "哗啦小雨",
+      "temp": "18°C",
+      "icon": "🌧️",
+      "activity": "踩水洼去幼儿园",
+      "goodIds": ["raincoat", "umbrella", "rainboots", "pants"],
+      "badIds": ["sunglasses", "shorts", "sunhat", "gloves", "scarf"]
+    },
+    {
+      "id": "snowy-yard",
+      "weather": "鹅毛大雪",
+      "temp": "-3°C",
+      "icon": "❄️",
+      "activity": "去院子里堆雪人",
+      "goodIds": ["coat", "scarf", "gloves", "crownhat", "pants"],
+      "badIds": ["tshirt", "shorts", "sunglasses", "sunhat", "umbrella"]
+    },
+    {
+      "id": "windy-kite",
+      "weather": "凉爽秋风",
+      "temp": "14°C",
+      "icon": "🍃",
+      "activity": "去山坡放风筝",
+      "goodIds": ["windbreaker", "pants", "crownhat", "kettle"],
+      "badIds": ["shorts", "sunglasses", "umbrella", "gloves", "rainboots"]
+    },
+    {
+      "id": "sunny-beach",
+      "weather": "海风艳阳",
+      "temp": "31°C",
+      "icon": "🏖️",
+      "activity": "去海边捡贝壳",
+      "goodIds": ["sunhat", "tshirt", "shorts", "sunglasses"],
+      "badIds": ["coat", "scarf", "gloves", "rainboots", "pants"]
+    }
+  ]
+}

@@ -1,0 +1,294 @@
+:root {
+  --bg: #f1f6ff;
+  --panel: rgba(255, 255, 255, 0.94);
+  --text: #2e3b4e;
+  --brand: #547ad8;
+  --brand2: #e4844f;
+  --shadow: rgba(58, 78, 118, 0.15);
+}
+
+html,
+body {
+  margin: 0;
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 12% 14%, rgba(176, 204, 255, 0.38), transparent 30%),
+    radial-gradient(circle at 86% 16%, rgba(255, 212, 168, 0.34), transparent 28%),
+    radial-gradient(circle at 50% 90%, rgba(182, 236, 206, 0.28), transparent 34%),
+    var(--bg);
+}
+
+.sudoku-shell {
+  width: min(1080px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 18px 14px 34px;
+  display: grid;
+  gap: 14px;
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.support-strip,
+.result {
+  background: var(--panel);
+  border-radius: 24px;
+  box-shadow: 0 10px 20px var(--shadow);
+  border: 2px solid rgba(172, 198, 240, 0.44);
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.result { padding: 16px; }
+
+.hero h1 {
+  margin: 0;
+  color: var(--brand);
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.hero p { margin: 8px 0 0; }
+.hero-links { margin-top: 10px; }
+.hero-links a { color: var(--brand2); font-weight: 700; }
+
+.play-stage {
+  display: grid;
+  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.level-buttons,
+.theme-buttons,
+.selector-actions,
+.stats,
+.symbol-palette,
+.support-strip {
+  display: grid;
+  gap: 10px;
+}
+
+.level-buttons { margin-top: 10px; }
+.theme-title,
+.action-title { display: block; margin-top: 12px; }
+.theme-buttons { margin-top: 8px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.level-btn,
+.theme-btn,
+.support-strip button,
+.tool-actions button,
+.palette-btn {
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(64, 84, 126, 0.16);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.level-btn,
+.theme-btn {
+  background: linear-gradient(180deg, #ffffff 0%, #edf3ff 100%);
+  color: var(--text);
+}
+
+.level-btn.is-active {
+  background: linear-gradient(180deg, #6288e6 0%, #486ec9 100%);
+  color: #fff;
+}
+
+.theme-btn.is-active {
+  background: linear-gradient(180deg, #f0955e 0%, #d8743c 100%);
+  color: #fff;
+}
+
+.selector-actions {
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fff8f0 0%, #ffefe0 100%);
+  border: 1px solid rgba(232, 174, 134, 0.45);
+}
+
+.selector-actions button {
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: 0 6px 0 rgba(128, 78, 48, 0.2);
+}
+
+#startBtn { background: linear-gradient(180deg, #ec8452 0%, #d46838 100%); }
+#retryBtn { background: linear-gradient(180deg, #5c9be2 0%, #427ec4 100%); }
+#dailyBtn { background: linear-gradient(180deg, #62b87c 0%, #489c62 100%); }
+
+button.tap-flash,
+button:active {
+  transform: translateY(2px);
+}
+
+#selectorHint { margin: 10px 0 0; color: #566886; }
+
+.game-panel {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.stats {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.stats div {
+  background: #f4f8ff;
+  border: 1px solid rgba(168, 194, 238, 0.48);
+  border-radius: 16px;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.stats span { display: block; font-size: 13px; color: #5c6e8c; }
+.stats strong { font-size: 20px; }
+
+.board-stage {
+  background: linear-gradient(180deg, #f9fbff 0%, #edf3ff 100%);
+  border: 2px solid rgba(168, 194, 238, 0.45);
+  border-radius: 20px;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+.stage-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tool-actions {
+  display: flex;
+  gap: 8px;
+}
+
+#eraseBtn {
+  min-height: 48px;
+  padding: 8px 14px;
+  background: linear-gradient(180deg, #ffffff 0%, #e6eefc 100%);
+  color: #364a6c;
+}
+
+#hintBtn {
+  min-height: 48px;
+  padding: 8px 14px;
+  background: linear-gradient(180deg, #ffd882 0%, #f0b84b 100%);
+  color: #5a3c12;
+}
+
+#feedbackText {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #ffffff;
+  font-weight: 700;
+  color: #3a4d6e;
+}
+
+.sudoku-board {
+  --size: 4;
+  width: min(430px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(var(--size), minmax(0, 1fr));
+  gap: 6px;
+  padding: 10px;
+  border-radius: 18px;
+  background: #cfdcf4;
+}
+
+.sudoku-cell {
+  aspect-ratio: 1;
+  min-height: 54px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  font-size: clamp(24px, 4vw, 34px);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  background: #ffffff;
+}
+
+.sudoku-cell.box-alt {
+  background: #f2f7ff;
+}
+
+.sudoku-cell.is-fixed {
+  cursor: default;
+  font-weight: 800;
+  box-shadow: inset 0 -3px 0 rgba(74, 98, 142, 0.12);
+}
+
+.sudoku-cell.is-editable {
+  border-color: rgba(102, 142, 216, 0.45);
+}
+
+.sudoku-cell.is-selected {
+  border-color: #e4844f;
+  background: #fff4eb;
+  box-shadow: 0 0 0 3px rgba(228, 132, 79, 0.25);
+}
+
+.sudoku-cell.has-conflict {
+  border-color: #e05d5d;
+  background: #ffecec;
+}
+
+.palette-panel {
+  display: grid;
+  gap: 8px;
+}
+
+.symbol-palette {
+  grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+}
+
+.palette-btn {
+  min-height: 76px;
+  padding: 8px;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.72);
+}
+
+.palette-btn .emoji { font-size: 32px; line-height: 1; }
+.palette-btn .name { font-size: 14px; }
+
+.support-strip {
+  padding: 12px 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#voiceBtn { background: #5f9fd7; color: #fff; }
+#narrationBtn { background: #7d70d8; color: #fff; }
+#parentModeBtn { background: #6fa871; color: #fff; }
+
+.result h2 { margin: 0; color: var(--brand); }
+.result p { margin: 8px 0 0; }
+
+@media (max-width: 920px) {
+  .play-stage { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .theme-buttons,
+  .support-strip { grid-template-columns: 1fr; }
+}
