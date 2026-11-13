@@ -8,7 +8,7 @@
 
 - 纯静态站：原生 HTML + CSS + ES Module，**没有构建步骤、没有运行时依赖**。不要引入框架、打包器、TypeScript、CSS 预处理器或 CDN 脚本。
 - `package.json` 里的依赖只用于 lint 和测试（Node 22+），不会进入网站。
-- 必须通过 HTTP 访问（`file://` 下模块脚本会被拦截）。本地用 VS Code 任务「启动本地小游戏服务器」或 `scripts/serve.ps1`，地址 `http://localhost:8123/`。
+- 必须通过 HTTP 访问（`file://` 下模块脚本会被拦截）。本地启动服务：运行 VS Code 任务「启动本地小游戏服务器」或执行 `powershell -ExecutionPolicy Bypass -File scripts/serve.ps1`，浏览器访问 `http://localhost:8123/`。
 - 部署：push 到 `main` 后 GitHub Actions 依次跑 lint、单元测试、页面冒烟测试，全部通过才发布到 GitHub Pages。只发布 `index.html`、`manifest.webmanifest`、`sw.js`、`icons/`、`src/`、`configs/`。
 - PWA：`sw.js` 网络优先、失败读缓存，玩过的页面自动可离线，**不需要维护文件清单**。只有首页外壳在 `SHELL` 里预缓存。
 
@@ -69,7 +69,7 @@ main.toddler-shell
 
 ## 4. 视觉风格
 
-- 字体：`font-family: "Microsoft YaHei", "PingFang SC", sans-serif;`，按钮 `font: inherit`。
+- 字体：`font-family: "Microsoft YaHei", "PingFang SC", sans-serif;`；`button { font: inherit; }` 与 `html, body { touch-action: manipulation; }` 已由 `base.css` 统一提供。
 - 每个游戏在 `:root` 定义自己的色板变量（`--bg`、`--panel`、`--text`、`--brand`、`--brand2`、`--shadow` 等），颜色只从变量取。整体是明亮、柔和的浅色系；背景用浅色线性渐变叠两三个半透明 `radial-gradient` 光斑。
 - 面板：`rgba(255, 255, 255, 0.9)` 半透明白底、圆角 `24px`、柔和投影 `0 10px 20px var(--shadow)`、2px 浅色描边。
 - 按钮：圆角 `16–18px`，粗体，底部实体投影（如 `0 6px 0 rgba(..., 0.18)`），按下时下沉并有即时高亮；过渡 `0.18s ease`。
@@ -97,10 +97,10 @@ main.toddler-shell
 | 按钮点按 | `bindSoftTap` / `createSoftTap({ flashMs })`、列表用 `bindDelegatedTap` | 只绑 `pointerup`（键盘用不了）或同时绑 click 导致触发两次 |
 | 三个设置按钮 | `mountSettingsButtons({ storageKey, settings, bindTap, onChange, announce })` | 每个游戏自己写切换逻辑 |
 | 读写设置 | `loadSettings` / `saveSettings` | 直接读 `localStorage` |
-| 语音 | `createSpeaker(settings, SPEECH_PRESETS.xxx)` | 直接 `new SpeechSynthesisUtterance` |
-| 音效 | `createGameAudio({ getCareMode })` | 自建 AudioContext |
+| 语音 | `createSpeaker(settings, SPEECH_PRESETS.xxx)`，多段连续拼读用 `speak.sequence(...)` | 直接 `new SpeechSynthesisUtterance`（有测试拦截） |
+| 音效 | `createGameAudio({ getCareMode })` | 自建 AudioContext（有测试拦截） |
 | 存储 | `readJson` / `writeJson` / `readNumber` / `readNumbers(key, 默认值)` / `readUnlocks` | 在别处碰 `localStorage`（有测试拦截） |
-| 计时循环 | `setGameInterval`（页面隐藏时自动暂停） | 裸 `setInterval` |
+| 计时循环 | `setGameInterval`（页面隐藏时自动暂停） | 裸 `setInterval`（有测试拦截） |
 | 每帧/频繁渲染 | `setHtml`、`setText`、`syncKeyed` / `setClass` / `setStyle` | 每帧整块重写 `innerHTML` |
 | 关卡数据 | `loadGameConfig` + `showConfigError` | 内置 fallback |
 | 每日挑战 | 种子形如 `${todayString()}|关卡|主题|游戏`，选关用 `hashText`，随机用 `createSeededRandom` | 改动哈希算法或种子格式（会改掉所有人的今日挑战，测试已固定输出值） |
@@ -121,8 +121,8 @@ main.toddler-shell
 1. 按第 2、3 节建 `src/<game>/`；能套用 `mountFindGame` / `mountQueueGame` 的直接套用。
 2. 内容放 `configs/levels/<game>.levels.json`。
 3. 在 `configs/game-manifest.json` 加卡片：`id`、`title`、`description`（一句话玩法）、`icon`（emoji）、`href`、`stage`（P1/P2/P3）、`updated`、`group`（`toddler` / `cognition` / `life` / `action`）、`theme`。首页卡片只从这里读，不要写进 `index.html`。
-4. 把新游戏接进同分区的「下一个游戏」链接链。
-5. 在 `README.md` 的游戏列表里加一行（那是给家长看的，只写游戏名和一句话玩法）。
+4. 把新游戏接进同分区的「下一个游戏」链接链（按 `game-manifest.json` 同组顺序闭环，测试会自动校验）。
+5. 在 `README.md` 对应分区补上新游戏名字（`README.md` 只写面向家长与玩家的项目介绍，不写本地运行、目录结构或开发说明）。
 6. 走一遍 `GAMEPLAY-FIRST-UI-GUIDELINE.md` 的检查清单，并在手机宽度下用触屏方式试玩。
 
 ## 10. 提交前检查
