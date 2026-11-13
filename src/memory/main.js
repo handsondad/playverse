@@ -3,7 +3,7 @@ import { createGameAudio } from "../shared/audio.js";
 import { loadSettings } from "../shared/settings.js";
 import { mountSettingsButtons, speakSettingChanges } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
-import { createSoftTap } from "../shared/tap.js";
+import { bindDelegatedTap, createSoftTap } from "../shared/tap.js";
 import { hashText, todayString } from "../shared/random.js";
 import { readJson, readNumbers, readUnlocks, writeJson } from "../shared/storage.js";
 import { mountRestReminder } from "../shared/restReminder.js";
@@ -564,16 +564,11 @@ chapterButtons.forEach((button) => {
   });
 });
 
-function onBoardPress(event) {
-  const button = event.target.closest(".card");
-  if (!button || !latestState?.isRunning) {
+bindDelegatedTap(boardEl, ".card", (button) => {
+  if (!latestState?.isRunning) {
     return;
   }
-  event.preventDefault();
-  const index = Number(button.dataset.index);
-  game.open(index);
-}
-
-boardEl.addEventListener("pointerup", onBoardPress);
+  game.open(Number(button.dataset.index));
+});
 
 bootstrap();

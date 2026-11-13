@@ -3,7 +3,7 @@ import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
 import { loadSettings } from "../shared/settings.js";
 import { mountSettingsButtons } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
-import { bindSoftTap } from "../shared/tap.js";
+import { bindDelegatedTap, bindSoftTap } from "../shared/tap.js";
 import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { setText } from "../shared/dom.js";
@@ -609,23 +609,13 @@ sizeRange.addEventListener("input", () => {
   game.setSize(Number(sizeRange.value));
 });
 
-colorRow.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-color]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(colorRow, "[data-color]", (button) => {
   colorRow.querySelectorAll(".color-btn").forEach((node) => node.classList.remove("is-active"));
   button.classList.add("is-active");
   game.setColor(button.dataset.color);
 });
 
-templateButtons.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-template-id]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(templateButtons, "[data-template-id]", (button) => {
   game.setTemplate(button.dataset.templateId);
   const template = latestState?.templates?.find((item) => item.id === button.dataset.templateId);
   if (template) {
@@ -633,18 +623,13 @@ templateButtons.addEventListener("pointerup", (event) => {
   }
 });
 
-worksList.addEventListener("pointerup", (event) => {
-  const loadBtn = event.target.closest("[data-load-work-id]");
-  if (loadBtn) {
-    event.preventDefault();
-    loadWorkById(loadBtn.dataset.loadWorkId);
+bindDelegatedTap(worksList, "[data-load-work-id], [data-delete-work-id]", (button) => {
+  if (button.dataset.loadWorkId) {
+    loadWorkById(button.dataset.loadWorkId);
     return;
   }
-
-  const deleteBtn = event.target.closest("[data-delete-work-id]");
-  if (deleteBtn) {
-    event.preventDefault();
-    deleteWorkById(deleteBtn.dataset.deleteWorkId);
+  if (button.dataset.deleteWorkId) {
+    deleteWorkById(button.dataset.deleteWorkId);
   }
 });
 

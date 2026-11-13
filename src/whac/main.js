@@ -423,5 +423,15 @@ function handleArenaPress(event) {
 }
 
 arenaEl.addEventListener("pointerup", handleArenaPress);
+arenaEl.addEventListener("click", (event) => {
+  if (event.detail > 0 || !latestState?.isRunning) {
+    return;
+  }
+  const entityButton = event.target.closest(".entity-btn");
+  if (entityButton) {
+    event.preventDefault();
+    game.tap(entityButton.dataset.entityId);
+  }
+});
 
 bootstrap();

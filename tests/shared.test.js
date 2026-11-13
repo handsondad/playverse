@@ -6,6 +6,7 @@ import { GLOBAL_SETTINGS_KEY, loadSettings, nextCareMode, saveSettings } from ".
 import { mountSettingsButtons } from "../src/shared/settingsButtons.js";
 import { readNumbers, readUnlocks } from "../src/shared/storage.js";
 import { setHtml, syncKeyed } from "../src/shared/dom.js";
+import { bindDelegatedTap } from "../src/shared/tap.js";
 import { clearGameInterval, setGameInterval } from "../src/shared/timers.js";
 import { FindGame } from "../src/shared/findGame.js";
 
@@ -144,6 +145,44 @@ test("syncKeyed reuses one element per id and removes the ones that left", () =>
   assert.deepEqual(container.children.map((el) => el.x), [5, 3]);
   render([]);
   assert.equal(container.children.length, 0);
+});
+
+test("bindDelegatedTap handles pointerup and keyboard click without double-firing or hitting disabled buttons", () => {
+  const listeners = {};
+  const container = {
+    addEventListener(type, fn) {
+      listeners[type] = fn;
+    },
+  };
+  const tapped = [];
+  bindDelegatedTap(container, "[data-id]", (btn) => tapped.push(btn.id));
+
+  const makeBtn = (id, disabled = false) => ({
+    id,
+    disabled,
+    closest: () => makeBtn.last,
+  });
+
+  // 1. Keyboard Enter/Space fires click with detail === 0.
+  const keyBtn = makeBtn("key");
+  makeBtn.last = keyBtn;
+  listeners.click({ target: keyBtn, detail: 0, preventDefault() {} });
+  assert.deepEqual(tapped, ["key"]);
+
+  // 2. Pointer tap fires pointerup, followed immediately by synthetic click (detail === 1).
+  const ptrBtn = makeBtn("ptr");
+  makeBtn.last = ptrBtn;
+  listeners.pointerup({ target: ptrBtn, preventDefault() {} });
+  listeners.click({ target: ptrBtn, detail: 1, preventDefault() {} });
+  listeners.click({ target: ptrBtn, detail: 0, preventDefault() {} });
+  assert.deepEqual(tapped, ["key", "ptr"]);
+
+  // 3. Disabled buttons are ignored on both pointerup and click.
+  const disabledBtn = makeBtn("off", true);
+  makeBtn.last = disabledBtn;
+  listeners.pointerup({ target: disabledBtn, preventDefault() {} });
+  listeners.click({ target: disabledBtn, detail: 0, preventDefault() {} });
+  assert.deepEqual(tapped, ["key", "ptr"]);
 });
 
 test("game intervals pause while the page is hidden", () => {

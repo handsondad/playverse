@@ -3,7 +3,7 @@ import { createGameAudio } from "../shared/audio.js";
 import { loadSettings } from "../shared/settings.js";
 import { mountSettingsButtons } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
-import { bindSoftTap } from "../shared/tap.js";
+import { bindDelegatedTap, bindSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readNumber, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
@@ -318,12 +318,7 @@ mountSettingsButtons({
   bindTap: bindSoftTap,
 });
 
-levelButtonsEl.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-level-id]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(levelButtonsEl, "[data-level-id]", (button) => {
   currentLevelId = button.dataset.levelId;
   renderLevelButtons();
   const level = getLevelById(currentLevelId);
@@ -331,12 +326,7 @@ levelButtonsEl.addEventListener("pointerup", (event) => {
   selectorHint.textContent = `已选择：${level.name} + ${theme.name}，目标 ${level.targetRounds} 轮。`;
 });
 
-themeButtonsEl.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-theme-id]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(themeButtonsEl, "[data-theme-id]", (button) => {
   currentThemeId = button.dataset.themeId;
   renderThemeButtons();
   const level = getLevelById(currentLevelId);
@@ -344,12 +334,10 @@ themeButtonsEl.addEventListener("pointerup", (event) => {
   selectorHint.textContent = `已选择：${level.name} + ${theme.name}，目标 ${level.targetRounds} 轮。`;
 });
 
-animalGrid.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-animal-id]");
-  if (!button || !latestState?.canInput) {
+bindDelegatedTap(animalGrid, "[data-animal-id]", (button) => {
+  if (!latestState?.canInput) {
     return;
   }
-  event.preventDefault();
   const animalId = button.dataset.animalId;
   const animal = getAnimalById(animalId);
   playTone(animal?.freq || 520, 190);

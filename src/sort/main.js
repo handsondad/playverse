@@ -452,12 +452,7 @@ function bindBoardPointer() {
     endDrag(event);
   });
 
-  boardEl.addEventListener("pointerup", (event) => {
-    if (dragState?.didMove) {
-      event.preventDefault();
-      return;
-    }
-
+  function tapBoardControl(event) {
     const itemBtn = event.target.closest("[data-item-id]");
     if (itemBtn) {
       event.preventDefault();
@@ -476,6 +471,21 @@ function bindBoardPointer() {
         soundFx.wrong();
       }
     }
+  }
+
+  boardEl.addEventListener("pointerup", (event) => {
+    if (dragState?.didMove) {
+      event.preventDefault();
+      return;
+    }
+    tapBoardControl(event);
+  });
+
+  boardEl.addEventListener("click", (event) => {
+    if (event.detail > 0 || dragState) {
+      return;
+    }
+    tapBoardControl(event);
   });
 }
 

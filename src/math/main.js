@@ -3,7 +3,7 @@ import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
 import { loadSettings } from "../shared/settings.js";
 import { mountSettingsButtons } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
-import { createSoftTap } from "../shared/tap.js";
+import { bindDelegatedTap, createSoftTap } from "../shared/tap.js";
 import { hashText, todayString } from "../shared/random.js";
 import { readJson, readNumbers, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
@@ -259,24 +259,14 @@ mountSettingsButtons({
   bindTap: bindSoftTap,
 });
 
-stageButtonsEl.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-stage-id]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(stageButtonsEl, "[data-stage-id]", (button) => {
   currentStageId = button.dataset.stageId;
   renderStageButtons();
   selectorHint.textContent = `已选择章节：${button.textContent}`;
   speak(selectorHint.textContent);
 });
 
-answerOptions.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-option]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(answerOptions, "[data-option]", (button) => {
   const answerValue = Number(button.dataset.option);
   if (latestState?.question && answerValue !== latestState.question.answer) {
     gameAudio.wrong();

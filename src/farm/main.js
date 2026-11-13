@@ -3,7 +3,7 @@ import { createGameAudio } from "../shared/audio.js";
 import { loadSettings } from "../shared/settings.js";
 import { mountSettingsButtons, speakSettingChanges } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
-import { createSoftTap } from "../shared/tap.js";
+import { bindDelegatedTap, createSoftTap } from "../shared/tap.js";
 import { hashText, todayString } from "../shared/random.js";
 import { readNumbers, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
@@ -430,24 +430,13 @@ mountSettingsButtons({
   announce: speakSettingChanges(speakGuide, guideText),
 });
 
-seedButtonsEl.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-crop-id]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(seedButtonsEl, "[data-crop-id]", (button) => {
   game.setSeed(button.dataset.cropId);
   seedHint.textContent = `当前已选择：${button.textContent.trim()}，去点击地块种植。`;
   speakGuide(seedHint.textContent);
 });
 
-fieldEl.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-plot-id]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
-
+bindDelegatedTap(fieldEl, "[data-plot-id]", (button) => {
   const plot = latestState?.plots.find((item) => item.id === button.dataset.plotId);
   if (!plot) {
     return;
@@ -469,12 +458,7 @@ fieldEl.addEventListener("pointerup", (event) => {
   }
 });
 
-recipeButtonsEl?.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-recipe-id]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(recipeButtonsEl, "[data-recipe-id]", (button) => {
   const result = game.startProcess(button.dataset.recipeId);
   if (result.ok) {
     soundFx.craft();

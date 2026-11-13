@@ -3,7 +3,7 @@ import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
 import { loadSettings } from "../shared/settings.js";
 import { mountSettingsButtons } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
-import { createSoftTap } from "../shared/tap.js";
+import { bindDelegatedTap, createSoftTap } from "../shared/tap.js";
 import { hashText, todayString } from "../shared/random.js";
 import { readNumbers, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
@@ -233,34 +233,19 @@ mountSettingsButtons({
   bindTap: bindSoftTap,
 });
 
-themeButtonsEl.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-theme-id]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(themeButtonsEl, "[data-theme-id]", (button) => {
   currentThemeId = button.dataset.themeId;
   renderThemeButtons();
   selectorHint.textContent = `已选择主题：${button.textContent}`;
   speak(selectorHint.textContent);
 });
 
-answerSlots.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-slot-index]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(answerSlots, "[data-slot-index]", (button) => {
   gameAudio.place(360);
   game.removeLetter(Number(button.dataset.slotIndex));
 });
 
-letterPool.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-pool-id]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(letterPool, "[data-pool-id]", (button) => {
   const token = latestState?.pool.find((item) => item.id === button.dataset.poolId);
   if (token) {
     speak(token.letter);

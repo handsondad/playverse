@@ -3,7 +3,7 @@ import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
 import { loadSettings } from "../shared/settings.js";
 import { mountSettingsButtons } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
-import { bindSoftTap } from "../shared/tap.js";
+import { bindDelegatedTap, bindSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readNumber, readNumbers, writeJson, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
@@ -216,36 +216,21 @@ mountSettingsButtons({
   bindTap: bindSoftTap,
 });
 
-levelButtonsEl.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-level-id]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(levelButtonsEl, "[data-level-id]", (button) => {
   currentLevelId = button.dataset.levelId;
   renderLevelButtons();
   const level = getLevelById(currentLevelId);
   selectorHint.textContent = `已选择：${level.name}，目标 ${level.targetOrders} 单。`;
 });
 
-themeButtonsEl?.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-theme-id]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(themeButtonsEl, "[data-theme-id]", (button) => {
   currentThemeId = button.dataset.themeId;
   renderThemeButtons();
   const theme = getThemeById(currentThemeId);
   selectorHint.textContent = `已切换菜单主题：${theme?.name || "主题菜单"}`;
 });
 
-ingredientsGrid.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-ingredient-id]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(ingredientsGrid, "[data-ingredient-id]", (button) => {
   game.addIngredient(button.dataset.ingredientId);
 });
 
@@ -266,12 +251,7 @@ ingredientsGrid.addEventListener("dragend", (event) => {
   draggingIngredientId = "";
 });
 
-traySlots.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-tray-index]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(traySlots, "[data-tray-index]", (button) => {
   const index = Number(button.dataset.trayIndex);
   if (Number.isInteger(index) && latestState?.tray[index]) {
     game.removeTrayAt(index);

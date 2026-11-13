@@ -63,7 +63,7 @@ export function bindDelegatedTap(container, selector, handler) {
 
   container.addEventListener("pointerup", (event) => {
     const button = event.target.closest(selector);
-    if (!button) {
+    if (!button || button.disabled) {
       return;
     }
     event.preventDefault();
@@ -73,7 +73,7 @@ export function bindDelegatedTap(container, selector, handler) {
 
   container.addEventListener("click", (event) => {
     const button = event.target.closest(selector);
-    if (!button) {
+    if (!button || button.disabled) {
       return;
     }
     event.preventDefault();

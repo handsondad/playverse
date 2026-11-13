@@ -3,7 +3,7 @@ import { bindUiTapSounds, createGameAudio } from "../shared/audio.js";
 import { loadSettings } from "../shared/settings.js";
 import { mountSettingsButtons } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
-import { createSoftTap } from "../shared/tap.js";
+import { bindDelegatedTap, createSoftTap } from "../shared/tap.js";
 import { hashText, todayString } from "../shared/random.js";
 import { readNumbers, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
@@ -293,12 +293,7 @@ mountSettingsButtons({
   bindTap: bindSoftTap,
 });
 
-levelButtonsEl.addEventListener("pointerup", (event) => {
-  const button = event.target.closest("[data-level-id]");
-  if (!button) {
-    return;
-  }
-  event.preventDefault();
+bindDelegatedTap(levelButtonsEl, "[data-level-id]", (button) => {
   currentLevelId = button.dataset.levelId;
   renderLevelButtons();
   renderLevelMeta();
