@@ -23,6 +23,20 @@ test("manifest lists every game page exactly once, in a known group", () => {
   }
   const hrefs = cards.map((card) => card.href.replace(/^\.\//, "")).sort();
   assert.deepEqual(hrefs, gameDirs.map((dir) => `src/${dir}/index.html`).sort());
+
+  for (const group of homeGroups) {
+    const groupCards = cards.filter((card) => card.group === group);
+    groupCards.forEach((card, index) => {
+      const nextCard = groupCards[(index + 1) % groupCards.length];
+      const nextDir = nextCard.href.replace(/^\.\//, "").split("/")[1];
+      const html = fs.readFileSync(path.join(root, card.href.replace(/^\.\//, "")), "utf8");
+      assert.match(
+        html,
+        new RegExp(`返回首页</a>\\s*\\|\\s*<a href="\\.\\./${nextDir}/index\\.html">${nextCard.title}</a>`),
+        `${card.href}: hero-links should chain to ${nextCard.href}`,
+      );
+    });
+  }
 });
 
 test("every config a game loads exists and has its required keys", () => {
