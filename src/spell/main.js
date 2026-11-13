@@ -73,7 +73,7 @@ function getQuestionSpeechParts(question) {
 function renderThemeButtons() {
   themeButtonsEl.innerHTML = (levelsData.themes || []).map((theme) => {
     const activeClass = theme.id === currentThemeId ? "theme-btn is-active" : "theme-btn";
-    return `<button class="${activeClass}" data-theme-id="${theme.id}">${theme.name}</button>`;
+    return `<button type="button" class="${activeClass}" data-theme-id="${theme.id}">${theme.name}</button>`;
   }).join("");
 }
 
@@ -82,14 +82,14 @@ function renderSlots(state) {
   answerSlots.innerHTML = state.slots.map((slot) => {
     const filledClass = slot.letter ? " filled" : "";
     const fixedClass = slot.fixed ? " fixed" : "";
-    return `<button class="answer-slot${modeClass}${filledClass}${fixedClass}" data-slot-index="${slot.index}">${slot.letter || "_"}</button>`;
+    return `<button type="button" class="answer-slot${modeClass}${filledClass}${fixedClass}" data-slot-index="${slot.index}">${slot.letter || "_"}</button>`;
   }).join("");
 }
 
 function renderPool(state) {
   const modeClass = state.currentQuestion?.mode === "pinyin" ? " mode-pinyin" : "";
   letterPool.innerHTML = state.pool.map((token) => {
-    return `<button class="letter-btn${modeClass}" data-pool-id="${token.id}" ${token.used ? "disabled" : ""}>${token.letter}</button>`;
+    return `<button type="button" class="letter-btn${modeClass}" data-pool-id="${token.id}" ${token.used ? "disabled" : ""}>${token.letter}</button>`;
   }).join("");
 }
 

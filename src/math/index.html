@@ -27,10 +27,10 @@
         <strong>章节</strong>
         <div id="stageButtons" class="stage-buttons"></div>
         <div class="selector-actions">
-          <button id="startBtn">开始冒险</button>
-          <button id="retryBtn">再来一局</button>
-          <button id="dailyBtn">今日挑战</button>
-          <button id="reviewBtn">复习错题</button>
+          <button type="button" id="startBtn">开始冒险</button>
+          <button type="button" id="retryBtn">再来一局</button>
+          <button type="button" id="dailyBtn">今日挑战</button>
+          <button type="button" id="reviewBtn">复习错题</button>
         </div>
         <p id="selectorHint">建议从加法新手开始。</p>
         <section class="review-panel">
@@ -68,7 +68,7 @@
           </div>
         </section>
 
-        <section id="answerOptions" class="answer-options"></section>
+        <section id="answerOptions" class="answer-options" aria-label="算术答案选项"></section>
 
         <section class="progress-wrap">
           <span id="progressText">进度 0%</span>
@@ -78,9 +78,9 @@
     </section>
 
     <section class="support-strip">
-      <button id="voiceBtn">语音引导：开</button>
-      <button id="narrationBtn">播报模式：关键</button>
-      <button id="parentModeBtn">护眼模式：标准</button>
+      <button type="button" id="voiceBtn">语音引导：开</button>
+      <button type="button" id="narrationBtn">播报模式：关键</button>
+      <button type="button" id="parentModeBtn">护眼模式：标准</button>
     </section>
 
     <section class="result" id="result" hidden>

@@ -269,7 +269,7 @@ function renderSongButtons() {
   }
   songButtonsEl.innerHTML = levelsData.songs.map((song) => {
     const activeClass = song.id === currentSongId ? "song-button is-active" : "song-button";
-    return `<button class="${activeClass}" data-song-id="${song.id}"><span>${song.name}</span><small>${song.theme}</small></button>`;
+    return `<button type="button" class="${activeClass}" data-song-id="${song.id}"><span>${song.name}</span><small>${song.theme}</small></button>`;
   }).join("");
 }
 

@@ -29,18 +29,18 @@
         <div class="song-buttons" id="songButtons"></div>
         <strong>难度</strong>
         <div class="level-buttons">
-          <button id="levelEasyBtn" data-level-id="easy">慢慢拍</button>
-          <button id="levelNormalBtn" data-level-id="normal">刚刚好</button>
-          <button id="levelHardBtn" data-level-id="hard">节奏王</button>
+          <button type="button" id="levelEasyBtn" data-level-id="easy">慢慢拍</button>
+          <button type="button" id="levelNormalBtn" data-level-id="normal">刚刚好</button>
+          <button type="button" id="levelHardBtn" data-level-id="hard">节奏王</button>
         </div>
         <p id="selectorHint">先选歌曲和难度，再开始游戏。</p>
       </section>
 
       <section class="game-panel">
         <div class="primary-actions" aria-label="核心操作">
-          <button id="startBtn">开始游戏</button>
-          <button id="retryBtn">再来一局</button>
-          <button id="dailyBtn">今日挑战</button>
+          <button type="button" id="startBtn">开始游戏</button>
+          <button type="button" id="retryBtn">再来一局</button>
+          <button type="button" id="dailyBtn">今日挑战</button>
         </div>
 
         <section class="stats">
@@ -68,10 +68,10 @@
           <section id="lanes" class="lanes" aria-label="节奏轨道"></section>
 
           <div class="lane-hits" id="laneHits" aria-label="点击区域">
-            <button data-lane="0" class="lane-hit lane-1">红拍</button>
-            <button data-lane="1" class="lane-hit lane-2">蓝拍</button>
-            <button data-lane="2" class="lane-hit lane-3">黄拍</button>
-            <button data-lane="3" class="lane-hit lane-4">绿拍</button>
+            <button type="button" data-lane="0" class="lane-hit lane-1">红拍</button>
+            <button type="button" data-lane="1" class="lane-hit lane-2">蓝拍</button>
+            <button type="button" data-lane="2" class="lane-hit lane-3">黄拍</button>
+            <button type="button" data-lane="3" class="lane-hit lane-4">绿拍</button>
           </div>
         </section>
       </section>
@@ -81,10 +81,10 @@
       <section class="secondary-actions" aria-label="附加功能">
         <strong>更多功能</strong>
         <div class="secondary-actions-grid">
-          <button id="voiceBtn">语音引导：开</button>
-          <button id="narrationBtn">播报模式：关键</button>
-          <button id="parentModeBtn">护眼模式：标准</button>
-          <button id="calibrateBtn">延迟校准</button>
+          <button type="button" id="voiceBtn">语音引导：开</button>
+          <button type="button" id="narrationBtn">播报模式：关键</button>
+          <button type="button" id="parentModeBtn">护眼模式：标准</button>
+          <button type="button" id="calibrateBtn">延迟校准</button>
         </div>
         <section id="calibrationPanel" class="calibration-panel" hidden>
           <p id="calibrationInfo">跟着节拍闪动点击 4 次，系统会自动调整延迟。</p>

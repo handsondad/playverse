@@ -77,3 +77,41 @@ test("only shared/storage.js touches localStorage", () => {
     .filter((file) => fs.readFileSync(path.join(root, "src", file), "utf8").includes("localStorage"));
   assert.deepEqual(offenders, []);
 });
+
+test("shared modules own timers, speech synthesis, and Web Audio", () => {
+  const jsFiles = fs.readdirSync(path.join(root, "src"), { recursive: true })
+    .filter((file) => file.endsWith(".js"));
+  const rules = [
+    ["setInterval(", path.join("shared", "timers.js")],
+    ["SpeechSynthesisUtterance", path.join("shared", "speech.js")],
+    ["AudioContext", path.join("shared", "audio.js")],
+  ];
+  for (const [token, owner] of rules) {
+    const offenders = jsFiles
+      .filter((file) => path.normalize(file) !== owner)
+      .filter((file) => fs.readFileSync(path.join(root, "src", file), "utf8").includes(token));
+    assert.deepEqual(offenders, [], `${token} should only live in ${owner}`);
+  }
+});
+
+test("every page loads base.css and pwa.js, labels buttons and game areas, and keeps focus rings", () => {
+  const pages = ["index.html", ...gameDirs.map((dir) => path.join("src", dir, "index.html"))];
+  for (const page of pages) {
+    const html = fs.readFileSync(path.join(root, page), "utf8");
+    assert.match(html, /shared\/base\.css/, `${page}: missing base.css`);
+    assert.match(html, /shared\/pwa\.js/, `${page}: missing pwa.js`);
+    for (const [tag, inner] of html.matchAll(/<button([^>]*)>([\s\S]*?)<\/button>/g)) {
+      assert.match(tag, /\btype=/, `${page}: button missing type attribute: ${tag}`);
+      const hasLabel = /\baria-label="[^"]+"/.test(tag) || inner.replace(/<[^>]+>/g, "").trim().length > 0;
+      assert.ok(hasLabel, `${page}: empty button missing aria-label: ${tag}`);
+    }
+  }
+  for (const dir of gameDirs) {
+    const html = fs.readFileSync(path.join(root, "src", dir, "index.html"), "utf8");
+    assert.match(html, /\baria-label="[^"]+"/, `${dir}: missing aria-label on game area`);
+  }
+  const cssOffenders = fs.readdirSync(path.join(root, "src"), { recursive: true })
+    .filter((file) => file.endsWith(".css"))
+    .filter((file) => /outline:\s*(?:none|0\b)/.test(fs.readFileSync(path.join(root, "src", file), "utf8")));
+  assert.deepEqual(cssOffenders, []);
+});

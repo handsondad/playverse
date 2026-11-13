@@ -27,9 +27,9 @@
         <strong>主题包</strong>
         <div id="themeButtons" class="theme-buttons"></div>
         <div class="selector-actions">
-          <button id="startBtn">开始练习</button>
-          <button id="retryBtn">再来一次</button>
-          <button id="dailyBtn">今日练习</button>
+          <button type="button" id="startBtn">开始练习</button>
+          <button type="button" id="retryBtn">再来一次</button>
+          <button type="button" id="dailyBtn">今日练习</button>
         </div>
         <p id="selectorHint">建议先从动物主题开始。</p>
       </section>
@@ -49,13 +49,13 @@
           </div>
           <div class="question-tools">
             <span id="phonicsText">发音提示会显示在这里</span>
-            <button id="listenBtn">听整词</button>
+            <button type="button" id="listenBtn">听整词</button>
           </div>
-          <div id="answerSlots" class="answer-slots"></div>
-          <button id="hintBtn">使用提示</button>
+          <div id="answerSlots" class="answer-slots" aria-label="拼读填空槽"></div>
+          <button type="button" id="hintBtn">使用提示</button>
         </section>
 
-        <section id="letterPool" class="letter-pool"></section>
+        <section id="letterPool" class="letter-pool" aria-label="候选字母池"></section>
 
         <section class="progress-wrap">
           <span id="progressText">进度 0%</span>
@@ -65,9 +65,9 @@
     </section>
 
     <section class="support-strip">
-      <button id="voiceBtn">语音引导：开</button>
-      <button id="narrationBtn">播报模式：关键</button>
-      <button id="parentModeBtn">护眼模式：标准</button>
+      <button type="button" id="voiceBtn">语音引导：开</button>
+      <button type="button" id="narrationBtn">播报模式：关键</button>
+      <button type="button" id="parentModeBtn">护眼模式：标准</button>
     </section>
 
     <section class="result" id="result" hidden>

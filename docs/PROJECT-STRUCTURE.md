@@ -14,12 +14,12 @@ src/
     main.js                 # 按 group 渲染菜单；加载失败时提示刷新
     styles.css
   shared/                   # 跨游戏复用，新游戏优先用这里的模块
-    base.css                # 所有页面先于自身 styles.css 引入：box-sizing、键盘焦点环
+    base.css                # 所有页面先于自身 styles.css 引入：box-sizing、触屏优化、按钮字体继承、键盘焦点环
     audio.js                # Web Audio 音效
     settings.js             # 全局/本地设置合并（护眼、语音、播报粒度）
     settingsButtons.js      # 语音/播报/护眼三个按钮：文案、切换、保存、跨标签页同步
     restReminder.js         # 连续游玩休息提醒（#restReminder 面板，各游戏共用计时）
-    speech.js               # 语音播报预设
+    speech.js               # 语音播报预设与连续拼读播报（speak.sequence）
     tap.js                  # 触屏/键盘点按去重
     storage.js              # 安全读写 localStorage；readNumbers 读统计，readUnlocks 读难度解锁
     random.js               # 种子随机；hashText 选每日挑战（不能换成 hashSeed）
@@ -50,8 +50,8 @@ configs/
   game-manifest.json
   levels/                   # 各游戏关卡 JSON（无内置 fallback）
 tests/
-  shared.test.js            # 随机数、设置与设置按钮、存储记录、定时器、FindGame、dom 工具
-  configs.test.js           # manifest 覆盖全部页面；loadGameConfig 键完整
+  shared.test.js            # 随机数、设置与设置按钮、存储记录、语音序列、点按代理、定时器、FindGame、dom 工具
+  configs.test.js           # manifest 与分区链接链、loadGameConfig 键完整、无障碍与共享模块规范守护
   queue-game.test.js        # 队列分拣引擎：种子可复现 + 计分规则
 ```
 

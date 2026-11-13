@@ -4,7 +4,8 @@ import { loadSettings } from "../shared/settings.js";
 import { mountSettingsButtons } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { readNumbers, writeJson } from "../shared/storage.js";
-import { setText } from "../shared/dom.js";
+import { setHtml, setText } from "../shared/dom.js";
+import { bindDelegatedTap, bindSoftTap } from "../shared/tap.js";
 
 const PROGRESS_KEY = "market-game-progress";
 const SETTINGS_KEY = "market-game-settings";
@@ -35,7 +36,7 @@ function saveProgress() {
 
 function renderShoppingList(snapshot) {
   const cartSet = new Set(snapshot.cart);
-  shoppingListEl.innerHTML = snapshot.shoppingList.map((id) => {
+  setHtml(shoppingListEl, snapshot.shoppingList.map((id) => {
     const item = snapshot.items.find((i) => i.id === id);
     if (!item) {
       return "";
@@ -48,28 +49,28 @@ function renderShoppingList(snapshot) {
         <span class="list-item-check">${checked ? "✅" : ""}</span>
       </li>
     `;
-  }).join("");
+  }).join(""));
 }
 
 function renderCart(snapshot) {
   cartCountEl.textContent = String(snapshot.cart.length);
 
   if (!snapshot.cart.length) {
-    cartItemsEl.innerHTML = "<span class=\"cart-empty\">购物车是空的</span>";
+    setHtml(cartItemsEl, "<span class=\"cart-empty\">购物车是空的</span>");
     return;
   }
 
-  cartItemsEl.innerHTML = snapshot.cart.map((id) => {
+  setHtml(cartItemsEl, snapshot.cart.map((id) => {
     const item = snapshot.items.find((i) => i.id === id);
     return item ? `<span class="cart-item" title="${item.name}">${item.icon}</span>` : "";
-  }).join("");
+  }).join(""));
 }
 
 function renderShelf(snapshot) {
   const cartSet = new Set(snapshot.cart);
   const listSet = new Set(snapshot.shoppingList);
 
-  shelfGrid.innerHTML = snapshot.items.map((item) => {
+  setHtml(shelfGrid, snapshot.items.map((item) => {
     const inCart = cartSet.has(item.id);
     const isNeeded = listSet.has(item.id);
     const extraClass = [
@@ -84,7 +85,7 @@ function renderShelf(snapshot) {
         ${inCart ? "<span class=\"shelf-item-badge\">已选</span>" : ""}
       </button>
     `;
-  }).join("");
+  }).join(""));
 }
 
 function render(snapshot) {
@@ -106,11 +107,7 @@ function render(snapshot) {
   clearCartBtn.disabled = snapshot.submitted;
 }
 
-shelfGrid.addEventListener("click", (event) => {
-  const button = event.target.closest("[data-item-id]");
-  if (!button || button.disabled) {
-    return;
-  }
+bindDelegatedTap(shelfGrid, "[data-item-id]", (button) => {
   const snapshot = game.toggleCart(button.dataset.itemId);
   render(snapshot);
   const item = snapshot.items.find((i) => i.id === button.dataset.itemId);
@@ -121,7 +118,7 @@ shelfGrid.addEventListener("click", (event) => {
   }
 });
 
-submitBtn.addEventListener("click", () => {
+bindSoftTap(submitBtn, () => {
   const snapshot = game.submit();
   progressState.bestScore = Math.max(progressState.bestScore, snapshot.score);
   progressState.bestOrders = Math.max(progressState.bestOrders, snapshot.ordersCompleted);
@@ -137,17 +134,16 @@ submitBtn.addEventListener("click", () => {
   }
 });
 
-clearCartBtn.addEventListener("click", () => {
+bindSoftTap(clearCartBtn, () => {
   const snapshot = game.getSnapshot();
   if (snapshot.submitted) {
     return;
   }
   snapshot.cart.forEach((id) => game.toggleCart(id));
   render(game.getSnapshot());
-  gameAudio.uiTap();
 });
 
-nextOrderBtn.addEventListener("click", () => {
+bindSoftTap(nextOrderBtn, () => {
   const snapshot = game.nextOrder();
   render(snapshot);
   const listNames = snapshot.shoppingList
@@ -155,17 +151,15 @@ nextOrderBtn.addEventListener("click", () => {
     .filter(Boolean)
     .join("、");
   speak(`新的购物清单：${listNames}。`);
-  gameAudio.uiTap();
 });
 
-resetBtn.addEventListener("click", () => {
+bindSoftTap(resetBtn, () => {
   game.reset();
   render(game.getSnapshot());
   speak("重新开始购物！", { force: true });
-  gameAudio.uiTap();
 });
 
-mountSettingsButtons({ storageKey: SETTINGS_KEY, settings: settingsState });
+mountSettingsButtons({ storageKey: SETTINGS_KEY, settings: settingsState, bindTap: bindSoftTap });
 bindUiTapSounds(document.body, gameAudio);
 render(game.getSnapshot());
 

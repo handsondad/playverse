@@ -179,8 +179,7 @@ function renderArena(state) {
       }
       return `
         <div class="hole" data-hole-index="${holeIndex}">
-          <button
-            class="entity-btn ${entity.isTarget ? "target" : "decoy"}"
+          <button type="button" class="entity-btn ${entity.isTarget ? "target" : "decoy"}"
             data-entity-id="${entity.id}"
             aria-label="${entity.isTarget ? "目标" : "干扰"}"
           >${entity.icon}</button>

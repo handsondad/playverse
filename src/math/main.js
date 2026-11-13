@@ -109,7 +109,7 @@ function renderReviewSummary() {
 function renderStageButtons() {
   stageButtonsEl.innerHTML = levelsData.stages.map((stage) => {
     const activeClass = stage.id === currentStageId ? "stage-btn is-active" : "stage-btn";
-    return `<button class="${activeClass}" data-stage-id="${stage.id}">${stage.name}</button>`;
+    return `<button type="button" class="${activeClass}" data-stage-id="${stage.id}">${stage.name}</button>`;
   }).join("");
 }
 
@@ -119,7 +119,7 @@ function renderAnswers(state) {
     return;
   }
   answerOptions.innerHTML = state.question.options.map((option) => {
-    return `<button class="answer-btn" data-option="${option}">${option}</button>`;
+    return `<button type="button" class="answer-btn" data-option="${option}">${option}</button>`;
   }).join("");
 }
 

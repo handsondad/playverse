@@ -159,7 +159,7 @@ function renderBoard(state) {
     ? state.items.map((item) => {
       const selectedClass = item.id === state.selectedItemId ? "item-chip is-selected" : "item-chip";
       return `
-        <button class="${selectedClass}" data-item-id="${item.id}" style="background:${item.colorHex};">
+        <button type="button" class="${selectedClass}" data-item-id="${item.id}" style="background:${item.colorHex};">
           <span class="symbol symbol-${item.shapeId}">${item.symbol}</span>
           <span>${item.label}</span>
         </button>
@@ -170,7 +170,7 @@ function renderBoard(state) {
   const binsMarkup = state.bins.map((bin) => {
     const highlightedClass = bin.key === state.highlightedBinKey ? "bin-chip is-highlighted" : "bin-chip";
     return `
-      <button class="${highlightedClass}" data-bin-key="${bin.key}" style="background:${bin.colorHex};">${bin.label}</button>
+      <button type="button" class="${highlightedClass}" data-bin-key="${bin.key}" style="background:${bin.colorHex};">${bin.label}</button>
     `;
   }).join("");
 

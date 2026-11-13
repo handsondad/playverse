@@ -58,7 +58,7 @@ function saveStats() {
 function renderLevelButtons() {
   levelButtonsEl.innerHTML = levelsData.levels.map((level) => {
     const activeClass = level.id === currentLevelId ? "level-btn is-active" : "level-btn";
-    return `<button class="${activeClass}" data-level-id="${level.id}">${level.name}</button>`;
+    return `<button type="button" class="${activeClass}" data-level-id="${level.id}">${level.name}</button>`;
   }).join("");
 }
 

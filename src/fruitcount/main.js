@@ -4,7 +4,8 @@ import { loadSettings } from "../shared/settings.js";
 import { mountSettingsButtons } from "../shared/settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { readNumbers, writeJson } from "../shared/storage.js";
-import { setText } from "../shared/dom.js";
+import { setHtml, setText } from "../shared/dom.js";
+import { bindDelegatedTap, bindSoftTap } from "../shared/tap.js";
 
 const PROGRESS_KEY = "fruitcount-game-progress";
 const SETTINGS_KEY = "fruitcount-game-settings";
@@ -34,14 +35,14 @@ function saveProgress() {
 }
 
 function renderFruits(question) {
-  fruitDisplay.innerHTML = Array.from({ length: question.count }, () =>
+  setHtml(fruitDisplay, Array.from({ length: question.count }, () =>
     `<span class="fruit-item">${question.fruit.icon}</span>`,
-  ).join("");
+  ).join(""));
   fruitLabel.textContent = question.fruit.name;
 }
 
 function renderChoices(snapshot) {
-  choiceButtons.innerHTML = snapshot.question.choices.map((choice) => {
+  setHtml(choiceButtons, snapshot.question.choices.map((choice) => {
     let extraClass = "";
     if (snapshot.answered) {
       if (choice === snapshot.question.count) {
@@ -55,7 +56,7 @@ function renderChoices(snapshot) {
         ${choice}
       </button>
     `;
-  }).join("");
+  }).join(""));
 }
 
 function render(snapshot) {
@@ -77,11 +78,7 @@ function render(snapshot) {
   nextBtn.hidden = !snapshot.answered;
 }
 
-choiceButtons.addEventListener("click", (event) => {
-  const button = event.target.closest("[data-choice]");
-  if (!button || button.disabled) {
-    return;
-  }
+bindDelegatedTap(choiceButtons, "[data-choice]", (button) => {
   const choice = Number(button.dataset.choice);
   const snapshot = game.answer(choice);
 
@@ -100,22 +97,20 @@ choiceButtons.addEventListener("click", (event) => {
   }
 });
 
-nextBtn.addEventListener("click", () => {
+bindSoftTap(nextBtn, () => {
   const snapshot = game.nextQuestion();
   render(snapshot);
   speak(`${snapshot.question.fruit.name}，有几个？`);
-  gameAudio.uiTap();
 });
 
-resetBtn.addEventListener("click", () => {
+bindSoftTap(resetBtn, () => {
   game.reset();
   const snapshot = game.getSnapshot();
   render(snapshot);
   speak("重新开始，数一数有几个水果。", { force: true });
-  gameAudio.uiTap();
 });
 
-mountSettingsButtons({ storageKey: SETTINGS_KEY, settings: settingsState });
+mountSettingsButtons({ storageKey: SETTINGS_KEY, settings: settingsState, bindTap: bindSoftTap });
 bindUiTapSounds(document.body, gameAudio);
 render(game.getSnapshot());
 speak(`数一数有几个${game.getSnapshot().question.fruit.name}？`, { force: true });

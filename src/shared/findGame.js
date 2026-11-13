@@ -3,6 +3,8 @@ import { loadSettings } from "./settings.js";
 import { mountSettingsButtons } from "./settingsButtons.js";
 import { SPEECH_PRESETS, createSpeaker } from "./speech.js";
 import { readJson, writeJson } from "./storage.js";
+import { setHtml, setText } from "./dom.js";
+import { bindDelegatedTap, bindSoftTap } from "./tap.js";
 
 function pickRandomDifferent(items, currentId) {
   const pool = items.filter((item) => item.id !== currentId);
@@ -124,24 +126,24 @@ export function mountFindGame(config) {
   }
 
   function renderCards(snapshot) {
-    board.innerHTML = snapshot.cards.map((card) => `
+    setHtml(board, snapshot.cards.map((card) => `
     <button class="card ${snapshot.lastTappedId === card.id ? "is-active" : ""}" type="button" data-card-id="${card.id}" style="--accent:${card.accent}">
       <span class="card-${iconClass}">${card.icon}</span>
       <span class="card-label">${card.label ?? card.name}</span>
     </button>
-  `).join("");
+  `).join(""));
   }
 
   function render(snapshot) {
     const { target } = snapshot;
     const tint = tintTarget ? ` style="color:${target.accent}"` : "";
     const labelClass = targetLabelClass ? ` class="${targetLabelClass}"` : "";
-    targetBadge.innerHTML = `<span class="target-${iconClass}"${tint}>${target.icon}</span><span${labelClass}>${target.label ?? target.name}</span>`;
-    guideText.textContent = formatGuide(target);
+    setHtml(targetBadge, `<span class="target-${iconClass}"${tint}>${target.icon}</span><span${labelClass}>${target.label ?? target.name}</span>`);
+    setText(guideText, formatGuide(target));
     scoreValue.textContent = String(snapshot.found);
     tapsValue.textContent = String(snapshot.totalTaps);
     bestValue.textContent = String(progressState[bestField]);
-    feedback.textContent = snapshot.feedback;
+    setText(feedback, snapshot.feedback);
     feedback.className = `feedback ${snapshot.lastTappedId && snapshot.lastTappedId === target.id ? "is-good" : ""}`;
     renderCards(snapshot);
     document.body.classList.toggle("stats-open", uiState.statsOpen);
@@ -151,11 +153,7 @@ export function mountFindGame(config) {
     render(game.getSnapshot());
   }
 
-  board.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-card-id]");
-    if (!button) {
-      return;
-    }
+  bindDelegatedTap(board, "[data-card-id]", (button) => {
     const snapshot = game.tap(button.dataset.cardId);
     progressState[bestField] = Math.max(progressState[bestField], snapshot.found);
     writeJson(progressKey, progressState);
@@ -176,19 +174,19 @@ export function mountFindGame(config) {
     speak(snapshot.feedback);
   });
 
-  nextBtn.addEventListener("click", () => {
+  bindSoftTap(nextBtn, () => {
     game.nextTarget();
     refresh();
     speak(game.getSnapshot().feedback);
   });
 
-  resetBtn.addEventListener("click", () => {
+  bindSoftTap(resetBtn, () => {
     game.reset();
     refresh();
     speak(`重新来，${resetVerb}${game.getSnapshot().target.name}。`, { force: true });
   });
 
-  statsToggleBtn?.addEventListener("click", () => {
+  bindSoftTap(statsToggleBtn, () => {
     uiState.statsOpen = !uiState.statsOpen;
     renderStatsToggle();
     document.body.classList.toggle("stats-open", uiState.statsOpen);
@@ -197,6 +195,7 @@ export function mountFindGame(config) {
   mountSettingsButtons({
     storageKey: settingsKey,
     settings: settingsState,
+    bindTap: bindSoftTap,
     announce: (kind) => {
       if (kind === "voice" && settingsState.voiceOn) {
         speak(game.getSnapshot().feedback, { force: true });

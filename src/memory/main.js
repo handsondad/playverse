@@ -283,7 +283,7 @@ function renderBoard(state) {
       }
 
       return `
-        <button class="${classes.join(" ")}" data-index="${index}" aria-label="卡片 ${index + 1}">
+        <button type="button" class="${classes.join(" ")}" data-index="${index}" aria-label="卡片 ${index + 1}">
           <span class="card-face card-back">翻开</span>
           <span class="card-face card-front">${card.icon}</span>
         </button>

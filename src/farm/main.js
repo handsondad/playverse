@@ -115,7 +115,7 @@ function renderSeedButtons(state) {
   setHtml(seedButtonsEl, levelsData.crops.map((crop) => {
     const activeClass = crop.id === state.currentSeedId ? "seed-button is-active" : "seed-button";
     return `
-      <button class="${activeClass}" data-crop-id="${crop.id}" style="--seed-color:${crop.color};">
+      <button type="button" class="${activeClass}" data-crop-id="${crop.id}" style="--seed-color:${crop.color};">
         <span>${crop.name}</span>
         <small>${crop.growSec} 秒成熟</small>
       </button>
@@ -146,7 +146,7 @@ function renderRecipeButtons(state) {
   setHtml(recipeButtonsEl, (state.recipes || []).map((recipe) => {
     const enabled = canCraft(state, recipe) && !state.process.active;
     return `
-      <button class="recipe-btn" data-recipe-id="${recipe.id}" ${enabled ? "" : "disabled"}>
+      <button type="button" class="recipe-btn" data-recipe-id="${recipe.id}" ${enabled ? "" : "disabled"}>
         <strong>${recipe.name}</strong>
         <small>${inputText(recipe.inputs)} -> +${recipe.rewardCoins} 金币</small>
       </button>
@@ -201,7 +201,7 @@ function renderField(state) {
   const markup = state.plots.map((plot) => {
     if (plot.status === "empty") {
       return `
-        <button class="plot empty" data-plot-id="${plot.id}">
+        <button type="button" class="plot empty" data-plot-id="${plot.id}">
           <strong>空地</strong>
           <span>点击种植</span>
           <small>肥力 ${plot.fertility}</small>
@@ -212,7 +212,7 @@ function renderField(state) {
     if (plot.status === "growing") {
       const crop = levelsData.crops.find((item) => item.id === plot.cropId);
       return `
-        <button class="plot growing" data-plot-id="${plot.id}" style="--plot-color:${crop?.color || '#d0b68c'};">
+        <button type="button" class="plot growing" data-plot-id="${plot.id}" style="--plot-color:${crop?.color || '#d0b68c'};">
           <strong>${crop?.name || "作物"}</strong>
           <span>成长中 ${plot.remainSec} 秒</span>
           <small>肥力 ${plot.fertility}</small>
@@ -222,7 +222,7 @@ function renderField(state) {
 
     const crop = levelsData.crops.find((item) => item.id === plot.cropId);
     return `
-      <button class="plot ready" data-plot-id="${plot.id}" style="--plot-color:${crop?.color || '#7cc47f'};">
+      <button type="button" class="plot ready" data-plot-id="${plot.id}" style="--plot-color:${crop?.color || '#7cc47f'};">
         <strong>${crop?.name || "作物"}</strong>
         <span>已成熟，点击收获</span>
         <small>肥力 ${plot.fertility}</small>

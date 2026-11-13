@@ -2,6 +2,15 @@
 
 * { box-sizing: border-box; }
 
+html,
+body {
+  touch-action: manipulation;
+}
+
+button {
+  font: inherit;
+}
+
 /* !important: many games mark selected buttons with their own outline, which
    would otherwise hide where keyboard focus is. */
 :focus-visible {
