@@ -1,3 +1,5 @@
+import { loadGameConfig } from "../shared/config.js";
+
 const groupGrids = [...document.querySelectorAll(".menu-grid[data-group]")];
 const groupSections = [...document.querySelectorAll(".age-group[data-group]")];
 const groupLinks = [...document.querySelectorAll(".group-nav [data-group-link]")];
@@ -77,12 +79,8 @@ function bindGroupNav() {
 async function bootstrap() {
   bindGroupNav();
   try {
-    const response = await fetch("./configs/game-manifest.json");
-    if (!response.ok) {
-      throw new Error(`Failed to load manifest: ${response.status}`);
-    }
-    const data = await response.json();
-    renderGroups(Array.isArray(data.cards) ? data.cards : []);
+    const data = await loadGameConfig("./configs/game-manifest.json", ["cards"]);
+    renderGroups(data.cards);
   } catch (error) {
     console.error(error);
     renderLoadError();

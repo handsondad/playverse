@@ -13,6 +13,7 @@ const SHELL = [
   "./src/home/main.js",
   "./src/home/styles.css",
   "./src/shared/base.css",
+  "./src/shared/config.js",
   "./src/shared/pwa.js",
   "./configs/game-manifest.json",
 ];
@@ -45,14 +46,32 @@ function offlinePage() {
   return new Response(html, { headers: { "content-type": "text/html; charset=utf-8" } });
 }
 
-async function networkFirst(request) {
+// On a weak connection a request can hang far longer than a child will wait.
+// After this long a cached copy is served; the network reply still refreshes the cache.
+const NETWORK_TIMEOUT_MS = 3000;
+
+async function networkFirst(event) {
+  const { request } = event;
   const cache = await caches.open(CACHE_NAME);
+  const network = fetch(request);
+  // Registered before anyone reads the body, so the clone is always possible; also
+  // keeps the worker alive to store a reply that arrives after the cache was served.
+  event.waitUntil(network
+    .then((response) => (response.ok ? cache.put(request, response.clone()) : undefined))
+    .catch(() => {}));
+
+  let timer = 0;
+  const timedOut = new Promise((resolve) => {
+    timer = setTimeout(resolve, NETWORK_TIMEOUT_MS);
+  });
   try {
-    const response = await fetch(request);
-    if (response.ok) {
-      cache.put(request, response.clone());
+    const winner = await Promise.race([network, timedOut]);
+    if (winner) {
+      return winner;
     }
-    return response;
+    // Timed out: use the cache if we have one, otherwise keep waiting for the network.
+    const cached = await cache.match(request, { ignoreSearch: true });
+    return cached || await network;
   } catch (error) {
     const cached = await cache.match(request, { ignoreSearch: true });
     if (cached) {
@@ -62,6 +81,8 @@ async function networkFirst(request) {
       return offlinePage();
     }
     throw error;
+  } finally {
+    clearTimeout(timer);
   }
 }
 
@@ -70,5 +91,5 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin) {
     return;
   }
-  event.respondWith(networkFirst(request));
+  event.respondWith(networkFirst(event));
 });
