@@ -15,6 +15,7 @@ src/
     styles.css
   shared/                   # 跨游戏复用，新游戏优先用这里的模块
     base.css                # 所有页面先于自身 styles.css 引入：box-sizing、触屏优化、按钮字体继承、键盘焦点环
+    game-shell.css          # 标准游戏页骨架（hero / 选择面板 / 统计 / 底部设置按钮），夹在 base.css 与 styles.css 之间
     audio.js                # Web Audio 音效
     settings.js             # 全局/本地设置合并（护眼、语音、播报粒度）
     settingsButtons.js      # 语音/播报/护眼三个按钮：文案、切换、保存、跨标签页同步
@@ -26,7 +27,8 @@ src/
     timers.js               # 页面隐藏时暂停的 setInterval
     config.js               # 关卡 JSON 加载与失败遮罩
     dom.js                  # setHtml：相同 markup 跳过重绘；setText：播报区域文字不变时不重写；
-                            #   syncKeyed/setClass/setStyle：每帧渲染按 id 复用节点（跑酷、节奏）
+                            #   syncKeyed/setClass/setStyle：每帧渲染按 id 复用节点（跑酷、节奏）；
+                            #   choiceButtonsHtml：难度/主题等单选按钮组的 markup
     findGame.js             # 低龄「找一找」通用引擎
     queueGame.js            # 「队列分拣」通用引擎 + 页面装配
     pwa.js                  # Service Worker 注册
@@ -76,7 +78,7 @@ scripts/
 
 ## 五、新增游戏约定
 
-1. 在 `src/<game>/` 建 `index.html`、`main.js`、`styles.css`，以及可选的 `*Game.js`；`index.html` 里先引入 `../shared/base.css` 再引入 `./styles.css`。焦点环颜色可用 `--focus-ring` 覆盖，不要写 `outline: none`。
+1. 在 `src/<game>/` 建 `index.html`、`main.js`、`styles.css`，以及可选的 `*Game.js`；`index.html` 里先引入 `../shared/base.css` 再引入 `./styles.css`，标准游戏页在两者之间引入 `../shared/game-shell.css`。焦点环颜色可用 `--focus-ring` 覆盖，不要写 `outline: none`。
 2. 需要关卡时在 `configs/levels/` 增加 JSON，用 `loadGameConfig` 加载；失败时用 `showConfigError`，不要再塞内置 fallback。
 3. 在 `configs/game-manifest.json` 增加卡片，填好 `group`（`toddler` / `cognition` / `life` / `action`）和 `theme`。
 4. 复用 `src/shared/`：设置、语音、点按、存储、随机数、计时器；低龄「找卡片」类可直接用 `mountFindGame`，「队列分拣」类可直接用 `mountQueueGame`。设置按钮用 `mountSettingsButtons`，游戏自己的时长提示等放进 `onChange`；统计/最高分用 `readNumbers(key, 默认值)`。

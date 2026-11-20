@@ -16,7 +16,7 @@
 
 ```text
 src/<game>/index.html     页面骨架（见第 3 节）
-src/<game>/styles.css     本游戏样式（在 shared/base.css 之后引入）
+src/<game>/styles.css     本游戏样式（在 shared/base.css 之后引入；标准游戏页还先引入 shared/game-shell.css）
 src/<game>/main.js        页面装配：取 DOM、绑事件、渲染
 src/<game>/<name>Game.js  可选，纯游戏逻辑：不碰 DOM，通过回调把状态交给 main.js
 configs/levels/*.json     关卡、主题、题库等内容数据
@@ -30,7 +30,9 @@ configs/levels/*.json     关卡、主题、题库等内容数据
 
 ## 3. 页面骨架
 
-所有页面都是 `lang="zh-CN"`，`<head>` 固定写法：先 `../shared/base.css` 再 `./styles.css`，图标、`manifest`、`theme-color="#66a2df"`、`../../src/shared/pwa.js`。标题格式为「游戏名 - 儿童小游戏」，低龄 P1 游戏用「游戏名 - 亲子小游戏」。
+所有页面都是 `lang="zh-CN"`，`<head>` 固定写法：先 `../shared/base.css` 再 `./styles.css`（标准游戏页在两者之间加 `../shared/game-shell.css`），图标、`manifest`、`theme-color="#66a2df"`、`../../src/shared/pwa.js`。标题格式为「游戏名 - 儿童小游戏」，低龄 P1 游戏用「游戏名 - 亲子小游戏」。
+
+`game-shell.css` 提供下面这套标准骨架的公共样式：面板底色/圆角/投影/内边距、`.hero` 标题、`.play-stage` 两栏、`.level-buttons` / `.selector-actions` / `.stats` 的网格、`.level-btn` 与底部三个设置按钮。游戏自己的 `styles.css` 只写配色和与骨架不同的地方，不要再抄一遍这些声明。结构不按这套骨架走的页面（低龄陪玩页、画板、农场等）不要引入它。
 
 ### 标准游戏页（启蒙益智 / 生活探索 / 反应闯关）
 
@@ -102,6 +104,7 @@ main.toddler-shell
 | 存储 | `readJson` / `writeJson` / `readNumber` / `readNumbers(key, 默认值)` / `readUnlocks` | 在别处碰 `localStorage`（有测试拦截） |
 | 计时循环 | `setGameInterval`（页面隐藏时自动暂停） | 裸 `setInterval`（有测试拦截） |
 | 每帧/频繁渲染 | `setHtml`、`setText`、`syncKeyed` / `setClass` / `setStyle` | 每帧整块重写 `innerHTML` |
+| 难度/主题等单选按钮组 | `setHtml(el, choiceButtonsHtml(items, 选中 id, { className, dataKey }))` + `bindDelegatedTap(el, "[data-…]")` | 每个游戏手拼按钮和 `is-active` |
 | 关卡数据 | `loadGameConfig` + `showConfigError` | 内置 fallback |
 | 每日挑战 | 种子形如 `${todayString()}|关卡|主题|游戏`，选关用 `hashText`，随机用 `createSeededRandom` | 改动哈希算法或种子格式（会改掉所有人的今日挑战，测试已固定输出值） |
 
