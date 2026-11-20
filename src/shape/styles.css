@@ -17,10 +17,6 @@ body {
   color: var(--text);
 }
 
-body {
-  touch-action: manipulation;
-}
-
 .toddler-shell {
   width: min(960px, 100%);
   margin: 0 auto;

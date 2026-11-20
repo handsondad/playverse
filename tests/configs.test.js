@@ -100,6 +100,11 @@ test("every page loads base.css and pwa.js, labels buttons and game areas, and k
     const html = fs.readFileSync(path.join(root, page), "utf8");
     assert.match(html, /shared\/base\.css/, `${page}: missing base.css`);
     assert.match(html, /shared\/pwa\.js/, `${page}: missing pwa.js`);
+    const shell = html.indexOf("shared/game-shell.css");
+    if (shell !== -1) {
+      assert.ok(html.indexOf("shared/base.css") < shell && shell < html.indexOf("./styles.css"),
+        `${page}: game-shell.css must sit between base.css and styles.css`);
+    }
     for (const [tag, inner] of html.matchAll(/<button([^>]*)>([\s\S]*?)<\/button>/g)) {
       assert.match(tag, /\btype=/, `${page}: button missing type attribute: ${tag}`);
       const hasLabel = /\baria-label="[^"]+"/.test(tag) || inner.replace(/<[^>]+>/g, "").trim().length > 0;

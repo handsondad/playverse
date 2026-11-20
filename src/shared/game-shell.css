@@ -1,0 +1,121 @@
+/* Skeleton shared by the standard game pages: hero, selector panel, play stage,
+   stats and support strip. Load it between base.css and the page's styles.css;
+   pages only add their colours and what makes them different. */
+
+.hero,
+.selector-panel,
+.game-panel,
+.result,
+.support-strip {
+  background: var(--panel);
+  border-radius: 24px;
+  box-shadow: 0 10px 20px var(--shadow);
+}
+
+.hero,
+.selector-panel,
+.game-panel,
+.result {
+  padding: 16px;
+}
+
+.hero h1 {
+  margin: 0;
+  color: var(--brand);
+  font-size: clamp(28px, 4vw, 42px);
+}
+
+.hero p {
+  margin: 8px 0 0;
+}
+
+.hero-links {
+  margin-top: 10px;
+}
+
+.hero-links a {
+  font-weight: 700;
+}
+
+.play-stage {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
+}
+
+.level-buttons {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.selector-actions {
+  display: grid;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.action-title {
+  display: block;
+  margin-top: 12px;
+}
+
+.stats {
+  display: grid;
+  gap: 10px;
+}
+
+.stats div {
+  border-radius: 16px;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.stats span {
+  display: block;
+  font-size: 13px;
+}
+
+.stats strong {
+  font-size: 20px;
+}
+
+.level-btn,
+.selector-actions button,
+.support-strip button {
+  border: 0;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.level-btn,
+.support-strip button {
+  min-height: 52px;
+  border-radius: 16px;
+}
+
+.level-btn.is-active,
+#voiceBtn,
+#narrationBtn,
+#parentModeBtn {
+  color: #fff;
+}
+
+#voiceBtn {
+  background: #5f9fd7;
+}
+
+#narrationBtn {
+  background: #7d70d8;
+}
+
+#parentModeBtn {
+  background: #6fa871;
+}
+
+.support-strip {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  padding: 12px 14px;
+}

@@ -9,7 +9,6 @@
 html,
 body {
   margin: 0;
-  touch-action: manipulation;
   font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
   color: var(--text);
   background:
@@ -35,32 +34,10 @@ button { font: inherit; }
 .game-panel,
 .support-strip,
 .result {
-  background: var(--panel);
-  border-radius: 24px;
-  box-shadow: 0 10px 20px var(--shadow);
   border: 2px solid rgba(232, 176, 204, 0.42);
 }
 
-.hero,
-.selector-panel,
-.game-panel,
-.result { padding: 16px; }
-
-.hero h1 {
-  margin: 0;
-  color: var(--brand);
-  font-size: clamp(28px, 4vw, 42px);
-}
-
-.hero p { margin: 8px 0 0; }
-.hero-links { margin-top: 10px; }
-.hero-links a { color: #b24b72; font-weight: 700; }
-
-.play-stage {
-  display: grid;
-  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
-  gap: 14px;
-}
+.hero-links a { color: #b24b72; }
 
 .level-buttons,
 .selector-actions,
@@ -73,17 +50,11 @@ button { font: inherit; }
 }
 
 .level-buttons {
-  margin-top: 10px;
   grid-template-columns: 1fr;
 }
 
 .theme-title {
   margin-top: 8px;
-  display: block;
-}
-
-.action-title {
-  margin-top: 12px;
   display: block;
 }
 
@@ -135,11 +106,9 @@ button { font: inherit; }
 
 .level-btn.is-active {
   background: linear-gradient(180deg, #e888ad 0%, #cd648d 100%);
-  color: #fff;
 }
 
 .selector-actions {
-  margin-top: 8px;
   padding: 10px;
   border-radius: 16px;
   background: linear-gradient(180deg, #fff6fb 0%, #fbeef7 100%);
@@ -148,10 +117,7 @@ button { font: inherit; }
 
 .selector-actions button {
   min-height: 50px;
-  border: 0;
   border-radius: 14px;
-  font-weight: 700;
-  cursor: pointer;
   color: #fff;
   box-shadow: 0 6px 0 rgba(132, 82, 111, 0.2);
 }
@@ -179,22 +145,17 @@ button { font: inherit; }
 }
 
 .stats div {
-  border-radius: 16px;
   background: linear-gradient(180deg, #ffffff 0%, #fff2f8 100%);
   padding: 10px 8px;
-  text-align: center;
 }
 
 .stats span {
-  display: block;
-  font-size: 13px;
   color: #8a7298;
 }
 
 .stats strong {
   display: block;
   margin-top: 4px;
-  font-size: 20px;
 }
 
 .clinic-panel {
@@ -317,13 +278,12 @@ button { font: inherit; }
 }
 
 .support-strip {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   padding: 12px;
 }
 
-#voiceBtn { background: #6f9dd6; color: #fff; }
-#narrationBtn { background: #a27de0; color: #fff; }
-#parentModeBtn { background: #7ab08d; color: #fff; }
+#voiceBtn { background: #6f9dd6; }
+#narrationBtn { background: #a27de0; }
+#parentModeBtn { background: #7ab08d; }
 
 .pet-shell.weather-sunny {
   background:

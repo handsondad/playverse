@@ -33,32 +33,10 @@ body {
 .game-panel,
 .support-strip,
 .result {
-  background: var(--panel);
-  border-radius: 24px;
-  box-shadow: 0 10px 20px var(--shadow);
   border: 2px solid rgba(236, 198, 154, 0.44);
 }
 
-.hero,
-.selector-panel,
-.game-panel,
-.result { padding: 16px; }
-
-.hero h1 {
-  margin: 0;
-  color: var(--brand);
-  font-size: clamp(28px, 4vw, 42px);
-}
-
-.hero p { margin: 8px 0 0; }
-.hero-links { margin-top: 10px; }
-.hero-links a { color: var(--brand2); font-weight: 700; }
-
-.play-stage {
-  display: grid;
-  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
-  gap: 14px;
-}
+.hero-links a { color: var(--brand2); }
 
 .level-buttons,
 .selector-actions,
@@ -68,9 +46,6 @@ body {
   display: grid;
   gap: 10px;
 }
-
-.level-buttons { margin-top: 10px; }
-.action-title { display: block; margin-top: 12px; }
 
 .level-btn,
 .support-strip button,
@@ -93,11 +68,9 @@ body {
 
 .level-btn.is-active {
   background: linear-gradient(180deg, #ee964e 0%, #d4762e 100%);
-  color: #fff;
 }
 
 .selector-actions {
-  margin-top: 8px;
   padding: 10px;
   border-radius: 18px;
   background: linear-gradient(180deg, #f2f8ff 0%, #e6f0ff 100%);
@@ -106,10 +79,7 @@ body {
 
 .selector-actions button {
   min-height: 52px;
-  border: 0;
   border-radius: 16px;
-  font-weight: 700;
-  cursor: pointer;
   color: #fff;
   box-shadow: 0 6px 0 rgba(58, 90, 132, 0.2);
 }
@@ -138,13 +108,9 @@ button:active {
 .stats div {
   background: #fff9f0;
   border: 1px solid rgba(232, 198, 156, 0.48);
-  border-radius: 16px;
-  padding: 8px 10px;
-  text-align: center;
 }
 
-.stats span { display: block; font-size: 13px; color: #76624c; }
-.stats strong { font-size: 20px; }
+.stats span { color: #76624c; }
 
 .scale-stage {
   background: linear-gradient(180deg, #fffdf9 0%, #fff6e8 100%);
@@ -318,15 +284,6 @@ button:active {
 
 .weight-btn .emoji { font-size: 32px; line-height: 1; }
 .weight-btn .name { font-size: 14px; }
-
-.support-strip {
-  padding: 12px 14px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-#voiceBtn { background: #5f9fd7; color: #fff; }
-#narrationBtn { background: #7d70d8; color: #fff; }
-#parentModeBtn { background: #6fa871; color: #fff; }
 
 .result h2 { margin: 0; color: var(--brand); }
 .result p { margin: 8px 0 0; }

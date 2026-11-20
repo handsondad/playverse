@@ -9,7 +9,6 @@
 html,
 body {
   margin: 0;
-  touch-action: manipulation;
   font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
   color: var(--text);
   background:
@@ -35,32 +34,10 @@ button { font: inherit; }
 .game-panel,
 .support-strip,
 .result {
-  background: var(--panel);
-  border-radius: 24px;
-  box-shadow: 0 10px 20px var(--shadow);
   border: 2px solid rgba(190, 219, 175, 0.42);
 }
 
-.hero,
-.selector-panel,
-.game-panel,
-.result { padding: 16px; }
-
-.hero h1 {
-  margin: 0;
-  color: var(--brand);
-  font-size: clamp(28px, 4vw, 42px);
-}
-
-.hero p { margin: 8px 0 0; }
-.hero-links { margin-top: 10px; }
-.hero-links a { color: #5f8950; font-weight: 700; }
-
-.play-stage {
-  display: grid;
-  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
-  gap: 14px;
-}
+.hero-links a { color: #5f8950; }
 
 .level-buttons,
 .theme-buttons,
@@ -74,7 +51,6 @@ button { font: inherit; }
 }
 
 .level-buttons {
-  margin-top: 10px;
   grid-template-columns: 1fr;
 }
 
@@ -111,7 +87,6 @@ button { font: inherit; }
 
 .level-btn.is-active {
   background: linear-gradient(180deg, #8ebc73 0%, #6b9d56 100%);
-  color: #fff;
 }
 
 .theme-btn.is-active {
@@ -126,22 +101,17 @@ button { font: inherit; }
 }
 
 .stats div {
-  border-radius: 16px;
   background: linear-gradient(180deg, #ffffff 0%, #f1faea 100%);
   padding: 10px 8px;
-  text-align: center;
 }
 
 .stats span {
-  display: block;
-  font-size: 13px;
   color: #718b64;
 }
 
 .stats strong {
   display: block;
   margin-top: 4px;
-  font-size: 20px;
 }
 
 .patrol-panel {
@@ -274,13 +244,12 @@ button { font: inherit; }
 }
 
 .support-strip {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
   padding: 12px;
 }
 
-#voiceBtn { background: #6ba8c6; color: #fff; }
-#narrationBtn { background: #7e8ad8; color: #fff; }
-#parentModeBtn { background: #7aad74; color: #fff; }
+#voiceBtn { background: #6ba8c6; }
+#narrationBtn { background: #7e8ad8; }
+#parentModeBtn { background: #7aad74; }
 
 .forest-shell.weather-sunny {
   background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(245, 253, 238, 0.2));

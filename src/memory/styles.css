@@ -10,11 +10,6 @@
   --shadow: rgba(92, 78, 59, 0.14);
 }
 
-html,
-body {
-  touch-action: manipulation;
-}
-
 body {
   margin: 0;
   font-family: "Microsoft YaHei", "PingFang SC", sans-serif;

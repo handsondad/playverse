@@ -12,7 +12,6 @@
 html,
 body {
   margin: 0;
-  touch-action: manipulation;
   font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
   background:
     radial-gradient(circle at 8% 10%, #ffe8ad 0%, transparent 34%),

@@ -33,32 +33,10 @@ body {
 .game-panel,
 .support-strip,
 .result {
-  background: var(--panel);
-  border-radius: 24px;
-  box-shadow: 0 10px 20px var(--shadow);
   border: 2px solid rgba(172, 198, 240, 0.44);
 }
 
-.hero,
-.selector-panel,
-.game-panel,
-.result { padding: 16px; }
-
-.hero h1 {
-  margin: 0;
-  color: var(--brand);
-  font-size: clamp(28px, 4vw, 42px);
-}
-
-.hero p { margin: 8px 0 0; }
-.hero-links { margin-top: 10px; }
-.hero-links a { color: var(--brand2); font-weight: 700; }
-
-.play-stage {
-  display: grid;
-  grid-template-columns: minmax(280px, 320px) minmax(0, 1fr);
-  gap: 14px;
-}
+.hero-links a { color: var(--brand2); }
 
 .level-buttons,
 .theme-buttons,
@@ -70,7 +48,6 @@ body {
   gap: 10px;
 }
 
-.level-buttons { margin-top: 10px; }
 .theme-title,
 .action-title { display: block; margin-top: 12px; }
 .theme-buttons { margin-top: 8px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -97,7 +74,6 @@ body {
 
 .level-btn.is-active {
   background: linear-gradient(180deg, #6288e6 0%, #486ec9 100%);
-  color: #fff;
 }
 
 .theme-btn.is-active {
@@ -106,7 +82,6 @@ body {
 }
 
 .selector-actions {
-  margin-top: 8px;
   padding: 10px;
   border-radius: 18px;
   background: linear-gradient(180deg, #fff8f0 0%, #ffefe0 100%);
@@ -115,10 +90,7 @@ body {
 
 .selector-actions button {
   min-height: 52px;
-  border: 0;
   border-radius: 16px;
-  font-weight: 700;
-  cursor: pointer;
   color: #fff;
   box-shadow: 0 6px 0 rgba(128, 78, 48, 0.2);
 }
@@ -147,13 +119,9 @@ button:active {
 .stats div {
   background: #f4f8ff;
   border: 1px solid rgba(168, 194, 238, 0.48);
-  border-radius: 16px;
-  padding: 8px 10px;
-  text-align: center;
 }
 
-.stats span { display: block; font-size: 13px; color: #5c6e8c; }
-.stats strong { font-size: 20px; }
+.stats span { color: #5c6e8c; }
 
 .board-stage {
   background: linear-gradient(180deg, #f9fbff 0%, #edf3ff 100%);
@@ -270,15 +238,6 @@ button:active {
 
 .palette-btn .emoji { font-size: 32px; line-height: 1; }
 .palette-btn .name { font-size: 14px; }
-
-.support-strip {
-  padding: 12px 14px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-#voiceBtn { background: #5f9fd7; color: #fff; }
-#narrationBtn { background: #7d70d8; color: #fff; }
-#parentModeBtn { background: #6fa871; color: #fff; }
 
 .result h2 { margin: 0; color: var(--brand); }
 .result p { margin: 8px 0 0; }

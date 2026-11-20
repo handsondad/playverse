@@ -16,7 +16,6 @@ body {
     radial-gradient(circle at 88% 14%, #fff8e8 0%, transparent 26%),
     var(--bg);
   color: var(--text);
-  touch-action: manipulation;
 }
 
 .app-shell {
