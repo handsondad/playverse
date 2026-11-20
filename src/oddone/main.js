@@ -7,7 +7,7 @@ import { bindDelegatedTap, createSoftTap } from "../shared/tap.js";
 import { hashText, todayString } from "../shared/random.js";
 import { readNumber, readNumbers, writeJson, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setHtml, setText } from "../shared/dom.js";
+import { choiceButtonsHtml, setHtml, setText } from "../shared/dom.js";
 
 const SETTINGS_KEY = "oddone-settings";
 const STATS_KEY = "oddone-stats";
@@ -57,15 +57,9 @@ function getLevelById(id) {
 }
 
 function renderSelectors() {
-  setHtml(modeButtonsEl, levelsData.modes.map((mode) => {
-    const cls = mode.id === currentModeId ? "mode-btn is-active" : "mode-btn";
-    return `<button type="button" class="${cls}" data-mode-id="${mode.id}">${mode.emoji} ${mode.name}</button>`;
-  }).join(""));
+  setHtml(modeButtonsEl, choiceButtonsHtml(levelsData.modes, currentModeId, { className: "mode-btn", dataKey: "mode-id", label: (mode) => `${mode.emoji} ${mode.name}` }));
 
-  setHtml(levelButtonsEl, levelsData.levels.map((level) => {
-    const cls = level.id === currentLevelId ? "level-btn is-active" : "level-btn";
-    return `<button type="button" class="${cls}" data-level-id="${level.id}">${level.name}</button>`;
-  }).join(""));
+  setHtml(levelButtonsEl, choiceButtonsHtml(levelsData.levels, currentLevelId, { className: "level-btn", dataKey: "level-id" }));
 }
 
 function gridColumns(cardCount, modeId) {

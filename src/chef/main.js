@@ -7,7 +7,7 @@ import { bindDelegatedTap, bindSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readNumber, readNumbers, writeJson, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setHtml, setText } from "../shared/dom.js";
+import { choiceButtonsHtml, setHtml, setText } from "../shared/dom.js";
 
 const SETTINGS_KEY = "chef-settings";
 const STATS_KEY = "chef-stats";
@@ -68,10 +68,7 @@ function getIngredient(id) {
 }
 
 function renderLevelButtons() {
-  levelButtonsEl.innerHTML = levelsData.levels.map((level) => {
-    const cls = level.id === currentLevelId ? "level-btn is-active" : "level-btn";
-    return `<button class="${cls}" data-level-id="${level.id}" type="button">${level.name}</button>`;
-  }).join("");
+  setHtml(levelButtonsEl, choiceButtonsHtml(levelsData.levels, currentLevelId, { className: "level-btn", dataKey: "level-id" }));
 }
 
 function getThemeById(themeId) {
@@ -83,10 +80,7 @@ function renderThemeButtons() {
     return;
   }
   const themes = Array.isArray(levelsData.themes) ? levelsData.themes : [];
-  themeButtonsEl.innerHTML = themes.map((theme) => {
-    const cls = theme.id === currentThemeId ? "theme-btn is-active" : "theme-btn";
-    return `<button class="${cls}" data-theme-id="${theme.id}" type="button"><strong>${theme.emoji || "🍽️"} ${theme.name}</strong><small>${theme.description || ""}</small></button>`;
-  }).join("");
+  setHtml(themeButtonsEl, choiceButtonsHtml(themes, currentThemeId, { className: "theme-btn", dataKey: "theme-id", label: (theme) => `<strong>${theme.emoji || "🍽️"} ${theme.name}</strong><small>${theme.description || ""}</small>` }));
 }
 
 function formatIngredientList(ids) {

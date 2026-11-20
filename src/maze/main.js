@@ -8,7 +8,7 @@ import { hashText, todayString } from "../shared/random.js";
 import { readNumbers, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { clearGameInterval, setGameInterval } from "../shared/timers.js";
-import { setText } from "../shared/dom.js";
+import { choiceButtonsHtml, setHtml, setText } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 70 });
 
@@ -56,10 +56,7 @@ function saveStats() {
 }
 
 function renderLevelButtons() {
-  levelButtonsEl.innerHTML = levelsData.levels.map((level) => {
-    const activeClass = level.id === currentLevelId ? "level-btn is-active" : "level-btn";
-    return `<button type="button" class="${activeClass}" data-level-id="${level.id}">${level.name}</button>`;
-  }).join("");
+  setHtml(levelButtonsEl, choiceButtonsHtml(levelsData.levels, currentLevelId, { className: "level-btn", dataKey: "level-id" }));
 }
 
 function getLevelById(levelId) {

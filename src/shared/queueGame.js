@@ -7,7 +7,7 @@ import { SPEECH_PRESETS, createSpeaker } from "./speech.js";
 import { bindDelegatedTap, bindSoftTap } from "./tap.js";
 import { readNumber, writeValue } from "./storage.js";
 import { loadGameConfig, showConfigError } from "./config.js";
-import { setHtml, setText } from "./dom.js";
+import { choiceButtonsHtml, setHtml, setText } from "./dom.js";
 
 const QUEUE_SIZE = 5;
 
@@ -381,10 +381,7 @@ export function mountQueueGame(rules, ui) {
   }
 
   function renderLevelButtons() {
-    levelButtonsEl.innerHTML = data.levels.map((level) => {
-      const cls = level.id === currentLevelId ? "level-btn is-active" : "level-btn";
-      return `<button class="${cls}" data-level-id="${level.id}" type="button">${level.name}</button>`;
-    }).join("");
+    setHtml(levelButtonsEl, choiceButtonsHtml(data.levels, currentLevelId, { className: "level-btn", dataKey: "level-id" }));
   }
 
   function applyThemePalette(theme) {
@@ -400,14 +397,16 @@ export function mountQueueGame(rules, ui) {
     if (!themeButtonsEl) {
       return;
     }
-    themeButtonsEl.innerHTML = data.themes.map((theme) => {
-      const cls = theme.id === currentThemeId ? "theme-btn is-active" : "theme-btn";
-      const accent = theme.palette?.brand || ui.palette.brand;
-      const style = theme.id === currentThemeId
-        ? `background: linear-gradient(180deg, ${accent} 0%, ${ui.palette.activeEnd} 100%); color: #fff;`
-        : `border: 2px solid ${accent};`;
-      return `<button class="${cls}" data-theme-id="${theme.id}" style="${style}" type="button">${theme.name}</button>`;
-    }).join("");
+    setHtml(themeButtonsEl, choiceButtonsHtml(data.themes, currentThemeId, {
+      className: "theme-btn",
+      dataKey: "theme-id",
+      style: (theme, active) => {
+        const accent = theme.palette?.brand || ui.palette.brand;
+        return active
+          ? `background: linear-gradient(180deg, ${accent} 0%, ${ui.palette.activeEnd} 100%); color: #fff;`
+          : `border: 2px solid ${accent};`;
+      },
+    }));
     applyThemePalette(getThemeById(currentThemeId));
   }
 

@@ -8,7 +8,7 @@ import { hashText, todayString } from "../shared/random.js";
 import { readJson, readNumbers, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { clearGameInterval, setGameInterval } from "../shared/timers.js";
-import { setClass, setStyle, setText, syncKeyed } from "../shared/dom.js";
+import { choiceButtonsHtml, setClass, setHtml, setStyle, setText, syncKeyed } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 70, onTap: () => soundFx.tap() });
 
@@ -267,10 +267,7 @@ function renderSongButtons() {
   if (!levelsData) {
     return;
   }
-  songButtonsEl.innerHTML = levelsData.songs.map((song) => {
-    const activeClass = song.id === currentSongId ? "song-button is-active" : "song-button";
-    return `<button type="button" class="${activeClass}" data-song-id="${song.id}"><span>${song.name}</span><small>${song.theme}</small></button>`;
-  }).join("");
+  setHtml(songButtonsEl, choiceButtonsHtml(levelsData.songs, currentSongId, { className: "song-button", dataKey: "song-id", label: (song) => `<span>${song.name}</span><small>${song.theme}</small>` }));
 }
 
 function updateSelectorsUi() {

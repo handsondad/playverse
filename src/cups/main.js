@@ -8,7 +8,7 @@ import { hashText, todayString } from "../shared/random.js";
 import { readNumber, readNumbers, writeJson, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
 import { clearGameInterval, setGameInterval } from "../shared/timers.js";
-import { setClass, setHtml, setStyle, setText, syncKeyed } from "../shared/dom.js";
+import { choiceButtonsHtml, setClass, setHtml, setStyle, setText, syncKeyed } from "../shared/dom.js";
 
 const SETTINGS_KEY = "cups-settings";
 const STATS_KEY = "cups-stats";
@@ -62,10 +62,7 @@ function getLevelById(id) {
 }
 
 function renderLevelButtons() {
-  setHtml(levelButtonsEl, levelsData.levels.map((level) => {
-    const cls = level.id === currentLevelId ? "level-btn is-active" : "level-btn";
-    return `<button type="button" class="${cls}" data-level-id="${level.id}">${level.name}</button>`;
-  }).join(""));
+  setHtml(levelButtonsEl, choiceButtonsHtml(levelsData.levels, currentLevelId, { className: "level-btn", dataKey: "level-id" }));
 }
 
 const PHASE_LABELS = {

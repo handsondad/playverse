@@ -7,7 +7,7 @@ import { bindDelegatedTap, createSoftTap } from "../shared/tap.js";
 import { hashText, todayString } from "../shared/random.js";
 import { readNumber, readNumbers, writeJson, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setHtml, setText } from "../shared/dom.js";
+import { choiceButtonsHtml, setHtml, setText } from "../shared/dom.js";
 
 const SETTINGS_KEY = "pattern-settings";
 const STATS_KEY = "pattern-stats";
@@ -57,17 +57,11 @@ function getThemeById(id) {
 }
 
 function renderLevelButtons() {
-  setHtml(levelButtonsEl, levelsData.levels.map((level) => {
-    const cls = level.id === currentLevelId ? "level-btn is-active" : "level-btn";
-    return `<button type="button" class="${cls}" data-level-id="${level.id}">${level.name}</button>`;
-  }).join(""));
+  setHtml(levelButtonsEl, choiceButtonsHtml(levelsData.levels, currentLevelId, { className: "level-btn", dataKey: "level-id" }));
 }
 
 function renderThemeButtons() {
-  setHtml(themeButtonsEl, levelsData.themes.map((theme) => {
-    const cls = theme.id === currentThemeId ? "theme-btn is-active" : "theme-btn";
-    return `<button type="button" class="${cls}" data-theme-id="${theme.id}">${theme.emoji} ${theme.name}</button>`;
-  }).join(""));
+  setHtml(themeButtonsEl, choiceButtonsHtml(levelsData.themes, currentThemeId, { className: "theme-btn", dataKey: "theme-id", label: (theme) => `${theme.emoji} ${theme.name}` }));
 }
 
 function renderTrain(state) {

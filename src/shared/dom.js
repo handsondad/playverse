@@ -12,6 +12,18 @@ export function setHtml(el, html) {
   return true;
 }
 
+// Markup for a single-choice group (levels, themes, modes...): one button per item,
+// the selected one gets "is-active". Render it with setHtml and pick with
+// bindDelegatedTap(container, `[data-${dataKey}]`, ...).
+export function choiceButtonsHtml(items, selectedId, { className, dataKey, label = (item) => item.name, style }) {
+  return items.map((item) => {
+    const active = item.id === selectedId;
+    const cls = active ? `${className} is-active` : className;
+    const styleAttr = style ? ` style="${style(item, active)}"` : "";
+    return `<button type="button" class="${cls}" data-${dataKey}="${item.id}"${styleAttr}>${label(item)}</button>`;
+  }).join("");
+}
+
 export function setClass(el, className) {
   if (el.className !== className) {
     el.className = className;

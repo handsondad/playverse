@@ -7,7 +7,7 @@ import { bindDelegatedTap, createSoftTap } from "../shared/tap.js";
 import { hashText, todayString } from "../shared/random.js";
 import { readJson, readNumbers, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setText } from "../shared/dom.js";
+import { choiceButtonsHtml, setHtml, setText } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 70 });
 
@@ -107,10 +107,7 @@ function renderReviewSummary() {
 }
 
 function renderStageButtons() {
-  stageButtonsEl.innerHTML = levelsData.stages.map((stage) => {
-    const activeClass = stage.id === currentStageId ? "stage-btn is-active" : "stage-btn";
-    return `<button type="button" class="${activeClass}" data-stage-id="${stage.id}">${stage.name}</button>`;
-  }).join("");
+  setHtml(stageButtonsEl, choiceButtonsHtml(levelsData.stages, currentStageId, { className: "stage-btn", dataKey: "stage-id" }));
 }
 
 function renderAnswers(state) {

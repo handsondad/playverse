@@ -7,7 +7,7 @@ import { bindDelegatedTap, bindSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readNumber, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setHtml, setText } from "../shared/dom.js";
+import { choiceButtonsHtml, setHtml, setText } from "../shared/dom.js";
 
 const SETTINGS_KEY = "choir-settings";
 const BEST_KEY = "choir-best-streak";
@@ -76,10 +76,7 @@ function getThemeById(id) {
 }
 
 function renderLevelButtons() {
-  levelButtonsEl.innerHTML = levelsData.levels.map((level) => {
-    const cls = level.id === currentLevelId ? "level-btn is-active" : "level-btn";
-    return `<button class="${cls}" data-level-id="${level.id}" type="button">${level.name}</button>`;
-  }).join("");
+  setHtml(levelButtonsEl, choiceButtonsHtml(levelsData.levels, currentLevelId, { className: "level-btn", dataKey: "level-id" }));
 }
 
 function applyThemePalette(theme) {
@@ -92,14 +89,14 @@ function applyThemePalette(theme) {
 
 function renderThemeButtons() {
   const themes = getThemes();
-  themeButtonsEl.innerHTML = themes.map((theme) => {
-    const cls = theme.id === currentThemeId ? "theme-btn is-active" : "theme-btn";
-    const accent = theme.palette?.accent || "#5d86e5";
-    const style = theme.id === currentThemeId
-      ? `background: linear-gradient(180deg, ${accent} 0%, #516cae 100%);`
-      : `border: 2px solid ${accent};`;
-    return `<button class="${cls}" data-theme-id="${theme.id}" type="button" style="${style}">${theme.name}</button>`;
-  }).join("");
+  setHtml(themeButtonsEl, choiceButtonsHtml(themes, currentThemeId, {
+    className: "theme-btn",
+    dataKey: "theme-id",
+    style: (theme, active) => {
+      const accent = theme.palette?.accent || "#5d86e5";
+      return active ? `background: linear-gradient(180deg, ${accent} 0%, #516cae 100%);` : `border: 2px solid ${accent};`;
+    },
+  }));
   applyThemePalette(getThemeById(currentThemeId));
 }
 

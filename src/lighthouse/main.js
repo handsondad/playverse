@@ -7,7 +7,7 @@ import { bindDelegatedTap, bindSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readNumber, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setHtml, setText } from "../shared/dom.js";
+import { choiceButtonsHtml, setHtml, setText } from "../shared/dom.js";
 
 const SETTINGS_KEY = "lighthouse-settings";
 const BEST_KEY = "lighthouse-best-score";
@@ -63,10 +63,7 @@ function playTone(freq = 560, durationMs = 160) {
 }
 
 function renderLevelButtons() {
-  levelButtonsEl.innerHTML = data.levels.map((level) => {
-    const cls = level.id === currentLevelId ? "level-btn is-active" : "level-btn";
-    return `<button class="${cls}" data-level-id="${level.id}" type="button">${level.name}</button>`;
-  }).join("");
+  setHtml(levelButtonsEl, choiceButtonsHtml(data.levels, currentLevelId, { className: "level-btn", dataKey: "level-id" }));
 }
 
 function renderBeamButtons(state) {

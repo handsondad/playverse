@@ -7,7 +7,7 @@ import { bindDelegatedTap, bindSoftTap } from "../shared/tap.js";
 import { todayString } from "../shared/random.js";
 import { readNumber, readNumbers, writeJson, writeValue } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setHtml, setText } from "../shared/dom.js";
+import { choiceButtonsHtml, setHtml, setText } from "../shared/dom.js";
 
 const SETTINGS_KEY = "bubble-settings";
 const STATS_KEY = "bubble-stats";
@@ -57,10 +57,7 @@ function getLevelById(levelId) {
 }
 
 function renderLevelButtons() {
-  levelButtonsEl.innerHTML = levelsData.levels.map((level) => {
-    const cls = level.id === currentLevelId ? "level-btn is-active" : "level-btn";
-    return `<button class="${cls}" data-level-id="${level.id}" type="button">${level.name}</button>`;
-  }).join("");
+  setHtml(levelButtonsEl, choiceButtonsHtml(levelsData.levels, currentLevelId, { className: "level-btn", dataKey: "level-id" }));
 }
 
 function keyOf(x, y) {

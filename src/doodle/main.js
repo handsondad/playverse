@@ -6,7 +6,7 @@ import { SPEECH_PRESETS, createSpeaker } from "../shared/speech.js";
 import { bindDelegatedTap, bindSoftTap } from "../shared/tap.js";
 import { readJson, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setText } from "../shared/dom.js";
+import { choiceButtonsHtml, setHtml, setText } from "../shared/dom.js";
 import { buildShareCard, canRecordClip, downloadUrl, fileStamp, recordClip, wait } from "./share.js";
 
 const SETTINGS_KEY = "doodle-settings";
@@ -473,10 +473,7 @@ function renderPreview(state) {
 }
 
 function updateTemplateButtons(state) {
-  templateButtons.innerHTML = state.templates.map((template) => {
-    const cls = template.id === state.templateId ? "template-btn is-active" : "template-btn";
-    return `<button class="${cls}" data-template-id="${template.id}" type="button"><strong>${template.name}</strong><small>${template.hint || ""}</small></button>`;
-  }).join("");
+  setHtml(templateButtons, choiceButtonsHtml(state.templates, state.templateId, { className: "template-btn", dataKey: "template-id", label: (template) => `<strong>${template.name}</strong><small>${template.hint || ""}</small>` }));
 }
 
 function updateUi(state) {

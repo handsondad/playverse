@@ -7,7 +7,7 @@ import { bindDelegatedTap, createSoftTap } from "../shared/tap.js";
 import { hashText, todayString } from "../shared/random.js";
 import { readNumbers, writeJson } from "../shared/storage.js";
 import { loadGameConfig, showConfigError } from "../shared/config.js";
-import { setText } from "../shared/dom.js";
+import { choiceButtonsHtml, setHtml, setText } from "../shared/dom.js";
 
 const bindSoftTap = createSoftTap({ flashMs: 70, waitForFlash: false });
 
@@ -71,10 +71,7 @@ function getQuestionSpeechParts(question) {
 }
 
 function renderThemeButtons() {
-  themeButtonsEl.innerHTML = (levelsData.themes || []).map((theme) => {
-    const activeClass = theme.id === currentThemeId ? "theme-btn is-active" : "theme-btn";
-    return `<button type="button" class="${activeClass}" data-theme-id="${theme.id}">${theme.name}</button>`;
-  }).join("");
+  setHtml(themeButtonsEl, choiceButtonsHtml((levelsData.themes || []), currentThemeId, { className: "theme-btn", dataKey: "theme-id" }));
 }
 
 function renderSlots(state) {

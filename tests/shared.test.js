@@ -6,7 +6,7 @@ import { GLOBAL_SETTINGS_KEY, loadSettings, nextCareMode, saveSettings } from ".
 import { SPEECH_PRESETS, createSpeaker } from "../src/shared/speech.js";
 import { mountSettingsButtons } from "../src/shared/settingsButtons.js";
 import { readNumbers, readUnlocks } from "../src/shared/storage.js";
-import { setHtml, syncKeyed } from "../src/shared/dom.js";
+import { choiceButtonsHtml, setHtml, syncKeyed } from "../src/shared/dom.js";
 import { bindDelegatedTap, createSoftTap } from "../src/shared/tap.js";
 import { clearGameInterval, setGameInterval } from "../src/shared/timers.js";
 import { FindGame } from "../src/shared/findGame.js";
@@ -122,6 +122,25 @@ test("setHtml skips identical markup", () => {
   assert.equal(setHtml(el, "<b>2</b>"), true);
   assert.equal(writes, 2);
   assert.equal(el.value, "<b>2</b>");
+});
+
+test("choiceButtonsHtml marks only the selected item and supports custom labels and styles", () => {
+  const levels = [{ id: "easy", name: "简单" }, { id: "hard", name: "困难" }];
+  assert.equal(
+    choiceButtonsHtml(levels, "hard", { className: "level-btn", dataKey: "level-id" }),
+    '<button type="button" class="level-btn" data-level-id="easy">简单</button>'
+      + '<button type="button" class="level-btn is-active" data-level-id="hard">困难</button>',
+  );
+  assert.equal(
+    choiceButtonsHtml(levels, "easy", {
+      className: "theme-btn",
+      dataKey: "theme-id",
+      label: (item) => `<b>${item.name}</b>`,
+      style: (item, active) => (active ? "color: red;" : "color: blue;"),
+    }),
+    '<button type="button" class="theme-btn is-active" data-theme-id="easy" style="color: red;"><b>简单</b></button>'
+      + '<button type="button" class="theme-btn" data-theme-id="hard" style="color: blue;"><b>困难</b></button>',
+  );
 });
 
 test("syncKeyed reuses one element per id and removes the ones that left", () => {
