@@ -107,7 +107,7 @@ function updateUi(state) {
       card.status === "correct" ? "is-correct" : "",
     ].filter(Boolean).join(" ");
     return `
-      <button type="button" class="${classes}" data-card-index="${card.index}" aria-label="${card.name}" ${disabled ? "disabled" : ""}>
+      <button type="button" class="${classes}" data-card-index="${card.index}" aria-label="${card.name}" ${disabled || card.dimmed ? "disabled" : ""}>
         <span class="emoji">${card.icon}</span>
         ${card.showLabel ? `<span class="label">${card.name}</span>` : ""}
       </button>

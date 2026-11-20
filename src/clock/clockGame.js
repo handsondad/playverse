@@ -95,9 +95,13 @@ export class ClockGame {
     this.buildQuestion();
   }
 
+  // The dial has no a.m./p.m., so one hour can match a morning and an evening routine.
   findRoutine(hour) {
-    return this.routines.find((item) => item.hours.includes(hour))
-      || { icon: "🕒", title: "快乐时光", period: "今天" };
+    const matches = this.routines.filter((item) => item.hours.includes(hour));
+    if (matches.length > 1) {
+      return matches[Math.floor(this.random() * matches.length)];
+    }
+    return matches[0] || { icon: "🕒", title: "快乐时光", period: "今天" };
   }
 
   buildQuestion() {

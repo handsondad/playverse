@@ -79,6 +79,62 @@ test("OddOneGame supports both visual and category modes", () => {
   assert.equal(state.cards.length, 5);
   assert.equal(state.cards.filter((c) => c.isOdd).length, 1);
   assert.equal(game.tapCard(state.cards.find((c) => c.isOdd).index).correct, true);
+
+  game.start("easy", { modeId: "visual", seed: "test|oddone|dim" });
+  const wrongIdx = state.cards.find((c) => !c.isOdd).index;
+  game.tapCard(wrongIdx);
+  const after = { score: state.score, wrongCount: state.wrongCount };
+  assert.equal(game.tapCard(wrongIdx).ok, false);
+  assert.deepEqual({ score: state.score, wrongCount: state.wrongCount }, after);
+});
+
+test("hints never change the next daily rounds in cups and odd-one-out", () => {
+  const cupsData = readConfig("magic-cups.levels.json");
+  const playCups = (withHint) => {
+    let state = null;
+    const game = new CupsGame({ onStateChange: (s) => { state = s; } });
+    game.init(cupsData, 0);
+    game.start("hard", { seed: "2026-11-20|hard|cups" });
+    game.beginShuffle();
+    while (!game.stepSwap().done) {
+      // step through all swaps
+    }
+    if (withHint) {
+      game.useHint();
+    }
+    game.guess(state.cups.find((c) => c.hasTreasure).id);
+    game.nextRound();
+    return JSON.stringify([state.treasure, state.targetCupId, state.swapQueue]);
+  };
+  assert.equal(playCups(true), playCups(false));
+
+  const oddData = readConfig("odd-one-out.levels.json");
+  const playOdd = (withHint) => {
+    let state = null;
+    const game = new OddOneGame({ onStateChange: (s) => { state = s; } });
+    game.init(oddData, 0);
+    game.start("hard", { modeId: "visual", seed: "2026-11-20|hard|oddone" });
+    if (withHint) {
+      game.useHint();
+    }
+    game.tapCard(state.cards.find((c) => c.isOdd).index);
+    game.nextRound();
+    return JSON.stringify(state.cards.map((c) => [c.icon, c.isOdd]));
+  };
+  assert.equal(playOdd(true), playOdd(false));
+});
+
+test("ClockGame can show every routine, including the evening ones", () => {
+  const data = readConfig("clock-time.levels.json");
+  let state = null;
+  const game = new ClockGame({ onStateChange: (s) => { state = s; } });
+  game.init(data, 0);
+  const seen = new Set();
+  for (let i = 0; i < 40; i += 1) {
+    game.start("hard", { seed: `test|clock|routine|${i}` });
+    seen.add(state.question.routine.title);
+  }
+  assert.deepEqual([...seen].sort(), data.routines.map((r) => r.title).sort());
 });
 
 test("CupsGame swaps cup slots while preserving the hidden treasure cup", () => {

@@ -53,6 +53,8 @@ export class CupsGame {
 
     const seed = options.seed || `${Date.now()}|cups|${level.id}`;
     this.random = createSeededRandom(seed);
+    // Hints draw from their own stream so using one never changes later daily rounds.
+    this.hintRandom = createSeededRandom(`${seed}|hint`);
     this.currentLevel = level;
 
     this.state = {
@@ -163,7 +165,7 @@ export class CupsGame {
       return "";
     }
     this.state.hintsLeft -= 1;
-    const opened = emptyClosed[Math.floor(this.random() * emptyClosed.length)];
+    const opened = emptyClosed[Math.floor(this.hintRandom() * emptyClosed.length)];
     this.state.cups = this.state.cups.map((cup) => (
       cup.id === opened.id ? { ...cup, lifted: true } : cup
     ));

@@ -64,6 +64,8 @@ export class OddOneGame {
 
     const seed = options.seed || `${Date.now()}|oddone|${mode.id}|${level.id}`;
     this.random = createSeededRandom(seed);
+    // Hints draw from their own stream so using one never changes later daily rounds.
+    this.hintRandom = createSeededRandom(`${seed}|hint`);
     this.currentLevel = level;
     this.currentMode = mode;
 
@@ -161,7 +163,7 @@ export class OddOneGame {
 
     if (this.currentMeta.type === "visual") {
       const candidates = this.state.cards.filter((c) => !c.isOdd && !c.dimmed);
-      const toDim = shuffle(candidates, this.random).slice(0, Math.ceil(candidates.length / 2));
+      const toDim = shuffle(candidates, this.hintRandom).slice(0, Math.ceil(candidates.length / 2));
       const dimSet = new Set(toDim.map((c) => c.index));
       this.state.cards = this.state.cards.map((c) => (dimSet.has(c.index) ? { ...c, dimmed: true } : c));
       this.state.lastFeedback = `提示：已经帮你排除了几张「${this.currentMeta.commonName}」，在剩下的亮卡里找找「${this.currentMeta.oddName}」！`;
@@ -178,7 +180,8 @@ export class OddOneGame {
       return { ok: false };
     }
     const card = this.state.cards[index];
-    if (!card) {
+    // Greyed-out cards are already ruled out; tapping one again must not cost points.
+    if (!card || card.dimmed) {
       return { ok: false };
     }
 

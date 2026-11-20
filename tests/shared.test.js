@@ -7,7 +7,7 @@ import { SPEECH_PRESETS, createSpeaker } from "../src/shared/speech.js";
 import { mountSettingsButtons } from "../src/shared/settingsButtons.js";
 import { readNumbers, readUnlocks } from "../src/shared/storage.js";
 import { setHtml, syncKeyed } from "../src/shared/dom.js";
-import { bindDelegatedTap } from "../src/shared/tap.js";
+import { bindDelegatedTap, createSoftTap } from "../src/shared/tap.js";
 import { clearGameInterval, setGameInterval } from "../src/shared/timers.js";
 import { FindGame } from "../src/shared/findGame.js";
 
@@ -184,6 +184,35 @@ test("bindDelegatedTap handles pointerup and keyboard click without double-firin
   listeners.pointerup({ target: disabledBtn, preventDefault() {} });
   listeners.click({ target: disabledBtn, detail: 0, preventDefault() {} });
   assert.deepEqual(tapped, ["key", "ptr"]);
+});
+
+test("createSoftTap with a flash runs one handler per press, even on a quick double tap", (t) => {
+  const pending = [];
+  t.mock.method(globalThis, "setTimeout", (fn) => pending.push(fn));
+  const listeners = {};
+  const button = {
+    disabled: false,
+    classList: { add() {}, remove() {} },
+    addEventListener(type, fn) {
+      listeners[type] = fn;
+    },
+  };
+  let calls = 0;
+  createSoftTap({ flashMs: 70 })(button, () => {
+    calls += 1;
+  });
+  const tap = () => listeners.pointerup({ preventDefault() {} });
+
+  tap();
+  tap();
+  pending.splice(0).forEach((fn) => fn());
+  assert.equal(calls, 1);
+
+  // Disabled while flashing (e.g. the round just ended): the press is dropped.
+  tap();
+  button.disabled = true;
+  pending.splice(0).forEach((fn) => fn());
+  assert.equal(calls, 1);
 });
 
 test("createSpeaker queues phonics sequences and cancels stale callbacks", () => {

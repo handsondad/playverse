@@ -13,9 +13,12 @@ export function createSoftTap({ flashMs = 0, waitForFlash = true, onTap } = {}) 
       return;
     }
     let lastPointerUpAt = 0;
+    let flashing = false;
 
     const run = () => {
-      if (button.disabled) {
+      // A second tap during the flash is the same press (small fingers bounce),
+      // not a new answer.
+      if (button.disabled || flashing) {
         return;
       }
       if (!flashMs) {
@@ -23,14 +26,16 @@ export function createSoftTap({ flashMs = 0, waitForFlash = true, onTap } = {}) 
         handler();
         return;
       }
+      flashing = true;
       button.classList.add("tap-flash");
       if (!waitForFlash) {
         onTap?.();
         handler();
       }
       window.setTimeout(() => {
+        flashing = false;
         button.classList.remove("tap-flash");
-        if (waitForFlash) {
+        if (waitForFlash && !button.disabled) {
           onTap?.();
           handler();
         }
