@@ -114,11 +114,13 @@ button:active {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
 }
 
 .phase-badge {
   padding: 8px 14px;
+  white-space: nowrap;
   border-radius: 999px;
   background: #e9e6ff;
   font-weight: 800;
@@ -128,6 +130,8 @@ button:active {
 #hintBtn {
   min-height: 48px;
   padding: 8px 16px;
+  flex-shrink: 0;
+  white-space: nowrap;
   background: linear-gradient(180deg, #ffd882 0%, #f0b84b 100%);
   color: #5a3c12;
 }

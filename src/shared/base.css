@@ -7,6 +7,12 @@ body {
   touch-action: manipulation;
 }
 
+/* !important: a page rule like `.panel { display: grid; }` would otherwise
+   beat the browser's own [hidden] style and leave the element on screen. */
+[hidden] {
+  display: none !important;
+}
+
 button {
   font: inherit;
 }

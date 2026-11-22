@@ -79,7 +79,6 @@ button { font: inherit; }
 
 .level-btn,
 .theme-btn,
-.selector-actions button,
 .station-btn {
   background: linear-gradient(180deg, #ffffff 0%, #eff1ff 100%);
   color: #404781;
@@ -93,7 +92,21 @@ button { font: inherit; }
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.92), 0 8px 16px rgba(95, 109, 197, 0.22);
 }
 
-.selector-actions { margin-top: 12px; }
+.selector-actions {
+  padding: 10px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #f4f5ff 0%, #e8eaff 100%);
+  border: 1px solid rgba(150, 158, 230, 0.48);
+}
+
+.selector-actions button {
+  color: #fff;
+  box-shadow: 0 6px 0 rgba(70, 78, 150, 0.2);
+}
+
+#startBtn { background: linear-gradient(180deg, #7f8cec 0%, #6070d4 100%); }
+#retryBtn { background: linear-gradient(180deg, #e58a4c 0%, #cc6f32 100%); }
+#dailyBtn { background: linear-gradient(180deg, #64b87c 0%, #4b9c62 100%); }
 #selectorHint { margin: 10px 0 0; color: #6770ab; }
 
 .stats {
@@ -276,7 +289,6 @@ button { font: inherit; }
   .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .queue-list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .support-strip { grid-template-columns: 1fr; }
-  .theme-buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 560px) {

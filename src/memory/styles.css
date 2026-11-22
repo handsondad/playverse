@@ -69,11 +69,17 @@ body {
   font-size: clamp(16px, 2.6vw, 20px);
 }
 
+.top-bar a {
+  color: #c96a26;
+  font-weight: 700;
+}
+
 .subtitle-soft {
   color: #877664;
   font-size: clamp(14px, 2.2vw, 17px);
 }
 
+.top-bar,
 .play-stage,
 .theme-panel,
 .chapter-panel,

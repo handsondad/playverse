@@ -179,6 +179,7 @@ body {
 
 .primary-actions button,
 .secondary-actions-grid button,
+.calibration-actions button,
 .lane-hit {
   min-height: 62px;
   border: 0;
@@ -193,6 +194,7 @@ body {
 
 .primary-actions button:active,
 .secondary-actions-grid button:active,
+.calibration-actions button:active,
 .lane-hit:active {
   transform: translateY(2px);
   box-shadow: 0 3px 0 rgba(99, 69, 44, 0.2);
@@ -504,13 +506,14 @@ button:disabled {
   .song-buttons,
   .level-buttons,
   .primary-actions,
-  .lane-hits,
   .secondary-actions-grid,
   .calibration-actions,
-  .lanes,
-  .stats,
   .meta-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .track-head {
@@ -522,12 +525,16 @@ button:disabled {
   .song-buttons,
   .level-buttons,
   .primary-actions,
-  .lane-hits,
-  .secondary-actions-grid,
-  .calibration-actions,
-  .lanes,
-  .stats,
-  .meta-grid {
+  .secondary-actions-grid {
     grid-template-columns: 1fr;
+  }
+
+  .lanes,
+  .lane-hits {
+    gap: 6px;
+  }
+
+  .lane-hit {
+    font-size: 16px;
   }
 }

@@ -30,7 +30,7 @@ body {
 .game-panel,
 .result {
   border: 2px solid var(--line);
-  border-radius: 18px;
+  border-radius: 24px;
   background: var(--panel);
   box-shadow: 0 10px 24px rgba(69, 53, 31, 0.14);
   padding: 14px;
@@ -73,7 +73,7 @@ body {
 
 .theme-btn {
   border: 2px solid #ceb796;
-  border-radius: 12px;
+  border-radius: 16px;
   background: linear-gradient(180deg, #fffef8 0%, #f5edd8 100%);
   min-height: 50px;
   font-size: 1rem;
@@ -85,16 +85,34 @@ body {
   background: linear-gradient(180deg, #ebf9df 0%, #d9ecc9 100%);
 }
 
-.selector-actions,
 .support-strip {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
+.selector-actions {
+  padding: 10px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #f5fbef 0%, #e9f5df 100%);
+  border: 1px solid rgba(140, 186, 118, 0.48);
+}
+
+.selector-actions button {
+  min-height: 52px;
+  border: 0;
+  border-radius: 16px;
+  color: #fff;
+  box-shadow: 0 6px 0 rgba(68, 104, 56, 0.2);
+}
+
+#startBtn { background: linear-gradient(180deg, #7fb565 0%, #5f9549 100%); }
+#retryBtn { background: linear-gradient(180deg, #e58a4c 0%, #cc6f32 100%); }
+#dailyBtn { background: linear-gradient(180deg, #5c9ee4 0%, #4382c8 100%); }
+
 button {
   border: 2px solid #c4ab83;
-  border-radius: 12px;
+  border-radius: 16px;
   min-height: 48px;
   font-size: 0.96rem;
   font-weight: 700;
@@ -106,8 +124,6 @@ button.tap-flash {
   transform: scale(0.985);
 }
 
-#startBtn,
-#dailyBtn,
 #hintBtn {
   border-color: #4d8942;
   background: linear-gradient(180deg, #9ed67c 0%, #75b059 100%);
@@ -258,7 +274,6 @@ button.tap-flash {
 
   .letter-pool,
   .answer-slots,
-  .selector-actions,
   .support-strip,
   .stats {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -268,7 +283,6 @@ button.tap-flash {
 @media (max-width: 640px) {
   .letter-pool,
   .answer-slots,
-  .selector-actions,
   .support-strip,
   .stats {
     grid-template-columns: 1fr;

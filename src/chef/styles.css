@@ -79,7 +79,6 @@ button { font: inherit; }
 
 .level-btn,
 .theme-btn,
-.selector-actions button,
 .tray-actions button {
   background: linear-gradient(180deg, #ffffff 0%, #fff0de 100%);
   color: #694930;
@@ -114,7 +113,21 @@ button { font: inherit; }
   color: rgba(255, 255, 255, 0.92);
 }
 
-.selector-actions { margin-top: 12px; }
+.selector-actions {
+  padding: 10px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fff8f0 0%, #ffefe0 100%);
+  border: 1px solid rgba(232, 174, 132, 0.45);
+}
+
+.selector-actions button {
+  color: #fff;
+  box-shadow: 0 6px 0 rgba(128, 78, 48, 0.2);
+}
+
+#startBtn { background: linear-gradient(180deg, #ec8452 0%, #d46838 100%); }
+#retryBtn { background: linear-gradient(180deg, #5c9ee4 0%, #4382c8 100%); }
+#dailyBtn { background: linear-gradient(180deg, #5fb878 0%, #469c5f 100%); }
 #selectorHint { margin: 10px 0 0; color: #7d624c; }
 
 .stats {

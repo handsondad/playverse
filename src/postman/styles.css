@@ -54,24 +54,25 @@ button { font: inherit; }
 }
 
 .theme-title {
-  margin-top: 8px;
+  margin-top: 12px;
   display: block;
 }
 
 .theme-buttons {
   margin-top: 8px;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
 .theme-btn {
   border: 2px solid #d0d7e6;
-  border-radius: 999px;
+  border-radius: 16px;
+  min-height: 52px;
   background: #fff;
   color: #34405b;
-  padding: 6px 12px;
-  font-size: 13px;
+  padding: 6px 8px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
   transition: transform 120ms ease, box-shadow 120ms ease;

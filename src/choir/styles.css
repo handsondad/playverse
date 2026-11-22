@@ -79,7 +79,6 @@ button { font: inherit; }
 
 .level-btn,
 .theme-btn,
-.selector-actions button,
 .animal-btn {
   background: linear-gradient(180deg, #ffffff 0%, #e9f1ff 100%);
   color: #36507f;
@@ -94,7 +93,21 @@ button { font: inherit; }
   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9), 0 6px 0 rgba(84, 102, 146, 0.16);
 }
 
-.selector-actions { margin-top: 12px; }
+.selector-actions {
+  padding: 10px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #f3f8ff 0%, #e7f1ff 100%);
+  border: 1px solid rgba(144, 184, 232, 0.48);
+}
+
+.selector-actions button {
+  color: #fff;
+  box-shadow: 0 6px 0 rgba(58, 92, 134, 0.2);
+}
+
+#startBtn { background: linear-gradient(180deg, #6b95ec 0%, #4f78d2 100%); }
+#retryBtn { background: linear-gradient(180deg, #e58a4c 0%, #cc6f32 100%); }
+#dailyBtn { background: linear-gradient(180deg, #64b87c 0%, #4b9c62 100%); }
 #selectorHint { margin: 10px 0 0; color: #5f6f91; }
 
 .hint-panel {

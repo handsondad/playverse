@@ -277,13 +277,17 @@ button {
   gap: 10px;
 }
 
-.controls > button,
+/* 向上 matches one column of the row below so the pad reads as a cross. */
+.controls > button {
+  width: calc((min(420px, 100%) - 20px) / 3);
+}
+
 .control-row button {
-  width: min(180px, 100%);
+  width: 100%;
 }
 
 .control-row {
-  grid-template-columns: repeat(3, minmax(100px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   width: min(420px, 100%);
 }
 
@@ -325,10 +329,6 @@ button {
 @media (max-width: 560px) {
   .maze-shell {
     padding-inline: 10px;
-  }
-
-  .control-row {
-    grid-template-columns: 1fr;
   }
 
   .legend {

@@ -170,8 +170,9 @@ button:active {
   color: #524030;
 }
 
+/* Room above and below for the beam's ends when it tilts (up to 12deg). */
 .scale-arena {
-  padding: 20px 12px 10px;
+  padding: 64px 12px 32px;
   border-radius: 18px;
   background: linear-gradient(180deg, #f5f9ff 0%, #fffdf8 100%);
   border: 2px solid rgba(196, 212, 236, 0.55);
@@ -294,6 +295,17 @@ button:active {
 
 @media (max-width: 560px) {
   .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .scale-beam { gap: 10px; }
+  .scale-stage { padding: 10px; }
+  .scale-arena { padding: 36px 4px 10px; }
+  /* Narrow pans: tilt half as far so the beam stays inside the arena. */
+  .scale-beam {
+    gap: 8px;
+    width: calc(100% - 24px);
+    transform: rotate(calc(var(--tilt) * 0.5));
+  }
+  .pan { padding: 6px; }
+  .left-load,
+  .pan-chip { padding: 4px 6px; }
+  .left-load .emoji { font-size: 24px; }
   .support-strip { grid-template-columns: 1fr; }
 }
